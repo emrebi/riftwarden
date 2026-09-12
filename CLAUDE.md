@@ -40,8 +40,19 @@ content: PASS/FAIL/-
 - <brief disina cikilan yer veya "yok">
 ```
 
-### Commit
-Turkce, tek satir, duz, ne yapildigini soyler. Ornek:
+### Commit protokolu (BAGLAYICI)
+Her adim bittiginde **dur**. Sira:
+
+1. Worker raporu gelir, kalite kapilari gecmis olur.
+2. Planner raporu ve `git diff`'i denetler.
+3. Planner kullaniciya **manuel kontrol listesi** verir (cihazda neye bakilacak).
+4. Planner **commit basligini** onerir.
+5. Kullanici manuel kontrolu yapar ve onay verir.
+6. Ancak o zaman commit atilir, sonraki adima gecilir.
+
+Onay alinmadan commit atilmaz ve sonraki adim baslatilmaz.
+
+Commit mesaji: Turkce, tek satir, duz, ne yapildigini soyler. Ornek:
 `simulasyon cekirdegi ve entity havuzu eklendi`
 
 ---
@@ -96,5 +107,10 @@ python tools/assetkit/assetkit.py verify
   yap ve sessizce atla; exception firlatma.
 - **Fonts henuz bundle degil.** `AppFonts.bodyFamilyFor` null doner (sistem fontu).
   CJK/Tayca/Arapca fontlari M5'te eklenecek.
+- **`agy mcp disable` ISE YARAMIYOR.** Devre disi birakilan MCP sunucusuna yine de
+  baglanmaya calisir ve her cagriyi **3 dakika** bloklar. Gercekten engellemek icin
+  `agy mcp remove <ad>` gerekir. Bu projede `unity-mcp` kaldirildi; cagri suresi
+  206 sn'den 8 sn'ye dustu. Unity gerekirse geri ekle:
+  `agy mcp add unity-mcp -- "C:\Users\ASUS\.unity\relay\relay_win.exe" --mcp`
 - **Reklam/IAP kimlikleri TEST kimlikleridir.** `AndroidManifest.xml`, `Info.plist`
   ve `AdConfig` icinde TODO ile isaretli. Yayin oncesi degistirilecek.

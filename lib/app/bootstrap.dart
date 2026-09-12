@@ -1,5 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:riftwarden/core/services/audio_service.dart';
+import 'package:riftwarden/core/services/haptic_service.dart';
+import 'package:riftwarden/core/services/storage_service.dart';
 
 /// [bootstrap] ciktisi: acilista kurulmus, senkron erisilmesi gereken
 /// servisler.
@@ -9,9 +12,16 @@ import 'package:flutter/widgets.dart';
 /// tipi public API'dan cikarildi; override listesi `ProviderScope`
 /// cagrisinda yerinde kurulur ve tip cikarimi halleder.
 class BootstrapResult {
-  const BootstrapResult();
+  const BootstrapResult({
+    required this.storage,
+    required this.audio,
+    required this.haptics,
+  });
 
-  // TODO(adim 3): final SharedPreferences preferences;
+  final StorageService storage;
+  final AudioService audio;
+  final HapticService haptics;
+
   // TODO(adim 6): final ContentRegistry content;
   // TODO(adim 17): final SaveGame save;
 }
@@ -40,12 +50,23 @@ Future<BootstrapResult> bootstrap() async {
   // Tam ekran: sistem cubuklari gizli, kenardan cekilince geri gelir.
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
-  // TODO(adim 3):  StorageService.init()
-  // TODO(adim 3):  AudioService.init()
+  // Sira onemli: audio ve haptics acilis tercihini storage'dan okur.
+  final storage = await StorageService.init();
+
+  final audio = AudioService();
+  await audio.init(storage);
+
+  final haptics = HapticService();
+  await haptics.init(storage);
+
   // TODO(adim 6):  ContentRegistry.load()
   // TODO(adim 17): SaveRepository.load()
   // TODO(adim 18): AdService.initialize()  -- BLOKLAMADAN (unawaited)
   // TODO(adim 19): IapService.connect()    -- BLOKLAMADAN (unawaited)
 
-  return const BootstrapResult();
+  return BootstrapResult(
+    storage: storage,
+    audio: audio,
+    haptics: haptics,
+  );
 }
