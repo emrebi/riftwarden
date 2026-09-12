@@ -1,0 +1,18 @@
+{
+  "_comment": "Riftborn dusman sprite'lari. Gemini'den magenta zeminli grid olarak istenir.",
+  "chroma": true,
+  "slice": "auto",
+  "min_gap": 16,
+  "max_size": 192,
+  "padding": 2,
+  "atlas_max": 2048,
+  "names": [
+    "drifter",
+    "skitter",
+    "bulwark",
+    "splitter",
+    "phaseborn",
+    "leech",
+    "spawner"
+  ]
+}

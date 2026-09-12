@@ -1,0 +1,89 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "RIFTWARDEN",
+  "@appTitle": { "description": "Game title. Proper noun - do not translate." },
+
+  "menuPlay": "PLAY",
+  "@menuPlay": { "description": "Main menu primary button" },
+  "menuStore": "STORE",
+  "@menuStore": { "description": "Main menu button opening the store" },
+  "menuUpgrades": "UPGRADES",
+  "@menuUpgrades": { "description": "Main menu button opening permanent upgrades" },
+  "menuSettings": "SETTINGS",
+  "@menuSettings": { "description": "Main menu button opening settings" },
+
+  "sectorLabel": "SECTOR {number}",
+  "@sectorLabel": {
+    "description": "Sector heading on the level select screen",
+    "placeholders": { "number": { "type": "int" } }
+  },
+  "levelLabel": "LEVEL {number}",
+  "@levelLabel": {
+    "description": "Level heading",
+    "placeholders": { "number": { "type": "int" } }
+  },
+  "levelLocked": "LOCKED",
+  "@levelLocked": { "description": "Shown on a level the player cannot enter yet" },
+
+  "hudAether": "Aether",
+  "@hudAether": { "description": "In-run currency name. Proper noun of the game world." },
+  "hudCore": "Core",
+  "@hudCore": { "description": "Short label for the Aether Core structure the player defends" },
+  "hudWave": "Wave {current}/{total}",
+  "@hudWave": {
+    "description": "Wave progress indicator during battle",
+    "placeholders": { "current": { "type": "int" }, "total": { "type": "int" } }
+  },
+
+  "upgradeChooseTitle": "CHOOSE AN UPGRADE",
+  "@upgradeChooseTitle": { "description": "Header above the three upgrade cards" },
+  "upgradeReroll": "Reroll",
+  "@upgradeReroll": { "description": "Button that replaces the offered upgrade cards" },
+
+  "resultVictoryTitle": "RIFT SEALED",
+  "@resultVictoryTitle": { "description": "Shown when the player clears a level" },
+  "resultDefeatTitle": "CORE DESTABILIZED",
+  "@resultDefeatTitle": { "description": "Shown when the Core is destroyed" },
+  "resultRetry": "RETRY",
+  "@resultRetry": { "description": "Restart the level" },
+  "resultNextLevel": "NEXT",
+  "@resultNextLevel": { "description": "Continue to the next level" },
+  "resultMainMenu": "MAIN MENU",
+  "@resultMainMenu": { "description": "Return to main menu" },
+  "resultWatchAdContinue": "WATCH AD TO CONTINUE",
+  "@resultWatchAdContinue": { "description": "Rewarded ad revive offer after defeat" },
+  "resultDoubleReward": "DOUBLE REWARD",
+  "@resultDoubleReward": { "description": "Rewarded ad offer that doubles level rewards" },
+
+  "settingsSound": "Sound",
+  "@settingsSound": { "description": "Toggle for sound effects" },
+  "settingsMusic": "Music",
+  "@settingsMusic": { "description": "Toggle for background music" },
+  "settingsHaptics": "Vibration",
+  "@settingsHaptics": { "description": "Toggle for haptic feedback" },
+  "settingsLanguage": "Language",
+  "@settingsLanguage": { "description": "Language picker label" },
+  "settingsRestorePurchases": "Restore Purchases",
+  "@settingsRestorePurchases": { "description": "Re-applies previously bought non-consumable items" },
+  "settingsPrivacy": "Privacy Policy",
+  "@settingsPrivacy": { "description": "Opens the privacy policy" },
+
+  "storeRemoveAds": "Remove Ads",
+  "@storeRemoveAds": { "description": "Non-consumable purchase that disables interstitial ads" },
+  "storeRestoreDone": "Purchases restored.",
+  "@storeRestoreDone": { "description": "Confirmation after a successful restore" },
+  "storePurchaseFailed": "Purchase could not be completed.",
+  "@storePurchaseFailed": { "description": "Generic purchase failure message" },
+
+  "commonCancel": "Cancel",
+  "@commonCancel": { "description": "Dismiss a dialog without acting" },
+  "commonClose": "Close",
+  "@commonClose": { "description": "Close a panel" },
+  "commonLoading": "Loading...",
+  "@commonLoading": { "description": "Shown while content is loading" },
+  "commonRetry": "Retry",
+  "@commonRetry": { "description": "Retry a failed operation" },
+  "errorContentLoad": "Game data could not be loaded.",
+  "@errorContentLoad": { "description": "Fatal error when content JSON fails to parse" }
+}

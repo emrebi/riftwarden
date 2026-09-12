@@ -1,0 +1,14 @@
+{
+  "_comment": "Oyuncu savunma birlikleri.",
+  "chroma": true,
+  "slice": "auto",
+  "min_gap": 16,
+  "max_size": 192,
+  "padding": 2,
+  "atlas_max": 1024,
+  "names": [
+    "pulse_guard",
+    "arc_ranger",
+    "titan_frame"
+  ]
+}

@@ -1,0 +1,63 @@
+name: riftwarden
+description: "RIFTWARDEN - auto-battle swarm defense roguelite."
+publish_to: 'none'
+
+# version: <store surumu>+<build numarasi>
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # --- Oyun motoru ---
+  flame: ^1.38.2          # oyun dongusu, kamera, SpriteBatch (swarm render'in temeli)
+  flame_audio: ^2.12.2    # SFX/muzik havuzu
+
+  # --- State management (SADECE uygulama katmani, savas dongusune girmez) ---
+  flutter_riverpod: ^3.4.3
+
+  # --- Navigasyon ---
+  go_router: ^18.0.1
+
+  # --- Kalicilik ---
+  shared_preferences: ^2.5.5
+
+  # --- Gelir ---
+  google_mobile_ads: ^9.1.0
+  in_app_purchase: ^3.3.0
+
+  # --- Yardimci ---
+  intl: any               # flutter_localizations ile pinlenir
+  package_info_plus: ^9.0.0
+  collection: ^1.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  # gen-l10n: l10n.yaml dosyasindaki ayarlarla AppLocalizations uretir
+  generate: true
+
+  assets:
+    - assets/content/
+    - assets/content/levels/
+    - assets/images/
+    - assets/images/atlas/
+    - assets/audio/
+
+  # TODO(m5): Fontlar eklendiginde burasi doldurulacak.
+  # Latin display fontu + locale basina Noto alt kumesi (bkz. AppFonts.forLocale).
+  # fonts:
+  #   - family: RwDisplay
+  #     fonts:
+  #       - asset: assets/fonts/RwDisplay-Bold.ttf
+  #         weight: 700

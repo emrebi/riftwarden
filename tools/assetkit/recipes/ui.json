@@ -1,0 +1,10 @@
+{
+  "_comment": "Arayuz ikonlari. Kucuk boyut, siki padding.",
+  "chroma": true,
+  "slice": "auto",
+  "min_gap": 12,
+  "max_size": 96,
+  "padding": 2,
+  "atlas_max": 1024,
+  "names": []
+}
