@@ -69,19 +69,38 @@ Push-Location $repoRoot
 try {
     $started = Get-Date
 
+    # --dangerously-skip-permissions neden gerekli:
+    # agy headless modda izin soramaz; sorulmasi gereken her tool cagrisini
+    # otomatik REDDEDER ve reddedince hic cikti uretmeden olur. Izin listesini
+    # settings.json'a yazmak yetmiyor, cunku agy proje bazli grant bulamayinca
+    # listeyi temizliyor ("ApplyProjectPermissionGrants: cleared").
+    #
+    # Riski neyle dengeliyoruz:
+    #   * agy'nin dokunabilecegi dizinler AGENTS.md'de sinirli,
+    #   * her tur sonrasi `git diff` denetleniyor,
+    #   * repo GitHub'a push'lu -- en kotu ihtimalde `git reset --hard`.
     $agyArgs = @(
         '--model', $Model,
         '--effort', $Effort,
         '--mode', 'accept-edits',
+        '--dangerously-skip-permissions',
         '--output-format', 'text',
         '--print-timeout', '15m'
     )
     if ($Continue) { $agyArgs += '--continue' }
 
-    # Brief'i stdin yerine -p ile veriyoruz: agy print modunda stdin'i
-    # prompt'a ekliyor ama uzun metinlerde -p daha guvenilir davraniyor.
-    $briefText = Get-Content $briefPath -Raw
-    $agyArgs += @('-p', $briefText)
+    # Brief'in METNINI argüman olarak GECIRMIYORUZ: markdown tablolarindaki
+    # `|` karakterleri ve satir sonlari PowerShell'in native exe argüman
+    # ayristirmasini bozuyor ("unexpected argument" hatasi). Bunun yerine
+    # agy'ye dosyayi kendisi okutuyoruz -- read_file tool'u zaten var ve
+    # boylece brief ne kadar uzun olursa olsun sorun cikmiyor.
+    # Not: [IO.Path]::GetRelativePath .NET Core metodu; Windows PowerShell 5.1'de
+    # yok. Brief her zaman repo altinda oldugu icin duz string kirpma yeterli.
+    $briefRel = $briefPath.Substring($repoRoot.Length).TrimStart('\', '/').Replace('\', '/')
+    $prompt = "Once AGENTS.md dosyasini oku, sonra $briefRel dosyasini oku ve " +
+              'icindeki gorevi eksiksiz uygula. Gorev bitince AGENTS.md icindeki ' +
+              'rapor formatinda rapor ver.'
+    $agyArgs += @('-p', $prompt)
 
     & agy @agyArgs 2>&1 | Tee-Object -FilePath $logPath
 

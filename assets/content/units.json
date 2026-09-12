@@ -1,0 +1,44 @@
+{
+  "pulse_guard": {
+    "name": "unitPulseGuard",
+    "sprite": "pulse_guard",
+    "cost": 25,
+    "costGrowth": 1.08,
+    "hp": 60,
+    "damage": 8,
+    "range": 0.18,
+    "attackSpeed": 1.6,
+    "moveSpeed": 0.03,
+    "radius": 0.02,
+    "projectile": "pulse_bolt",
+    "role": "swarm"
+  },
+  "arc_ranger": {
+    "name": "unitArcRanger",
+    "sprite": "arc_ranger",
+    "cost": 45,
+    "costGrowth": 1.10,
+    "hp": 40,
+    "damage": 14,
+    "range": 0.30,
+    "attackSpeed": 1.0,
+    "moveSpeed": 0.025,
+    "radius": 0.02,
+    "projectile": "arc_bolt",
+    "role": "ranged"
+  },
+  "titan_frame": {
+    "name": "unitTitanFrame",
+    "sprite": "titan_frame",
+    "cost": 90,
+    "costGrowth": 1.12,
+    "hp": 260,
+    "damage": 20,
+    "range": 0.10,
+    "attackSpeed": 0.7,
+    "moveSpeed": 0.018,
+    "radius": 0.032,
+    "projectile": null,
+    "role": "tank"
+  }
+}

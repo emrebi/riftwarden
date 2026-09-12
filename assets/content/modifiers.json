@@ -1,0 +1,14 @@
+{
+  "dense_fog": {
+    "name": "modDenseFog",
+    "effects": [
+      { "stat": "unitRange", "op": "mul", "value": 0.85 }
+    ]
+  },
+  "aether_surge": {
+    "name": "modAetherSurge",
+    "effects": [
+      { "stat": "aetherReward", "op": "mul", "value": 1.2 }
+    ]
+  }
+}

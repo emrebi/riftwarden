@@ -1,0 +1,10 @@
+{
+  "1": {
+    "name": "sectorFracturedEdge",
+    "environmentId": "fractured_edge",
+    "background": "bg_sector_01",
+    "riftSkin": "rift_violet",
+    "palette": { "accent": "#9B5CFF", "fog": "#0E0C1C" },
+    "unlockAfterLevel": 0
+  }
+}

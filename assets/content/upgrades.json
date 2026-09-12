@@ -1,0 +1,170 @@
+{
+  "arc_chain_1": {
+    "name": "upgradeArcChain1",
+    "description": "upgradeArcChain1Desc",
+    "icon": "upgrade_chain",
+    "family": "chain",
+    "rarity": "rare",
+    "requires": [],
+    "maxStacks": 1,
+    "weight": 60,
+    "stats": [
+      { "target": "arc_ranger", "stat": "chainTargets", "op": "add", "value": 1 }
+    ],
+    "flags": ["chainLightning"]
+  },
+  "arc_chain_2": {
+    "name": "upgradeArcChain2",
+    "description": "upgradeArcChain2Desc",
+    "icon": "upgrade_chain",
+    "family": "chain",
+    "rarity": "epic",
+    "requires": ["arc_chain_1"],
+    "maxStacks": 1,
+    "weight": 30,
+    "stats": [
+      { "target": "arc_ranger", "stat": "chainTargets", "op": "add", "value": 1 }
+    ],
+    "flags": []
+  },
+  "pulse_pierce_1": {
+    "name": "upgradePulsePierce1",
+    "description": "upgradePulsePierce1Desc",
+    "icon": "upgrade_pierce",
+    "family": "pierce",
+    "rarity": "rare",
+    "requires": [],
+    "maxStacks": 1,
+    "weight": 60,
+    "stats": [
+      { "target": "pulse_guard", "stat": "damage", "op": "add", "value": 2 }
+    ],
+    "flags": ["piercingShots"]
+  },
+  "pulse_pierce_2": {
+    "name": "upgradePulsePierce2",
+    "description": "upgradePulsePierce2Desc",
+    "icon": "upgrade_pierce",
+    "family": "pierce",
+    "rarity": "epic",
+    "requires": ["pulse_pierce_1"],
+    "maxStacks": 2,
+    "weight": 30,
+    "stats": [
+      { "target": "pulse_guard", "stat": "pierceCount", "op": "add", "value": 1 }
+    ],
+    "flags": []
+  },
+  "arc_crit_1": {
+    "name": "upgradeArcCrit1",
+    "description": "upgradeArcCrit1Desc",
+    "icon": "upgrade_crit",
+    "family": "crit",
+    "rarity": "common",
+    "requires": [],
+    "maxStacks": 3,
+    "weight": 70,
+    "stats": [
+      { "target": "arc_ranger", "stat": "critChance", "op": "add", "value": 0.1 }
+    ],
+    "flags": ["criticalHits"]
+  },
+  "arc_crit_2": {
+    "name": "upgradeArcCrit2",
+    "description": "upgradeArcCrit2Desc",
+    "icon": "upgrade_crit",
+    "family": "crit",
+    "rarity": "rare",
+    "requires": ["arc_crit_1"],
+    "maxStacks": 3,
+    "weight": 40,
+    "stats": [
+      { "target": "arc_ranger", "stat": "critDamage", "op": "add", "value": 0.5 }
+    ],
+    "flags": []
+  },
+  "titan_explosion_1": {
+    "name": "upgradeTitanExplosion1",
+    "description": "upgradeTitanExplosion1Desc",
+    "icon": "upgrade_explosion",
+    "family": "explosion",
+    "rarity": "rare",
+    "requires": [],
+    "maxStacks": 1,
+    "weight": 55,
+    "stats": [
+      { "target": "titan_frame", "stat": "explosionRadius", "op": "add", "value": 0.05 }
+    ],
+    "flags": ["explosiveImpact"]
+  },
+  "titan_explosion_2": {
+    "name": "upgradeTitanExplosion2",
+    "description": "upgradeTitanExplosion2Desc",
+    "icon": "upgrade_explosion",
+    "family": "explosion",
+    "rarity": "epic",
+    "requires": ["titan_explosion_1"],
+    "maxStacks": 1,
+    "weight": 25,
+    "stats": [
+      { "target": "titan_frame", "stat": "damage", "op": "mul", "value": 1.15 }
+    ],
+    "flags": []
+  },
+  "pulse_swarm_1": {
+    "name": "upgradePulseSwarm1",
+    "description": "upgradePulseSwarm1Desc",
+    "icon": "upgrade_swarm",
+    "family": "swarm",
+    "rarity": "common",
+    "requires": [],
+    "maxStacks": 3,
+    "weight": 70,
+    "stats": [
+      { "target": "pulse_guard", "stat": "moveSpeed", "op": "mul", "value": 1.1 }
+    ],
+    "flags": ["swarmFrenzy"]
+  },
+  "pulse_swarm_2": {
+    "name": "upgradePulseSwarm2",
+    "description": "upgradePulseSwarm2Desc",
+    "icon": "upgrade_swarm",
+    "family": "swarm",
+    "rarity": "rare",
+    "requires": ["pulse_swarm_1"],
+    "maxStacks": 3,
+    "weight": 40,
+    "stats": [
+      { "target": "pulse_guard", "stat": "attackSpeed", "op": "mul", "value": 1.1 }
+    ],
+    "flags": []
+  },
+  "aether_economy_1": {
+    "name": "upgradeAetherEconomy1",
+    "description": "upgradeAetherEconomy1Desc",
+    "icon": "upgrade_economy",
+    "family": "economy",
+    "rarity": "rare",
+    "requires": [],
+    "maxStacks": 1,
+    "weight": 45,
+    "stats": [
+      { "target": "economy", "stat": "aetherIncome", "op": "add", "value": 5 }
+    ],
+    "flags": ["overflowStorage"]
+  },
+  "core_shield_1": {
+    "name": "upgradeCoreShield1",
+    "description": "upgradeCoreShield1Desc",
+    "icon": "upgrade_core",
+    "family": "core",
+    "rarity": "legendary",
+    "requires": [],
+    "maxStacks": 1,
+    "weight": 15,
+    "stats": [
+      { "target": "core", "stat": "maxHp", "op": "add", "value": 100 }
+    ],
+    "flags": ["regeneratingShield"]
+  }
+}

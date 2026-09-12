@@ -29,7 +29,12 @@ pubspec.yaml   analysis_options.yaml   l10n.yaml   android/   ios/
 ```
 
 Paket EKLEME. Gereken her sey zaten kurulu.
-Test YAZMA. `flutter run` / `flutter build` CALISTIRMA. Git komutu CALISTIRMA.
+Test YAZMA.
+
+**HICBIR TERMINAL KOMUTU CALISTIRMA.** `flutter`, `git`, `python`, `dart` —
+hicbiri. Sadece dosya okuma/yazma araclarini kullan. Derleme ve lint
+dogrulamasini planner senin isin bittikten sonra kendisi kosturur; sen
+sadece kodu yaz ve raporu ver.
 
 Brief'te adi gecmeyen dosyaya dokunma. Gerekiyorsa raporunda "sapma" olarak bildir.
 

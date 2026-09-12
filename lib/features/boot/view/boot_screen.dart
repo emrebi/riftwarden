@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:riftwarden/app/theme/app_colors.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
+import 'package:riftwarden/features/boot/view/widget_gallery.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
+import 'package:riftwarden/shared/widgets/rw_button.dart';
 
 /// Acilis ekrani.
 ///
@@ -53,6 +55,19 @@ class BootScreen extends StatelessWidget {
                   l10n.commonLoading,
                   style: AppTypography.bodyMedium,
                 ),
+                const SizedBox(height: AppSpacing.xxl),
+                RwButton(
+                  label: 'UI Gallery', // ui-lint: ignore gecici galeri butonu
+                  icon: Icons.palette_rounded,
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (BuildContext context) =>
+                            const WidgetGallery(),
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -61,3 +76,4 @@ class BootScreen extends StatelessWidget {
     );
   }
 }
+

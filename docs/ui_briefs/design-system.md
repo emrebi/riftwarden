@@ -98,9 +98,12 @@ Baska hicbir dosyaya dokunma.
 
 ## Kabul kriterleri
 
-```bash
-flutter analyze          # 0 issue
-python tools/ui_lint.py  # TEMIZ
+**Bu komutlari SEN calistirmayacaksin** -- terminal kullanma. Planner isin
+bitince kendisi kosturacak. Sen sadece bunlardan gececek kodu yaz:
+
+```
+flutter analyze          # 0 issue olmali
+python tools/ui_lint.py  # TEMIZ olmali
 ```
 
 `analysis_options.yaml` siki: `prefer_const_constructors`,

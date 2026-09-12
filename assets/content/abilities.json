@@ -1,0 +1,10 @@
+{
+  "rift_collapse": {
+    "name": "abilityRiftCollapse",
+    "icon": "ability_collapse",
+    "cooldown": 25.0,
+    "radius": 0.18,
+    "damage": 250,
+    "warningTime": 0.6
+  }
+}

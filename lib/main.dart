@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riftwarden/app/app.dart';
 import 'package:riftwarden/app/bootstrap.dart';
+import 'package:riftwarden/content/registry/content_registry.dart';
 import 'package:riftwarden/core/services/service_providers.dart';
 
 /// Uygulama girisi.
@@ -19,7 +20,7 @@ Future<void> main() async {
         storageServiceProvider.overrideWithValue(boot.storage),
         audioServiceProvider.overrideWithValue(boot.audio),
         hapticServiceProvider.overrideWithValue(boot.haptics),
-        // TODO(adim 6): icerik
+        contentRegistryProvider.overrideWithValue(boot.content),
       ],
       child: const RiftwardenApp(),
     ),

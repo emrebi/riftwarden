@@ -1,0 +1,79 @@
+{
+  "drifter": {
+    "name": "enemyDrifter",
+    "sprite": "drifter",
+    "hp": 40,
+    "speed": 0.045,
+    "coreDamage": 10,
+    "aetherReward": 3,
+    "radius": 0.022,
+    "behavior": "march",
+    "flags": []
+  },
+  "skitter": {
+    "name": "enemySkitter",
+    "sprite": "skitter",
+    "hp": 18,
+    "speed": 0.075,
+    "coreDamage": 5,
+    "aetherReward": 2,
+    "radius": 0.016,
+    "behavior": "rush",
+    "flags": []
+  },
+  "bulwark": {
+    "name": "enemyBulwark",
+    "sprite": "bulwark",
+    "hp": 180,
+    "speed": 0.025,
+    "coreDamage": 25,
+    "aetherReward": 8,
+    "radius": 0.03,
+    "behavior": "march",
+    "flags": []
+  },
+  "splitter": {
+    "name": "enemySplitter",
+    "sprite": "splitter",
+    "hp": 60,
+    "speed": 0.04,
+    "coreDamage": 12,
+    "aetherReward": 5,
+    "radius": 0.024,
+    "behavior": "split",
+    "flags": ["splitsOnDeath"]
+  },
+  "phaseborn": {
+    "name": "enemyPhaseborn",
+    "sprite": "phaseborn",
+    "hp": 70,
+    "speed": 0.05,
+    "coreDamage": 14,
+    "aetherReward": 6,
+    "radius": 0.022,
+    "behavior": "phase",
+    "flags": ["periodicIntangible"]
+  },
+  "leech": {
+    "name": "enemyLeech",
+    "sprite": "leech",
+    "hp": 35,
+    "speed": 0.05,
+    "coreDamage": 8,
+    "aetherReward": 4,
+    "radius": 0.02,
+    "behavior": "drain",
+    "flags": ["stealsAether"]
+  },
+  "spawner": {
+    "name": "enemySpawner",
+    "sprite": "spawner",
+    "hp": 120,
+    "speed": 0.0,
+    "coreDamage": 0,
+    "aetherReward": 10,
+    "radius": 0.03,
+    "behavior": "spawn",
+    "flags": ["stationary", "spawnsMinions"]
+  }
+}

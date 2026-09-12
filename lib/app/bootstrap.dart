@@ -1,5 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:riftwarden/content/loader/content_loader.dart';
+import 'package:riftwarden/content/registry/content_registry.dart';
 import 'package:riftwarden/core/services/audio_service.dart';
 import 'package:riftwarden/core/services/haptic_service.dart';
 import 'package:riftwarden/core/services/storage_service.dart';
@@ -16,13 +18,14 @@ class BootstrapResult {
     required this.storage,
     required this.audio,
     required this.haptics,
+    required this.content,
   });
 
   final StorageService storage;
   final AudioService audio;
   final HapticService haptics;
+  final ContentRegistry content;
 
-  // TODO(adim 6): final ContentRegistry content;
   // TODO(adim 17): final SaveGame save;
 }
 
@@ -59,7 +62,10 @@ Future<BootstrapResult> bootstrap() async {
   final haptics = HapticService();
   await haptics.init(storage);
 
-  // TODO(adim 6):  ContentRegistry.load()
+  // Icerik dosyalari bozuksa oyun zaten oynanamaz; acilista yuklenip
+  // erken patlamasi, oyun ici belirsiz bir crash'ten daha iyidir.
+  final content = await const ContentLoader().load();
+
   // TODO(adim 17): SaveRepository.load()
   // TODO(adim 18): AdService.initialize()  -- BLOKLAMADAN (unawaited)
   // TODO(adim 19): IapService.connect()    -- BLOKLAMADAN (unawaited)
@@ -68,5 +74,6 @@ Future<BootstrapResult> bootstrap() async {
     storage: storage,
     audio: audio,
     haptics: haptics,
+    content: content,
   );
 }

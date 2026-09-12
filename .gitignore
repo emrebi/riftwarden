@@ -49,3 +49,6 @@ app.*.map.json
 
 # Antigravity CLI worker loglari
 .agy/
+
+# Kisisel Claude Code izinleri (makineye ozel)
+.claude/settings.local.json
