@@ -112,6 +112,18 @@ class _MenuLogoState extends State<MenuLogo>
                 ),
               ),
             ),
+            const SizedBox(height: AppSpacing.md),
+            // Alt baslik logoyla yarismamali: belirgin sekilde kucuk,
+            // sonuk renkte ve harf araligi acik -- logonun altinda bir
+            // "tur etiketi" gibi okunsun.
+            Text(
+              l10n.menuSubtitle.toUpperCase(),
+              textAlign: TextAlign.center,
+              style: AppTypography.label.copyWith(
+                color: AppColors.textSecondary,
+                letterSpacing: 3.0,
+              ),
+            ),
           ],
         ),
       ),

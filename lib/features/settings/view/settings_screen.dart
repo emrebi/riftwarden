@@ -1,0 +1,159 @@
+import 'package:flutter/material.dart';
+import 'package:riftwarden/app/theme/app_colors.dart';
+import 'package:riftwarden/app/theme/app_spacing.dart';
+import 'package:riftwarden/app/theme/app_typography.dart';
+import 'package:riftwarden/features/settings/widgets/settings_action_row.dart';
+import 'package:riftwarden/features/settings/widgets/settings_switch_row.dart';
+import 'package:riftwarden/l10n/gen/app_localizations.dart';
+import 'package:riftwarden/shared/widgets/rw_panel.dart';
+import 'package:riftwarden/shared/widgets/rw_screen_scaffold.dart';
+import 'package:riftwarden/shared/widgets/rw_section_header.dart';
+
+/// Ayarlar ekrani.
+///
+/// Oyuncunun ses, titresim ve dil tercihlerini yonettigi ekran.
+/// Stateless ve veri bagimsizdir; tum durumlar ve degisiklikler
+/// disaridan parametrelerle iletilir.
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({
+    required this.soundEnabled,
+    required this.musicEnabled,
+    required this.hapticsEnabled,
+    required this.currentLanguageLabel,
+    required this.versionLabel,
+    required this.onSoundChanged,
+    required this.onMusicChanged,
+    required this.onHapticsChanged,
+    required this.onLanguageTap,
+    required this.onRestorePurchases,
+    required this.onPrivacyTap,
+    required this.onBack,
+    super.key,
+  });
+
+  final bool soundEnabled;
+  final bool musicEnabled;
+  final bool hapticsEnabled;
+  final String currentLanguageLabel;
+  final String versionLabel;
+  final ValueChanged<bool> onSoundChanged;
+  final ValueChanged<bool> onMusicChanged;
+  final ValueChanged<bool> onHapticsChanged;
+  final VoidCallback onLanguageTap;
+  final VoidCallback onRestorePurchases;
+  final VoidCallback onPrivacyTap;
+  final VoidCallback onBack;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return RwScreenScaffold(
+      title: l10n.menuSettings,
+      onBack: onBack,
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsetsDirectional.symmetric(
+          vertical: AppSpacing.md,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            // Ses ayarlari grubu
+            RwSectionHeader(
+              title: l10n.settingsSectionAudio,
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            RwPanel(
+              padding: EdgeInsetsDirectional.zero,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SettingsSwitchRow(
+                    label: l10n.settingsSound,
+                    value: soundEnabled,
+                    onChanged: onSoundChanged,
+                  ),
+                  const Divider(
+                    height: 1.0,
+                    thickness: 1.0,
+                    color: AppColors.surfaceRaised,
+                  ),
+                  SettingsSwitchRow(
+                    label: l10n.settingsMusic,
+                    value: musicEnabled,
+                    onChanged: onMusicChanged,
+                  ),
+                  const Divider(
+                    height: 1.0,
+                    thickness: 1.0,
+                    color: AppColors.surfaceRaised,
+                  ),
+                  SettingsSwitchRow(
+                    label: l10n.settingsHaptics,
+                    value: hapticsEnabled,
+                    onChanged: onHapticsChanged,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+
+            // Dil secimi grubu
+            RwSectionHeader(
+              title: l10n.settingsSectionLanguage,
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            RwPanel(
+              padding: EdgeInsetsDirectional.zero,
+              child: SettingsActionRow(
+                label: l10n.settingsLanguage,
+                value: currentLanguageLabel,
+                onTap: onLanguageTap,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+
+            // Hesap ve yasal islemler grubu
+            RwSectionHeader(
+              title: l10n.settingsSectionAccount,
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            RwPanel(
+              padding: EdgeInsetsDirectional.zero,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SettingsActionRow(
+                    label: l10n.settingsRestorePurchases,
+                    onTap: onRestorePurchases,
+                  ),
+                  const Divider(
+                    height: 1.0,
+                    thickness: 1.0,
+                    color: AppColors.surfaceRaised,
+                  ),
+                  SettingsActionRow(
+                    label: l10n.settingsPrivacy,
+                    onTap: onPrivacyTap,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // Surum gostergesi
+            Text(
+              versionLabel,
+              textAlign: TextAlign.center,
+              style: AppTypography.bodyMedium.copyWith(
+                color: AppColors.textDisabled,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+          ],
+        ),
+      ),
+    );
+  }
+}

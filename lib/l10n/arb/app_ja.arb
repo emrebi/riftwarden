@@ -33,5 +33,9 @@
   "commonClose": "Close",
   "commonLoading": "Loading...",
   "commonRetry": "Retry",
-  "errorContentLoad": "Game data could not be loaded."
+  "errorContentLoad": "Game data could not be loaded.",
+  "menuSubtitle": "Dimensional Auto-Battle",
+  "settingsSectionAudio": "Audio",
+  "settingsSectionLanguage": "Language",
+  "settingsSectionAccount": "Account"
 }

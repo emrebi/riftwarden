@@ -116,4 +116,16 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get errorContentLoad => 'Oyun verileri yüklenemedi.';
+
+  @override
+  String get menuSubtitle => 'Boyutlar Arasi Otomatik Savas';
+
+  @override
+  String get settingsSectionAudio => 'Ses';
+
+  @override
+  String get settingsSectionLanguage => 'Dil';
+
+  @override
+  String get settingsSectionAccount => 'Hesap';
 }

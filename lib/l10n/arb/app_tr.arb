@@ -33,5 +33,9 @@
   "commonClose": "Kapat",
   "commonLoading": "Yükleniyor...",
   "commonRetry": "Tekrar Dene",
-  "errorContentLoad": "Oyun verileri yüklenemedi."
+  "errorContentLoad": "Oyun verileri yüklenemedi.",
+  "menuSubtitle": "Boyutlar Arasi Otomatik Savas",
+  "settingsSectionAudio": "Ses",
+  "settingsSectionLanguage": "Dil",
+  "settingsSectionAccount": "Hesap"
 }

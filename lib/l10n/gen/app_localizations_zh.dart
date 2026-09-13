@@ -116,6 +116,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get errorContentLoad => 'Game data could not be loaded.';
+
+  @override
+  String get menuSubtitle => 'Dimensional Auto-Battle';
+
+  @override
+  String get settingsSectionAudio => 'Audio';
+
+  @override
+  String get settingsSectionLanguage => 'Language';
+
+  @override
+  String get settingsSectionAccount => 'Account';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -229,4 +241,16 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get errorContentLoad => 'Game data could not be loaded.';
+
+  @override
+  String get menuSubtitle => 'Dimensional Auto-Battle';
+
+  @override
+  String get settingsSectionAudio => 'Audio';
+
+  @override
+  String get settingsSectionLanguage => 'Language';
+
+  @override
+  String get settingsSectionAccount => 'Account';
 }

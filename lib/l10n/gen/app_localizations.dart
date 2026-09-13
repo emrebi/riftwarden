@@ -327,6 +327,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Game data could not be loaded.'**
   String get errorContentLoad;
+
+  /// Tagline under the game logo on the main menu. Describes the genre.
+  ///
+  /// In en, this message translates to:
+  /// **'Dimensional Auto-Battle'**
+  String get menuSubtitle;
+
+  /// Settings screen: audio section heading
+  ///
+  /// In en, this message translates to:
+  /// **'Audio'**
+  String get settingsSectionAudio;
+
+  /// Settings screen: language section heading
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsSectionLanguage;
+
+  /// Settings screen: account and legal section heading
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get settingsSectionAccount;
 }
 
 class _AppLocalizationsDelegate

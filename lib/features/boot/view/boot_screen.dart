@@ -4,6 +4,7 @@ import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
 import 'package:riftwarden/features/boot/view/widget_gallery.dart';
 import 'package:riftwarden/features/main_menu/view/main_menu_screen.dart';
+import 'package:riftwarden/features/settings/view/settings_screen.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
 import 'package:riftwarden/shared/widgets/rw_button.dart';
 
@@ -94,6 +95,31 @@ class BootScreen extends StatelessWidget {
                               onStore: _noop,
                               onUpgrades: _noop,
                               onSettings: _noop,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    RwButton(
+                      label: 'Settings', // ui-lint: ignore gecici ayarlar butonu
+                      icon: Icons.settings_rounded,
+                      variant: RwButtonVariant.secondary,
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) => SettingsScreen(
+                              soundEnabled: true,
+                              musicEnabled: true,
+                              hapticsEnabled: false,
+                              currentLanguageLabel: 'Turkce',
+                              versionLabel: 'v1.0.0',
+                              onSoundChanged: (bool value) {},
+                              onMusicChanged: (bool value) {},
+                              onHapticsChanged: (bool value) {},
+                              onLanguageTap: _noop,
+                              onRestorePurchases: _noop,
+                              onPrivacyTap: _noop,
+                              onBack: () => Navigator.of(context).pop(),
                             ),
                           ),
                         );

@@ -116,6 +116,18 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get errorContentLoad => 'Game data could not be loaded.';
+
+  @override
+  String get menuSubtitle => 'Dimensional Auto-Battle';
+
+  @override
+  String get settingsSectionAudio => 'Audio';
+
+  @override
+  String get settingsSectionLanguage => 'Language';
+
+  @override
+  String get settingsSectionAccount => 'Account';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -229,4 +241,16 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get errorContentLoad => 'Game data could not be loaded.';
+
+  @override
+  String get menuSubtitle => 'Dimensional Auto-Battle';
+
+  @override
+  String get settingsSectionAudio => 'Audio';
+
+  @override
+  String get settingsSectionLanguage => 'Language';
+
+  @override
+  String get settingsSectionAccount => 'Account';
 }

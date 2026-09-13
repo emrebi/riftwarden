@@ -44,6 +44,18 @@ const double kSpatialCellSize = 0.08;
 /// Scratch buffer boyutu; asilirsa sonuc kirpilir (davranis bozulmaz).
 const int kMaxQueryResults = 256;
 
+/// Ayni anda sahada bulunabilecek maksimum dost birlik.
+///
+/// Neden level config'de degil: dusman sayisini dalga tasarimi belirler
+/// (bu yuzden `LevelConfig.maxEnemies` var), ama birlik sayisini oyuncunun
+/// Aether harcamasi belirler — level'a gore degismez, motor geneli bir
+/// tavandir.
+///
+/// Deger secimi: "swarm army" build'i ucuz birlikten cok sayida uretmek
+/// uzerine kurulu; upgrade'lerle maliyet dustugunde oyuncu bu tavana
+/// yaklasabilmeli, yoksa build'in vaadi tutmaz.
+const int kUnitPoolCapacity = 128;
+
 /// HUD'a surekli degerlerin (Aether, Core HP) gonderilme araligi (saniye).
 ///
 /// Kesikli olaylar (upgrade teklifi, boss girisi, level sonu) bu

@@ -1,6 +1,7 @@
 import 'package:riftwarden/core/constants/game_constants.dart';
 import 'package:riftwarden/engine/bridge/battle_signals.dart';
 import 'package:riftwarden/engine/simulation/battle_system.dart';
+import 'package:riftwarden/engine/simulation/battle_world.dart';
 
 /// Simulasyonun calisma durumu.
 enum SimulationMode {
@@ -41,6 +42,16 @@ class BattleSimulation {
 
   /// Motordan HUD'a giden koprü. Simulasyon buraya YAZAR, okumaz.
   final BattleSignals signals;
+
+  /// Savasin tum degisken durumu (entity havuzlari, spatial grid, core,
+  /// ekonomi). [registerSystems]'den once [attachWorld] ile baglanmis
+  /// olmali; sistemler buna bu alan uzerinden erisir.
+  late final BattleWorld world;
+
+  /// [world]'u bu simulasyona baglar. `start()`'tan once cagrilmalidir.
+  void attachWorld(BattleWorld world) {
+    this.world = world;
+  }
 
   final List<BattleSystem> _systems = <BattleSystem>[];
 
