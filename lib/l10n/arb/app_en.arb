@@ -173,5 +173,17 @@
   "levelBoss": "BOSS",
   "@levelBoss": {
     "description": "Badge on boss level nodes in level select"
+  },
+  "resultRewardsTitle": "REWARDS",
+  "@resultRewardsTitle": {
+    "description": "Victory screen: rewards panel heading"
+  },
+  "resultRewardShards": "Rift Shard",
+  "@resultRewardShards": {
+    "description": "Victory screen: soft meta currency name"
+  },
+  "resultRewardCells": "Aether Cell",
+  "@resultRewardCells": {
+    "description": "Victory screen: hard currency name, first-clear bonus"
   }
 }

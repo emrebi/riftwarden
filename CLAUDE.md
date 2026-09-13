@@ -4,6 +4,7 @@ Portrait-only iOS/Android oyunu. Tur: auto-battle + swarm defense + roguelite up
 Flutter + Flame. Paket adi `riftwarden`, bundle id `com.riftwarden.game`.
 
 Mimari planin tamami: `docs/ARCHITECTURE.md`
+Bilerek ertelenmis isler: `docs/KNOWN_GAPS.md`
 "Hangi is icin hangi dosya" indeksi: `docs/CONTENT_MAP.md`
 
 ---

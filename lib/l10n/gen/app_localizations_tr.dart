@@ -131,4 +131,13 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get levelBoss => 'BOSS';
+
+  @override
+  String get resultRewardsTitle => 'ODULLER';
+
+  @override
+  String get resultRewardShards => 'Rift Shard';
+
+  @override
+  String get resultRewardCells => 'Aether Cell';
 }

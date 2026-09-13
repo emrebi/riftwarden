@@ -52,9 +52,16 @@ Bunlari ihlal eden kod, calissa bile reddedilir. Otomatik denetleniyor:
 3. **Elde TextStyle yasak.** `fontSize:` doğrudan verme. `AppTypography`'den al
    (`lib/app/theme/app_typography.dart`).
 4. **Metin literali yasak.** Kullaniciya gorunen her metin
-   `AppLocalizations.of(context)` uzerinden gelir. Yeni metin gerekiyorsa
-   raporunda **anahtar adi + Ingilizce karsiligi + kisa aciklama** olarak bildir;
-   ARB dosyalarini SEN duzenleme.
+   `AppLocalizations.of(context)` uzerinden gelir.
+
+   Yeni metin gerekiyorsa **sadece `lib/l10n/arb/app_en.arb`** dosyasina ekle:
+   anahtar + Ingilizce deger + `"@anahtar": {"description": "..."}` aciklamasi.
+   Diger 15 ARB dosyasina DOKUNMA -- planner cevirileri oraya yayar ve
+   `flutter gen-l10n` calistirir.
+
+   Kodda anahtari **eklemis gibi kullan** (`l10n.yeniAnahtar`); uretilmemis
+   oldugu icin `flutter analyze` o satirda hata verecek, bu BEKLENEN durumdur.
+   Raporunda eklediğin anahtarlari listele.
 5. **RTL.** `EdgeInsets.only(left:/right:)` yerine
    `EdgeInsetsDirectional.only(start:/end:)`. `Alignment.centerLeft` yerine
    `AlignmentDirectional.centerStart`. Arapca destekleniyor.

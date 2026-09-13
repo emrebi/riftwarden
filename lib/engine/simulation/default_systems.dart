@@ -5,14 +5,17 @@ import 'package:riftwarden/engine/simulation/systems/systems.dart';
 ///
 /// [BattleSimulation.registerSystems] ekleme sirasini degil [SystemPhase]
 /// enum sirasini baglayici sayar; buradaki sira sadece okunabilirlik
-/// icindir. 10a kapsaminda birlik/mermi/combat sistemleri henuz yok
-/// (10b'nin isi) — bu yuzden liste su an sadece dusman tarafini kurar.
+/// icindir. 10b ile birlik/mermi/combat/ekonomi sistemleri eklendi (bkz.
+/// TargetingSystem, CombatSystem, EconomySystem).
 void registerDefaultSystems(BattleSimulation sim) {
   sim.registerSystems([
     WaveSystem(),
     SpawnSystem(),
     SpatialIndexSystem(),
+    TargetingSystem(),
     MovementSystem(),
+    CombatSystem(),
+    EconomySystem(),
     CompactionSystem(),
   ]);
 }

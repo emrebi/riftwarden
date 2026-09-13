@@ -38,5 +38,8 @@
   "settingsSectionAudio": "Ses",
   "settingsSectionLanguage": "Dil",
   "settingsSectionAccount": "Hesap",
-  "levelBoss": "BOSS"
+  "levelBoss": "BOSS",
+  "resultRewardsTitle": "ODULLER",
+  "resultRewardShards": "Rift Shard",
+  "resultRewardCells": "Aether Cell"
 }

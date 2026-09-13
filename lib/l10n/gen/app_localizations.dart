@@ -357,6 +357,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'BOSS'**
   String get levelBoss;
+
+  /// Victory screen: rewards panel heading
+  ///
+  /// In en, this message translates to:
+  /// **'REWARDS'**
+  String get resultRewardsTitle;
+
+  /// Victory screen: soft meta currency name
+  ///
+  /// In en, this message translates to:
+  /// **'Rift Shard'**
+  String get resultRewardShards;
+
+  /// Victory screen: hard currency name, first-clear bonus
+  ///
+  /// In en, this message translates to:
+  /// **'Aether Cell'**
+  String get resultRewardCells;
 }
 
 class _AppLocalizationsDelegate

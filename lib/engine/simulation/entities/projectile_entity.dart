@@ -51,6 +51,12 @@ class ProjectileEntity extends PooledEntity {
   /// kaynak atfi (hangi birlik ne kadar hasar verdi) icin kullanilir.
   int ownerUnitId = 0;
 
+  /// [BattleWorld.resolvedUnitStats] listesindeki indeks (bkz.
+  /// `UnitEntity.statsIndex` ile ayni gerekce). Carpma aninda
+  /// `DamageCalculator.compute` icin kritik sans/hasar statlarina buradan
+  /// erisilir — mermi kendi StatBlock kopyasini tasimaz.
+  int statsIndex = 0;
+
   @override
   void reset() {
     x = 0;
@@ -70,5 +76,6 @@ class ProjectileEntity extends PooledEntity {
     pierceRemaining = 0;
     chainRemaining = 0;
     ownerUnitId = 0;
+    statsIndex = 0;
   }
 }

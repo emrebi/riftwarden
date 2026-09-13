@@ -31,11 +31,13 @@ class CompactionSystem implements BattleSystem {
   void onBattleStart(BattleSimulation sim) {
     _world = sim.world;
     _onEnemyRemoved = (enemy) {
-      // Core'a ulasmadan cikan dusman "oldurulmus" demektir. Ekonomi
-      // sistemi henuz yok (10a kapsami disinda); simdilik sadece sayiyoruz
-      // (bkz. BattleWorld.killsThisStep yorumu).
+      // Core'a ulasmadan cikan dusman "oldurulmus" demektir. Odulu de
+      // burada biriktiriyoruz (bkz. BattleWorld.aetherEarnedThisStep):
+      // varlik havuzdan cikmadan hemen once son alan degerlerine (burada
+      // `aetherReward`) erismenin tek guvenli yeri bu callback'tir.
       if (!enemy.reachedCore) {
         _world.killsThisStep++;
+        _world.aetherEarnedThisStep += enemy.aetherReward;
       }
     };
   }
@@ -44,6 +46,7 @@ class CompactionSystem implements BattleSystem {
   void step(BattleSimulation sim, double dt) {
     final world = sim.world;
     world.killsThisStep = 0;
+    world.aetherEarnedThisStep = 0;
 
     world.enemies.compact(_onEnemyRemoved);
     world.units.compact();

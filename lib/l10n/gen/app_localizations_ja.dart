@@ -131,4 +131,13 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get levelBoss => 'BOSS';
+
+  @override
+  String get resultRewardsTitle => 'REWARDS';
+
+  @override
+  String get resultRewardShards => 'Rift Shard';
+
+  @override
+  String get resultRewardCells => 'Aether Cell';
 }

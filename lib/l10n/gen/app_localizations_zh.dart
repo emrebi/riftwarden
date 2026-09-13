@@ -131,6 +131,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get levelBoss => 'BOSS';
+
+  @override
+  String get resultRewardsTitle => 'REWARDS';
+
+  @override
+  String get resultRewardShards => 'Rift Shard';
+
+  @override
+  String get resultRewardCells => 'Aether Cell';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -259,4 +268,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get levelBoss => 'BOSS';
+
+  @override
+  String get resultRewardsTitle => 'REWARDS';
+
+  @override
+  String get resultRewardShards => 'Rift Shard';
+
+  @override
+  String get resultRewardCells => 'Aether Cell';
 }

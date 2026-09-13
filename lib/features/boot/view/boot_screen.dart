@@ -6,6 +6,8 @@ import 'package:riftwarden/features/boot/view/widget_gallery.dart';
 import 'package:riftwarden/features/level_select/view/level_select_data.dart';
 import 'package:riftwarden/features/level_select/view/level_select_screen.dart';
 import 'package:riftwarden/features/main_menu/view/main_menu_screen.dart';
+import 'package:riftwarden/features/result/view/result_data.dart';
+import 'package:riftwarden/features/result/view/result_screen.dart';
 import 'package:riftwarden/features/settings/view/settings_screen.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
 import 'package:riftwarden/shared/widgets/rw_button.dart';
@@ -140,6 +142,56 @@ class BootScreen extends StatelessWidget {
                               shards: 120,
                               onLevelTap: (int levelId) {},
                               onBack: () => Navigator.of(context).pop(),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    RwButton(
+                      label: 'Result (Victory)', // ui-lint: ignore gecici zafer butonu
+                      icon: Icons.emoji_events_rounded,
+                      variant: RwButtonVariant.secondary,
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) => ResultScreen(
+                              data: const BattleResultData(
+                                kind: BattleResultKind.victory,
+                                levelNumber: 3,
+                                shardsEarned: 25,
+                                cellsEarned: 3,
+                                wavesCleared: 8,
+                                totalWaves: 8,
+                                canWatchAd: true,
+                              ),
+                              onPrimary: () => Navigator.of(context).pop(),
+                              onWatchAd: _noop,
+                              onMainMenu: () => Navigator.of(context).pop(),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    RwButton(
+                      label: 'Result (Defeat)', // ui-lint: ignore gecici yenilgi butonu
+                      icon: Icons.cancel_rounded,
+                      variant: RwButtonVariant.secondary,
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) => ResultScreen(
+                              data: const BattleResultData(
+                                kind: BattleResultKind.defeat,
+                                levelNumber: 3,
+                                shardsEarned: 0,
+                                cellsEarned: 0,
+                                wavesCleared: 6,
+                                totalWaves: 8,
+                                canWatchAd: true,
+                              ),
+                              onPrimary: () => Navigator.of(context).pop(),
+                              onWatchAd: _noop,
+                              onMainMenu: () => Navigator.of(context).pop(),
                             ),
                           ),
                         );

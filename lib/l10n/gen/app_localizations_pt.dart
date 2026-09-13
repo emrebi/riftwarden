@@ -131,6 +131,15 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get levelBoss => 'BOSS';
+
+  @override
+  String get resultRewardsTitle => 'REWARDS';
+
+  @override
+  String get resultRewardShards => 'Rift Shard';
+
+  @override
+  String get resultRewardCells => 'Aether Cell';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -259,4 +268,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get levelBoss => 'BOSS';
+
+  @override
+  String get resultRewardsTitle => 'REWARDS';
+
+  @override
+  String get resultRewardShards => 'Rift Shard';
+
+  @override
+  String get resultRewardCells => 'Aether Cell';
 }

@@ -39,6 +39,7 @@ class BattleWorld {
     required this._laneWaypointY,
     required this._laneIndexOfId,
     required this.queryScratch,
+    required this.unitProducedCount,
   });
 
   /// Level'i, icerigi ve baslangic upgrade'lerini kullanarak yeni bir
@@ -123,6 +124,9 @@ class BattleWorld {
       laneWaypointY: laneWaypointY,
       laneIndexOfId: laneIndexOfId,
       queryScratch: Int32List(kMaxQueryResults),
+      // Uretim sayaci kurulumda bos baslar; EconomySystem her uretimde
+      // artirir (bkz. asagidaki yorum).
+      unitProducedCount: <String, int>{},
     );
   }
 
@@ -177,6 +181,59 @@ class BattleWorld {
   /// ekonomi sistemi henuz yok, bu sayac sadece ileride "oldurulen dusman
   /// basina Aether/XP" hesaplayacak sisteme veri saglamak icin burada.
   int killsThisStep = 0;
+
+  /// Bu adimda Core'a ULASMADAN olen dusmanlarin toplam `aetherReward`'i.
+  ///
+  /// [killsThisStep] ile AYNI VERI AKISI: [CompactionSystem] adim basinda
+  /// sifirlar, `compact` callback'inde biriktirir. [EconomySystem] kendi
+  /// fazinda (compaction'dan ONCE calisir, bkz. `SystemPhase` sirasi) bu
+  /// degeri okuyup `aether`e ekler — yani her zaman BIR ONCEKI adimin
+  /// compaction'inda biriken odulu isler. Bu, mevcut `killsThisStep`
+  /// deseniyle birebir aynidir (o da ayni gecikmeyle okunur), bu yuzden
+  /// yeni bir senkronizasyon sorunu eklemez; sadece "kac dusman oldu"
+  /// sayisina ek olarak "ne kadar odul" bilgisini tasir.
+  double aetherEarnedThisStep = 0;
+
+  /// `unitId` -> o tipten simdiye kadar uretilmis birlik sayisi.
+  /// Maliyet buyumesi (`UnitConfig.costGrowth`) bu sayaca gore hesaplanir.
+  /// EconomySystem disinda yazilmaz.
+  final Map<String, int> unitProducedCount;
+
+  /// Sabit kapasiteli birlik uretim talebi kuyrugu (halka tampon).
+  ///
+  /// UI (`BattleController.requestUnit`) herhangi bir anda cagirabilir, ama
+  /// simulasyon durumu SADECE `step()` icinde degismeli — aksi halde adim
+  /// ortasinda entity eklenir ve o adimin spatial grid/dizin varsayimlari
+  /// bozulur. Bu yuzden talep burada bekletilir, [EconomySystem] adimin
+  /// economy fazinda kuyrugu bosaltir. Sabit boyutlu List: her cagrida
+  /// buyume/allocation yok.
+  static const int _productionQueueCapacity = 16;
+  final List<String> _productionQueue =
+      List<String>.filled(_productionQueueCapacity, '', growable: false);
+  int _productionQueueHead = 0;
+  int _productionQueueCount = 0;
+
+  /// UI'dan gelen birlik uretim talebini kuyruga ekler.
+  ///
+  /// Kuyruk doluysa talep sessizce dusurulur: oyuncu pratikte ayni anda
+  /// bu kadar cok butona basamaz, kapasite fiilen hicbir zaman dolmaz;
+  /// dolsa bile patlamak yerine bir talebi kaybetmek tercih edilir.
+  void enqueueUnitRequest(String unitId) {
+    if (_productionQueueCount >= _productionQueueCapacity) return;
+    final tail = (_productionQueueHead + _productionQueueCount) % _productionQueueCapacity;
+    _productionQueue[tail] = unitId;
+    _productionQueueCount++;
+  }
+
+  /// Kuyruktaki bir sonraki talebi cikarir, yoksa null doner.
+  /// Sadece [EconomySystem] tarafindan, adim icinde tuketilir.
+  String? dequeueUnitRequest() {
+    if (_productionQueueCount == 0) return null;
+    final id = _productionQueue[_productionQueueHead];
+    _productionQueueHead = (_productionQueueHead + 1) % _productionQueueCapacity;
+    _productionQueueCount--;
+    return id;
+  }
 
   /// Bir lane'in kac waypoint'i oldugu.
   int laneWaypointCount(int laneIndex) =>
