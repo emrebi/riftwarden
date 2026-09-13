@@ -37,5 +37,6 @@
   "menuSubtitle": "Boyutlar Arasi Otomatik Savas",
   "settingsSectionAudio": "Ses",
   "settingsSectionLanguage": "Dil",
-  "settingsSectionAccount": "Hesap"
+  "settingsSectionAccount": "Hesap",
+  "levelBoss": "BOSS"
 }

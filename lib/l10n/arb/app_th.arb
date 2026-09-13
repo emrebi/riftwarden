@@ -37,5 +37,6 @@
   "menuSubtitle": "Dimensional Auto-Battle",
   "settingsSectionAudio": "Audio",
   "settingsSectionLanguage": "Language",
-  "settingsSectionAccount": "Account"
+  "settingsSectionAccount": "Account",
+  "levelBoss": "BOSS"
 }

@@ -128,4 +128,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get settingsSectionAccount => 'Hesap';
+
+  @override
+  String get levelBoss => 'BOSS';
 }

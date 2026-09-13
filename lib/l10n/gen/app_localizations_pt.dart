@@ -128,6 +128,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settingsSectionAccount => 'Account';
+
+  @override
+  String get levelBoss => 'BOSS';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -253,4 +256,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get settingsSectionAccount => 'Account';
+
+  @override
+  String get levelBoss => 'BOSS';
 }

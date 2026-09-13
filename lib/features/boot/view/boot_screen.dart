@@ -3,6 +3,8 @@ import 'package:riftwarden/app/theme/app_colors.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
 import 'package:riftwarden/features/boot/view/widget_gallery.dart';
+import 'package:riftwarden/features/level_select/view/level_select_data.dart';
+import 'package:riftwarden/features/level_select/view/level_select_screen.dart';
 import 'package:riftwarden/features/main_menu/view/main_menu_screen.dart';
 import 'package:riftwarden/features/settings/view/settings_screen.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
@@ -125,6 +127,24 @@ class BootScreen extends StatelessWidget {
                         );
                       },
                     ),
+                    RwButton(
+                      label: 'Level Select', // ui-lint: ignore gecici level select butonu
+                      icon: Icons.map_rounded,
+                      variant: RwButtonVariant.secondary,
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) =>
+                                LevelSelectScreen(
+                              sectors: _sampleSectors,
+                              shards: 120,
+                              onLevelTap: (int levelId) {},
+                              onBack: () => Navigator.of(context).pop(),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -134,5 +154,140 @@ class BootScreen extends StatelessWidget {
       ),
     );
   }
+
+  static const List<SectorData> _sampleSectors = <SectorData>[
+    SectorData(
+      sectorId: 1,
+      name: 'Fractured Edge',
+      isLocked: false,
+      completedCount: 5,
+      levels: <LevelNodeData>[
+        LevelNodeData(
+          levelId: 1,
+          state: LevelNodeState.completed,
+          isBoss: false,
+        ),
+        LevelNodeData(
+          levelId: 2,
+          state: LevelNodeState.completed,
+          isBoss: false,
+        ),
+        LevelNodeData(
+          levelId: 3,
+          state: LevelNodeState.completed,
+          isBoss: false,
+        ),
+        LevelNodeData(
+          levelId: 4,
+          state: LevelNodeState.completed,
+          isBoss: false,
+        ),
+        LevelNodeData(
+          levelId: 5,
+          state: LevelNodeState.completed,
+          isBoss: true,
+        ),
+      ],
+    ),
+    SectorData(
+      sectorId: 2,
+      name: 'Aether Chasm',
+      isLocked: false,
+      completedCount: 2,
+      levels: <LevelNodeData>[
+        LevelNodeData(
+          levelId: 6,
+          state: LevelNodeState.completed,
+          isBoss: false,
+        ),
+        LevelNodeData(
+          levelId: 7,
+          state: LevelNodeState.completed,
+          isBoss: false,
+        ),
+        LevelNodeData(
+          levelId: 8,
+          state: LevelNodeState.current,
+          isBoss: false,
+        ),
+        LevelNodeData(
+          levelId: 9,
+          state: LevelNodeState.locked,
+          isBoss: false,
+        ),
+        LevelNodeData(
+          levelId: 10,
+          state: LevelNodeState.locked,
+          isBoss: true,
+        ),
+      ],
+    ),
+    SectorData(
+      sectorId: 3,
+      name: 'Rift Convergence',
+      isLocked: true,
+      completedCount: 0,
+      levels: <LevelNodeData>[
+        LevelNodeData(
+          levelId: 11,
+          state: LevelNodeState.locked,
+          isBoss: false,
+        ),
+        LevelNodeData(
+          levelId: 12,
+          state: LevelNodeState.locked,
+          isBoss: false,
+        ),
+        LevelNodeData(
+          levelId: 13,
+          state: LevelNodeState.locked,
+          isBoss: false,
+        ),
+        LevelNodeData(
+          levelId: 14,
+          state: LevelNodeState.locked,
+          isBoss: false,
+        ),
+        LevelNodeData(
+          levelId: 15,
+          state: LevelNodeState.locked,
+          isBoss: true,
+        ),
+      ],
+    ),
+    SectorData(
+      sectorId: 4,
+      name: 'Null Sanctum',
+      isLocked: true,
+      completedCount: 0,
+      levels: <LevelNodeData>[
+        LevelNodeData(
+          levelId: 16,
+          state: LevelNodeState.locked,
+          isBoss: false,
+        ),
+        LevelNodeData(
+          levelId: 17,
+          state: LevelNodeState.locked,
+          isBoss: false,
+        ),
+        LevelNodeData(
+          levelId: 18,
+          state: LevelNodeState.locked,
+          isBoss: false,
+        ),
+        LevelNodeData(
+          levelId: 19,
+          state: LevelNodeState.locked,
+          isBoss: false,
+        ),
+        LevelNodeData(
+          levelId: 20,
+          state: LevelNodeState.locked,
+          isBoss: true,
+        ),
+      ],
+    ),
+  ];
 }
 

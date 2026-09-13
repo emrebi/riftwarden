@@ -128,4 +128,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsSectionAccount => 'Account';
+
+  @override
+  String get levelBoss => 'BOSS';
 }

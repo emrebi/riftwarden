@@ -351,6 +351,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Account'**
   String get settingsSectionAccount;
+
+  /// Badge on boss level nodes in level select
+  ///
+  /// In en, this message translates to:
+  /// **'BOSS'**
+  String get levelBoss;
 }
 
 class _AppLocalizationsDelegate

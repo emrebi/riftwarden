@@ -128,6 +128,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsSectionAccount => 'Account';
+
+  @override
+  String get levelBoss => 'BOSS';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -253,4 +256,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsSectionAccount => 'Account';
+
+  @override
+  String get levelBoss => 'BOSS';
 }

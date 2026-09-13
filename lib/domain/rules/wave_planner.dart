@@ -10,12 +10,21 @@ class SpawnEvent {
     required this.enemyId,
     required this.laneId,
     required this.isElite,
+    required this.waveIndex,
   });
 
   final double time;
   final String enemyId;
   final String laneId;
   final bool isElite;
+
+  /// `level.waves` icindeki 0-tabanli konum (wave id DEGIL — waveId icerik
+  /// yazarinin verdigi keyfi bir numaradir, HUD'daki "Wave X / Y" ise
+  /// listedeki SIRAYA gore sayilir). WaveSystem bunu ilerleme ve zafer
+  /// kontrolu icin kullanir; SpawnEvent'te bu bilgi olmadan motor "su an
+  /// hangi dalgadayiz" sorusunu spawn zamanindan tersine cikarmak zorunda
+  /// kalirdi.
+  final int waveIndex;
 }
 
 /// `LevelConfig`'i calistirilabilir bir spawn takvimine cevirir.
@@ -34,7 +43,8 @@ abstract final class WavePlanner {
     // zamani" o ana kadarki en gec spawn zamanindan hesaplanir.
     var waveCursor = 0.0;
 
-    for (final wave in level.waves) {
+    for (var waveIndex = 0; waveIndex < level.waves.length; waveIndex++) {
+      final wave = level.waves[waveIndex];
       final waveStart = waveCursor + wave.delay;
       var latestEventEnd = waveStart;
 
@@ -51,6 +61,7 @@ abstract final class WavePlanner {
             enemyId: group.enemy,
             laneId: group.lane,
             isElite: isElite,
+            waveIndex: waveIndex,
           ));
 
           latestInGroup = spawnTime;

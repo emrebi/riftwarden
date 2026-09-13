@@ -128,4 +128,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsSectionAccount => 'Account';
+
+  @override
+  String get levelBoss => 'BOSS';
 }

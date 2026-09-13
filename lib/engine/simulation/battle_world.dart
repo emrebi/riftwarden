@@ -171,6 +171,13 @@ class BattleWorld {
   /// kullanir kullanmaz (ayni adim icinde) bir sonraki sorgu ustune yazar.
   final Int32List queryScratch;
 
+  /// Bu adimda Core'a ULASMADAN havuzdan cikan (yani "oldurulen") dusman
+  /// sayisi. [CompactionSystem] her adim basinda sifirlar ve compact
+  /// callback'inde artirir. Sapma (10a brief disina cikilan tek nokta):
+  /// ekonomi sistemi henuz yok, bu sayac sadece ileride "oldurulen dusman
+  /// basina Aether/XP" hesaplayacak sisteme veri saglamak icin burada.
+  int killsThisStep = 0;
+
   /// Bir lane'in kac waypoint'i oldugu.
   int laneWaypointCount(int laneIndex) =>
       _laneOffsets[laneIndex + 1] - _laneOffsets[laneIndex];
