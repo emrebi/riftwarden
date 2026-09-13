@@ -3,6 +3,7 @@ import 'package:riftwarden/app/theme/app_colors.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
 import 'package:riftwarden/features/boot/view/widget_gallery.dart';
+import 'package:riftwarden/features/main_menu/view/main_menu_screen.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
 import 'package:riftwarden/shared/widgets/rw_button.dart';
 
@@ -13,6 +14,8 @@ import 'package:riftwarden/shared/widgets/rw_button.dart';
 /// calistigini gostermek.
 class BootScreen extends StatelessWidget {
   const BootScreen({super.key});
+
+  static void _noop() {}
 
   @override
   Widget build(BuildContext context) {
@@ -56,17 +59,47 @@ class BootScreen extends StatelessWidget {
                   style: AppTypography.bodyMedium,
                 ),
                 const SizedBox(height: AppSpacing.xxl),
-                RwButton(
-                  label: 'UI Gallery', // ui-lint: ignore gecici galeri butonu
-                  icon: Icons.palette_rounded,
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (BuildContext context) =>
-                            const WidgetGallery(),
-                      ),
-                    );
-                  },
+                Wrap(
+                  spacing: AppSpacing.md,
+                  runSpacing: AppSpacing.md,
+                  alignment: WrapAlignment.center,
+                  children: <Widget>[
+                    RwButton(
+                      label: 'UI Gallery', // ui-lint: ignore gecici galeri butonu
+                      icon: Icons.palette_rounded,
+                      variant: RwButtonVariant.secondary,
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) =>
+                                const WidgetGallery(),
+                          ),
+                        );
+                      },
+                    ),
+                    RwButton(
+                      label: 'Main Menu', // ui-lint: ignore gecici menu butonu
+                      icon: Icons.play_arrow_rounded,
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) =>
+                                const MainMenuScreen(
+                              sectorNumber: 1,
+                              levelNumber: 3,
+                              sectorProgress: 0.45,
+                              shards: 120,
+                              cells: 5,
+                              onPlay: _noop,
+                              onStore: _noop,
+                              onUpgrades: _noop,
+                              onSettings: _noop,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
