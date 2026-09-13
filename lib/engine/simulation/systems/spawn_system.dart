@@ -15,11 +15,6 @@ const double kEliteHpMultiplier = 1.8;
 /// ekonomiyi (upgrade hizini) bozar.
 const double kEliteRewardMultiplier = 1.5;
 
-/// Atlas gelene kadar sprite indeksi icin kullanilan yer tutucu araligi.
-/// Deger onemsizdir (render katmani heniz atlas kullanmiyor); sadece
-/// ayni configId'nin her zaman ayni indeksi almasini saglar.
-const int kSpriteIndexPlaceholderRange = 64;
-
 /// Zamanlanmis spawn olaylarini havuza dusman olarak yerlestirir.
 ///
 /// [SystemPhase.spawn], [SystemPhase.wave]'den hemen sonra ve
@@ -80,7 +75,11 @@ class SpawnSystem implements BattleSystem {
 
     enemy
       ..configId = config.id
-      ..spriteIndex = _spriteIndexFor(config.id)
+      // Tablo `RiftwardenGame.onLoad`'da savas kurulumunda bir kez
+      // doldurulur (bkz. `BattleWorld.enemySpriteIndex` dosya basi
+      // yorumu); burasi sicak yolda SADECE okur, string arama yapmaz.
+      // Eksik girdi (kurulum hatasi) render'i patlatmasin diye 0'a duser.
+      ..spriteIndex = world.enemySpriteIndex[config.id] ?? 0
       ..maxHp = config.hp * hpMultiplier
       ..speed = config.speed
       ..radius = config.radius
@@ -98,16 +97,6 @@ class SpawnSystem implements BattleSystem {
       ..prevX = startX
       ..prevY = startY;
     enemy.hp = enemy.maxHp;
-  }
-
-  /// Atlas henuz yok (bkz. CLAUDE.md tuzaklar). `configId`'nin hash'inden
-  /// deterministik bir "kare" indeksi turetiyoruz: ayni configId her
-  /// zaman ayni indeksi alir, ama gercek bir atlas sirasina karsilik
-  /// gelmez. Atlas eklendiginde bu fonksiyon content siralamasina
-  /// (`ContentRegistry.enemies` anahtar sirasi) gore gercek indeks
-  /// donecek sekilde degistirilecek.
-  int _spriteIndexFor(String configId) {
-    return (configId.hashCode & 0x7fffffff) % kSpriteIndexPlaceholderRange;
   }
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:riftwarden/app/theme/app_colors.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
+import 'package:riftwarden/features/battle/view/battle_screen.dart';
 import 'package:riftwarden/features/boot/view/widget_gallery.dart';
 import 'package:riftwarden/features/level_select/view/level_select_data.dart';
 import 'package:riftwarden/features/level_select/view/level_select_screen.dart';
@@ -69,6 +70,22 @@ class BootScreen extends StatelessWidget {
                   runSpacing: AppSpacing.md,
                   alignment: WrapAlignment.center,
                   children: <Widget>[
+                    // Savas ekrani: ilk gercek oynanis dogrulamasi.
+                    // Digerleri ikincil; bu yuzden primary varyant.
+                    RwButton(
+                      label: 'BATTLE (Level 1)', // ui-lint: ignore gecici savas butonu
+                      icon: Icons.bolt_rounded,
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) => BattleScreen(
+                              levelId: 1,
+                              onBack: () => Navigator.of(context).pop(),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                     RwButton(
                       label: 'UI Gallery', // ui-lint: ignore gecici galeri butonu
                       icon: Icons.palette_rounded,

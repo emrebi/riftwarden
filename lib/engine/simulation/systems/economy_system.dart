@@ -12,8 +12,6 @@ import 'package:riftwarden/engine/simulation/systems/movement_system.dart'
         kSupportFrontDistance,
         kSwarmFrontDistance,
         kTankFrontDistance;
-import 'package:riftwarden/engine/simulation/systems/spawn_system.dart'
-    show kSpriteIndexPlaceholderRange;
 
 /// Aether kazanci ve birlik uretimi.
 ///
@@ -86,7 +84,9 @@ class EconomySystem implements BattleSystem {
 
     unit
       ..configId = unitId
-      ..spriteIndex = (unitId.hashCode & 0x7fffffff) % kSpriteIndexPlaceholderRange
+      // Bkz. `SpawnSystem`'daki ayni desen: tablo kurulumda bir kez
+      // doldurulur, burasi sicak yolda sadece okur.
+      ..spriteIndex = world.unitSpriteIndex[unitId] ?? 0
       ..role = role
       ..statsIndex = statsIndex
       ..x = spawnX

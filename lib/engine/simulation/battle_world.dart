@@ -199,6 +199,35 @@ class BattleWorld {
   /// EconomySystem disinda yazilmaz.
   final Map<String, int> unitProducedCount;
 
+  /// `EnemyConfig.id` -> atlas `enemies` grubundaki sprite indeksi.
+  ///
+  /// Bos baslar; `RiftwardenGame.onLoad` atlas yuklendikten SONRA
+  /// [setEnemySpriteIndices] ile BIR KEZ doldurur. `engine/simulation`
+  /// `engine/render`i (dolayisiyla `AtlasRegistry`'yi) TANIMAZ — bu yuzden
+  /// cozumleme disaridan yapilir, burasi sadece sonucu tasir. [SpawnSystem]
+  /// sicak yolda bu tabloyu SADECE okur, string arama yapmaz.
+  final Map<String, int> enemySpriteIndex = <String, int>{};
+
+  /// `UnitConfig.id` -> atlas `units` grubundaki sprite indeksi. [enemySpriteIndex]
+  /// ile ayni gerekce ve doldurulma deseni (bkz. [setUnitSpriteIndices]).
+  final Map<String, int> unitSpriteIndex = <String, int>{};
+
+  /// [enemySpriteIndex] tablosunu doldurur. Savas kurulumunda bir kez
+  /// cagrilir (bkz. dosya basi yorumu).
+  void setEnemySpriteIndices(Map<String, int> indices) {
+    enemySpriteIndex
+      ..clear()
+      ..addAll(indices);
+  }
+
+  /// [unitSpriteIndex] tablosunu doldurur. Savas kurulumunda bir kez
+  /// cagrilir (bkz. dosya basi yorumu).
+  void setUnitSpriteIndices(Map<String, int> indices) {
+    unitSpriteIndex
+      ..clear()
+      ..addAll(indices);
+  }
+
   /// Sabit kapasiteli birlik uretim talebi kuyrugu (halka tampon).
   ///
   /// UI (`BattleController.requestUnit`) herhangi bir anda cagirabilir, ama

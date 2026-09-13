@@ -77,10 +77,14 @@ RULES: tuple[Rule, ...] = (
         re.compile(r"\bAlignment\.(?:centerLeft|centerRight|topLeft|topRight|bottomLeft|bottomRight)\b"),
         "RTL bozar. AlignmentDirectional.(centerStart/centerEnd/...) kullan.",
     ),
+    # Sadece `watch`/`listen`: bunlar widget agacini yeniden kurar ve savas
+    # ekraninda 60 fps'te felakettir. Tek seferlik `ref.read` (oyunu kurarken
+    # icerik registry'sini almak gibi) mesrudur ve yakalanmaz.
     Rule(
         "battle-riverpod",
-        re.compile(r"\bref\.(?:watch|read|listen)\b"),
-        "Savas HUD'u Riverpod okumaz. BattleSignals + ValueListenableBuilder kullan.",
+        re.compile(r"\bref\.(?:watch|listen)\b"),
+        "Savas ekraninda ref.watch/listen widget agacini her karede yeniden "
+        "kurar. Savas verisi icin BattleSignals + ValueListenableBuilder kullan.",
         path_contains="features/battle/",
     ),
 )

@@ -1,0 +1,57 @@
+{
+  "frames": {
+    "ability_collapse": {
+      "h": 128,
+      "w": 128,
+      "x": 0,
+      "y": 0
+    },
+    "upgrade_chain": {
+      "h": 128,
+      "w": 128,
+      "x": 130,
+      "y": 0
+    },
+    "upgrade_core": {
+      "h": 128,
+      "w": 128,
+      "x": 260,
+      "y": 0
+    },
+    "upgrade_crit": {
+      "h": 128,
+      "w": 128,
+      "x": 0,
+      "y": 130
+    },
+    "upgrade_economy": {
+      "h": 128,
+      "w": 128,
+      "x": 130,
+      "y": 130
+    },
+    "upgrade_explosion": {
+      "h": 128,
+      "w": 128,
+      "x": 260,
+      "y": 130
+    },
+    "upgrade_pierce": {
+      "h": 128,
+      "w": 128,
+      "x": 0,
+      "y": 260
+    },
+    "upgrade_swarm": {
+      "h": 128,
+      "w": 128,
+      "x": 130,
+      "y": 260
+    }
+  },
+  "image": "ui.png",
+  "size": [
+    512,
+    512
+  ]
+}

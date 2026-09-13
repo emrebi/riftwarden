@@ -35,11 +35,16 @@ da kayıp: Arc Ranger'ın uzun mızrağı ile Pulse Guard'ın bolt'u aynı hisse
 `UnitConfig.projectile` bu id'ye işaret etsin.
 **Ne zaman:** Adım 11 (render) sonrası — mermi görünürken ayarlamak anlamlı olur.
 
-### 4. `spriteIndex` hashCode'dan türetiliyor
-**Durum:** `spawn_system.dart` içinde `(configId.hashCode & 0x7fffffff) % 64`.
-**Neden:** Atlas henüz yok, yer tutucu gerekiyordu.
-**Ne zaman:** Asset pipeline'dan ilk atlas geçince (adım 22); gerçek atlas kare
-sırasıyla değiştirilecek.
+### 4. Render'da kare başına `RSTransform` allocation'ı
+**Durum:** Renderer'lar entity başına `RSTransform.fromComponents(...)` üretiyor.
+Flame'in `SpriteBatch.addTransform` API'si bunu gerektiriyor.
+**Ölçek:** 500 düşman × 60 fps ≈ saniyede 30 bin küçük nesne. Dart'ın genç kuşak
+GC'si bunu ucuz toplar, ama swarm hedefinde ölçülmesi gereken bir kalem.
+**Çözüm (gerekirse):** `SpriteBatch` yerine doğrudan `Canvas.drawRawAtlas` +
+önceden ayrılmış `Float32List` tamponları — sıfır allocation.
+**Neden şimdi yapılmadı:** Profil almadan optimize etmek tahmin olur. Önce gerçek
+cihazda 200+ düşmanla FPS ölçülecek (bkz. `docs/ARCHITECTURE.md` doğrulama bölümü).
+**Ne zaman:** Adım 23 performans geçişi, ölçüm sonucuna göre.
 
 ---
 

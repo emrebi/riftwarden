@@ -1,0 +1,10 @@
+{
+  "_comment": "Core, rift gibi sahne ogeleri.",
+  "chroma": false,
+  "slice": "auto",
+  "min_gap": 12,
+  "max_size": 256,
+  "padding": 2,
+  "atlas_max": 1024,
+  "names": []
+}
