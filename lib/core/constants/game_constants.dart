@@ -62,6 +62,17 @@ const int kUnitPoolCapacity = 128;
 /// throttle'a tabi DEGILDIR, aninda gonderilir.
 const double kHudThrottleInterval = 0.1;
 
+/// Ayni anda alanda bulunabilecek maksimum gorsel efekt (parcacik, hasar
+/// sayisi, patlama) sayisi.
+///
+/// Deger secimi: en yogun senaryo, `kUnitPoolCapacity` (128) birligin ayni
+/// anda ates etmesiyle olusan vurus kivilcimlaridir; buna dusman olum
+/// efektleri (deathPuff + aetherMote, dusman basina iki parcacik) eklenir.
+/// 256, bu iki kaynagi rahat karsilar; havuz yine de dolarsa `emitEffect`
+/// sessizce atlar (bkz. `EntityPool.spawn` sozlesmesi) — en yogun anda bir
+/// iki parcacigin kaybolmasi oynanisi etkilemez, sadece gorseldir.
+const int kEffectPoolCapacity = 256;
+
 /// Upgrade karti acilirken uygulanan slow-motion rampasi (saniye) ve
 /// rampa sonundaki zaman olcegi. Rampa bitince oyun tam pause olur.
 const double kUpgradeSlowMoRamp = 0.15;

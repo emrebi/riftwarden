@@ -1,34 +1,52 @@
 {
   "frames": {
-    "aether_mote": {
+    "ability_blast": {
       "h": 128,
       "w": 128,
       "x": 0,
+      "y": 0
+    },
+    "aether_mote": {
+      "h": 128,
+      "w": 128,
+      "x": 130,
       "y": 0
     },
     "arc_lance": {
       "h": 128,
       "w": 128,
-      "x": 130,
-      "y": 0
-    },
-    "enemy_spit": {
-      "h": 128,
-      "w": 128,
       "x": 260,
       "y": 0
     },
-    "hit_spark": {
+    "core_impact": {
       "h": 128,
       "w": 128,
       "x": 0,
       "y": 130
     },
-    "pulse_bolt": {
+    "death_puff": {
       "h": 128,
       "w": 128,
       "x": 130,
       "y": 130
+    },
+    "enemy_spit": {
+      "h": 128,
+      "w": 128,
+      "x": 260,
+      "y": 130
+    },
+    "hit_spark": {
+      "h": 128,
+      "w": 128,
+      "x": 0,
+      "y": 260
+    },
+    "pulse_bolt": {
+      "h": 128,
+      "w": 128,
+      "x": 130,
+      "y": 260
     }
   },
   "image": "fx.png",

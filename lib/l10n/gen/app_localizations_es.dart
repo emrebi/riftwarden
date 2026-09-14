@@ -140,4 +140,25 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get resultRewardCells => 'Aether Cell';
+
+  @override
+  String get unitPulseGuard => 'Pulse Guard';
+
+  @override
+  String get unitArcRanger => 'Arc Ranger';
+
+  @override
+  String get unitTitanFrame => 'Titan Frame';
+
+  @override
+  String get battlePauseTitle => 'PAUSED';
+
+  @override
+  String get battleResume => 'RESUME';
+
+  @override
+  String get battleAimHint => 'TAP TARGET TO CAST';
+
+  @override
+  String get hudBossWave => 'BOSS WAVE';
 }

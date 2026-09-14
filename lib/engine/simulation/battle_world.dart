@@ -4,9 +4,19 @@ import 'package:riftwarden/content/registry/content_registry.dart';
 import 'package:riftwarden/content/schema/schema.dart';
 import 'package:riftwarden/core/constants/game_constants.dart';
 import 'package:riftwarden/domain/rules/rules.dart';
+import 'package:riftwarden/engine/effects/effect_entity.dart';
+import 'package:riftwarden/engine/effects/screen_shake.dart';
 import 'package:riftwarden/engine/simulation/entities/entities.dart';
 import 'package:riftwarden/engine/simulation/pools/entity_pool.dart';
 import 'package:riftwarden/engine/simulation/spatial/spatial_hash_grid.dart';
+
+/// Sabit tohum kaymasi: gorsel efekt (ekran sarsintisi) rastgeleligi oyun
+/// mantigi RNG akisindan (`BattleWorld.rng`) YALITILIR (bkz.
+/// `ScreenShake` dosya basi "Neden ayri RngSource" yorumu). Sabit bir asal
+/// sayi kullanmak, ayni tohumla her savasta ayni sarsinti deseninin
+/// tekrarlanmasini (determinizm) saglarken savas mantigi tohumuyla
+/// CAKISMAMASINI garanti eder.
+const int _kScreenShakeSeedOffset = 104729;
 
 /// Ayni anda alanda bulunabilecek maksimum birlik sayisi.
 ///
@@ -40,6 +50,8 @@ class BattleWorld {
     required this._laneIndexOfId,
     required this.queryScratch,
     required this.unitProducedCount,
+    required this.effects,
+    required this.screenShake,
   });
 
   /// Level'i, icerigi ve baslangic upgrade'lerini kullanarak yeni bir
@@ -127,12 +139,23 @@ class BattleWorld {
       // Uretim sayaci kurulumda bos baslar; EconomySystem her uretimde
       // artirir (bkz. asagidaki yorum).
       unitProducedCount: <String, int>{},
+      effects: EntityPool<EffectEntity>(kEffectPoolCapacity, EffectEntity.new),
+      screenShake: ScreenShake(RngSource(seed + _kScreenShakeSeedOffset)),
     );
   }
 
   final EntityPool<EnemyEntity> enemies;
   final EntityPool<UnitEntity> units;
   final EntityPool<ProjectileEntity> projectiles;
+
+  /// Gorsel efekt (parcacik, hasar sayisi, patlama) havuzu. [emitEffect]
+  /// uzerinden doldurulur, [EffectSystem] tarafindan yaslandirilir.
+  final EntityPool<EffectEntity> effects;
+
+  /// Ekran sarsintisi durumu. Tetikleme sistemlerden (`MovementSystem`
+  /// Core hasari, `AbilitySystem` patlama), sonumleme [EffectSystem]'den
+  /// gelir; render bunu SADECE okur (bkz. `ScreenShake` dosya basi yorumu).
+  final ScreenShake screenShake;
 
   final SpatialHashGrid enemyGrid;
   final SpatialHashGrid unitGrid;
@@ -227,6 +250,124 @@ class BattleWorld {
       ..clear()
       ..addAll(indices);
   }
+
+  /// `EffectKind` -> atlas `fx` grubundaki sprite indeksi. [enemySpriteIndex]
+  /// ile ayni gerekce: efekt icerik JSON'undan degil motor sabitinden
+  /// (`RiftwardenGame._effectFrameNames`) gelir, cunku efektler icerik
+  /// degil motorun gorsel "his" katmanidir. Bos baslar; `RiftwardenGame
+  /// .onLoad` atlas yuklendikten sonra [setEffectSpriteIndices] ile bir
+  /// kez doldurur.
+  final Map<EffectKind, int> effectSpriteIndex = <EffectKind, int>{};
+
+  /// [effectSpriteIndex] tablosunu doldurur. Savas kurulumunda bir kez
+  /// cagrilir (bkz. dosya basi yorumu).
+  void setEffectSpriteIndices(Map<EffectKind, int> indices) {
+    effectSpriteIndex
+      ..clear()
+      ..addAll(indices);
+  }
+
+  /// Efekt basina varsayilan omur (saniye). `emitEffect` bunu kullanir;
+  /// cagiran taraf (ornegin `AbilitySystem`) gerekirse spawn sonrasi
+  /// donen varligin `lifetime`/`scale` alanlarini ELLE override edebilir
+  /// (bkz. Rift Collapse uyari halkasi/patlama ayrimi).
+  static const Map<EffectKind, double> _defaultEffectLifetime = <EffectKind, double>{
+    EffectKind.hitSpark: 0.22,
+    EffectKind.deathPuff: 0.4,
+    EffectKind.aetherMote: 0.7,
+    EffectKind.coreImpact: 0.3,
+    EffectKind.abilityBlast: 0.5,
+  };
+
+  /// Efekt basina varsayilan taban boyut (normalize alan uzayinda).
+  static const Map<EffectKind, double> _defaultEffectScale = <EffectKind, double>{
+    EffectKind.hitSpark: 0.02,
+    EffectKind.deathPuff: 0.05,
+    EffectKind.aetherMote: 0.02,
+    EffectKind.coreImpact: 0.06,
+    EffectKind.abilityBlast: 0.18,
+  };
+
+  /// Bir gorsel efekt talep eder. Havuz doluysa **sessizce atlar** (bkz.
+  /// `EntityPool.spawn` sozlesmesi) — gorsel bir kivilcimin kaybolmasi
+  /// oynanisi etkilemez, exception firlatmaya degmez.
+  ///
+  /// Donen varlik (varsa) cagiran tarafindan ek olarak ozellestirilebilir
+  /// (ornegin `AbilitySystem` patlama yaricapini `scale`'e yazar). `step()`
+  /// icinde cagrilir, bu yuzden allocation YOKTUR — sadece havuzdan bir
+  /// nesne cekilir.
+  EffectEntity? emitEffect(
+    EffectKind kind,
+    double x,
+    double y, {
+    int value = 0,
+    bool isCritical = false,
+  }) {
+    final effect = effects.spawn();
+    if (effect == null) return null;
+
+    effect
+      ..kind = kind
+      ..x = x
+      ..y = y
+      ..prevX = x
+      ..prevY = y
+      ..vx = 0
+      // aetherMote yukari suzulmeye BURADA degil `EffectSystem.step`'te
+      // baslar (kAetherMoteLift); baslangicta vy=0 yeterli, ilk adimda ivme
+      // hemen isler.
+      ..vy = 0
+      ..spriteIndex = effectSpriteIndex[kind] ?? 0
+      ..age = 0
+      ..lifetime = _defaultEffectLifetime[kind] ?? 0.3
+      ..scale = _defaultEffectScale[kind] ?? 0.02
+      ..rotation = 0
+      ..value = value
+      ..isCritical = isCritical;
+    return effect;
+  }
+
+  // --- Yetenek (Rift Collapse) komut kuyugu ---
+  //
+  // `BattleController.toggleAbilityAiming`/`castAbilityAt` UI thread'inden
+  // herhangi bir anda cagrilabilir; `enqueueUnitRequest` ile AYNI gerekce
+  // (bkz. yukaridaki dosya basi yorumu) geregi durum degisikligi burada
+  // BAYRAKLANIR, gercek isleme `AbilitySystem.step()`e birakilir.
+  bool _abilityAimToggleRequested = false;
+  bool _abilityCastRequested = false;
+  double _abilityCastX = 0;
+  double _abilityCastY = 0;
+
+  /// UI'dan gelen nisan alma modu acma/kapama talebini isaretler.
+  void requestAbilityAimToggle() {
+    _abilityAimToggleRequested = true;
+  }
+
+  /// UI'dan gelen yetenek kullanim talebini isaretler.
+  void requestAbilityCast(double x, double y) {
+    _abilityCastRequested = true;
+    _abilityCastX = x;
+    _abilityCastY = y;
+  }
+
+  /// Bekleyen nisan alma bayragini tuketir. Sadece [AbilitySystem]
+  /// tarafindan, adim icinde tuketilir.
+  bool consumeAbilityAimToggle() {
+    final requested = _abilityAimToggleRequested;
+    _abilityAimToggleRequested = false;
+    return requested;
+  }
+
+  /// Bekleyen yetenek kullanim talebini tuketir; varsa true doner ve
+  /// [pendingCastX]/[pendingCastY] o talebin koordinatlarini tasir.
+  bool tryConsumeAbilityCast() {
+    if (!_abilityCastRequested) return false;
+    _abilityCastRequested = false;
+    return true;
+  }
+
+  double get pendingCastX => _abilityCastX;
+  double get pendingCastY => _abilityCastY;
 
   /// Sabit kapasiteli birlik uretim talebi kuyrugu (halka tampon).
   ///

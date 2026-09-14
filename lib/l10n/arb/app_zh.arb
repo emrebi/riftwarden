@@ -41,5 +41,12 @@
   "levelBoss": "BOSS",
   "resultRewardsTitle": "REWARDS",
   "resultRewardShards": "Rift Shard",
-  "resultRewardCells": "Aether Cell"
+  "resultRewardCells": "Aether Cell",
+  "unitPulseGuard": "Pulse Guard",
+  "unitArcRanger": "Arc Ranger",
+  "unitTitanFrame": "Titan Frame",
+  "battlePauseTitle": "PAUSED",
+  "battleResume": "RESUME",
+  "battleAimHint": "TAP TARGET TO CAST",
+  "hudBossWave": "BOSS WAVE"
 }

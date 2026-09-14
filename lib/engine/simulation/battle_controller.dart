@@ -26,15 +26,17 @@ class BattleController implements BattleCommands {
   @override
   void resume() => _sim.resume();
 
-  // Yetenek nisan alma / kullanma — adim 13'un isi.
+  // Yetenek nisan alma / kullanma: `requestUnit` ile AYNI kuyruk/bayrak
+  // deseni (bkz. `BattleWorld` "Yetenek komut kuyugu" yorumu) — durumu
+  // buradan DEGIL, `AbilitySystem.step()` icinde degistiriyoruz.
   @override
   void toggleAbilityAiming() {
-    // TODO(adim 13): yetenek nisan alma modu.
+    _sim.world.requestAbilityAimToggle();
   }
 
   @override
   void castAbilityAt(double x, double y) {
-    // TODO(adim 13): yetenek kullanimi.
+    _sim.world.requestAbilityCast(x, y);
   }
 
   // Upgrade secimi / reroll — adim 14'un isi.

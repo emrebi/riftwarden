@@ -41,5 +41,12 @@
   "levelBoss": "BOSS",
   "resultRewardsTitle": "ODULLER",
   "resultRewardShards": "Rift Shard",
-  "resultRewardCells": "Aether Cell"
+  "resultRewardCells": "Aether Cell",
+  "unitPulseGuard": "Pulse Guard",
+  "unitArcRanger": "Arc Ranger",
+  "unitTitanFrame": "Titan Frame",
+  "battlePauseTitle": "DURAKLATILDI",
+  "battleResume": "DEVAM ET",
+  "battleAimHint": "HEDEFE DOKUN",
+  "hudBossWave": "BOSS DALGASI"
 }

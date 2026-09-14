@@ -51,6 +51,7 @@ class CompactionSystem implements BattleSystem {
     world.enemies.compact(_onEnemyRemoved);
     world.units.compact();
     world.projectiles.compact();
+    world.effects.compact();
 
     if (world.coreHp <= 0) {
       sim.finish(BattleOutcome.defeat);

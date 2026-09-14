@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:riftwarden/domain/rules/rules.dart';
+import 'package:riftwarden/engine/bridge/battle_signals.dart';
+import 'package:riftwarden/engine/effects/effect_entity.dart';
 import 'package:riftwarden/engine/simulation/battle_simulation.dart';
 import 'package:riftwarden/engine/simulation/battle_system.dart';
 import 'package:riftwarden/engine/simulation/entities/entities.dart';
@@ -48,6 +50,14 @@ const double kTankFrontDistance = 0.55;
 const double kSwarmFrontDistance = 0.35;
 const double kRangedFrontDistance = 0.15;
 const double kSupportFrontDistance = 0.05;
+
+/// Core hasari sarsintisi. Brief: "Core hasari (orta)" — vurus
+/// kivilcimlarindan (sarsintisiz) belirgin sekilde daha guclu, ama Rift
+/// Collapse patlamasindan (bkz. `AbilitySystem.kAbilityBlastShakeIntensity`)
+/// hafif daha az: oyuncu Core'un TEHDIT ALTINDA oldugunu hissetmeli ama
+/// swarm'i takip edecek gozu kaybetmemeli.
+const double kCoreHitShakeIntensity = 0.016;
+const double kCoreHitShakeDuration = 0.22;
 
 /// Dusman lane takibi, Core'a varis ve hafif ayrisma (separation).
 ///
@@ -103,6 +113,7 @@ class MovementSystem implements BattleSystem {
           enemy.reachedCore = true;
           world.coreHp -= enemy.coreDamage;
           enemy.pendingRemove = true;
+          _emitCoreHitFeedback(sim, world.coreX, world.coreY);
           _pushCoreHpImmediately(sim);
           continue;
         }
@@ -305,6 +316,16 @@ class MovementSystem implements BattleSystem {
         projectile.pendingRemove = true;
       }
     }
+  }
+
+  /// Core vurus geri bildirimi: carpma efekti + orta siddette ekran
+  /// sarsintisi + agir titresim (brief: "Core hasari (heavy)"). Sarsinti/
+  /// titresim throttle'a TABI DEGILDIR (kesikli olay), her isabette tetiklenir.
+  void _emitCoreHitFeedback(BattleSimulation sim, double x, double y) {
+    final world = sim.world;
+    world.emitEffect(EffectKind.coreImpact, x, y);
+    world.screenShake.trigger(kCoreHitShakeIntensity, kCoreHitShakeDuration);
+    sim.signals.triggerHaptic(HapticCueKind.heavy);
   }
 
   /// Core hasar aldigi an HUD'a aninda yansir; `kHudThrottleInterval`

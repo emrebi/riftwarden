@@ -1,8 +1,12 @@
 import 'dart:math' as math;
 
 import 'package:riftwarden/domain/rules/rules.dart';
+import 'package:riftwarden/engine/bridge/battle_signals.dart';
+import 'package:riftwarden/engine/effects/effect_entity.dart';
 import 'package:riftwarden/engine/simulation/battle_simulation.dart';
 import 'package:riftwarden/engine/simulation/battle_system.dart';
+import 'package:riftwarden/engine/simulation/battle_world.dart';
+import 'package:riftwarden/engine/simulation/entities/entities.dart';
 
 /// Mermi hizi (normalize birim/saniye). Icerik `units.json`da mermi icin
 /// fiziksel bir deger tasimaz (`projectile` alani sadece bir gorsel id'dir,
@@ -40,6 +44,31 @@ class CombatSystem implements BattleSystem {
   void step(BattleSimulation sim, double dt) {
     _stepUnitAttacks(sim, dt);
     _stepProjectileImpacts(sim);
+  }
+
+  /// Vurus geri bildirimi: kivilcim + hasar sayisi, kritikse ek olarak
+  /// hafif titresim (brief: "kritik vurus (light)"). `SystemPhase.effects`
+  /// bu adimin SONUNDA calisir; burada `emitEffect` cagirmak (combat
+  /// fazinda) o parcaciklarin AYNI karede dogmasini saglar, bir sonraki
+  /// render'i beklemez.
+  void _emitHitFeedback(BattleSimulation sim, double x, double y, DamageResult result) {
+    sim.world.emitEffect(
+      EffectKind.hitSpark,
+      x,
+      y,
+      value: result.amount.round(),
+      isCritical: result.isCritical,
+    );
+    if (result.isCritical) {
+      sim.signals.triggerHaptic(HapticCueKind.light);
+    }
+  }
+
+  /// Olum geri bildirimi: duman/kirinti patlamasi + yukari suzulen Aether
+  /// zerresi (brief: "Dusman olumu -> deathPuff + aetherMote").
+  void _emitDeathFeedback(BattleWorld world, EnemyEntity enemy) {
+    world.emitEffect(EffectKind.deathPuff, enemy.x, enemy.y);
+    world.emitEffect(EffectKind.aetherMote, enemy.x, enemy.y);
   }
 
   /// Birlik saldirisi: cooldown dolunca ve hedef menzildeyse ates eder.
@@ -86,7 +115,11 @@ class CombatSystem implements BattleSystem {
           rng: world.rng,
         );
         enemy.hp -= result.amount;
-        if (enemy.hp <= 0) enemy.pendingRemove = true;
+        _emitHitFeedback(sim, enemy.x, enemy.y, result);
+        if (enemy.hp <= 0) {
+          enemy.pendingRemove = true;
+          _emitDeathFeedback(world, enemy);
+        }
         continue;
       }
 
@@ -157,7 +190,11 @@ class CombatSystem implements BattleSystem {
         rng: world.rng,
       );
       enemy.hp -= result.amount;
-      if (enemy.hp <= 0) enemy.pendingRemove = true;
+      _emitHitFeedback(sim, enemy.x, enemy.y, result);
+      if (enemy.hp <= 0) {
+        enemy.pendingRemove = true;
+        _emitDeathFeedback(world, enemy);
+      }
 
       // Delme kapsam disi (bkz. dosya basi yorumu): her carpisma mermiyi
       // tuketir.

@@ -140,4 +140,25 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get resultRewardCells => 'Aether Cell';
+
+  @override
+  String get unitPulseGuard => 'Pulse Guard';
+
+  @override
+  String get unitArcRanger => 'Arc Ranger';
+
+  @override
+  String get unitTitanFrame => 'Titan Frame';
+
+  @override
+  String get battlePauseTitle => 'DURAKLATILDI';
+
+  @override
+  String get battleResume => 'DEVAM ET';
+
+  @override
+  String get battleAimHint => 'HEDEFE DOKUN';
+
+  @override
+  String get hudBossWave => 'BOSS DALGASI';
 }

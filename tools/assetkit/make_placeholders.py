@@ -133,6 +133,12 @@ GROUPS: dict[str, dict[str, tuple[str, tuple[int, int, int], float]]] = {
         "enemy_spit":  ("circle", ENEMY_MAGENTA, 0.35),
         "hit_spark":   ("star",   AMBER,     0.40),
         "aether_mote": ("circle", AMBER,     0.35),
+        # Olum / Core darbesi / yetenek patlamasi ayri kareler:
+        # hepsi hit_spark'i yeniden kullanirsa oyuncu "ne oldu" ayrimini
+        # yapamaz. Halka bicimi patlamayi, bulut bicimi olumu anlatir.
+        "death_puff":    ("circle", ENEMY_VIOLET, 0.55),
+        "core_impact":   ("ring",   DANGER,       0.70),
+        "ability_blast": ("ring",   ENEMY_VIOLET, 0.95),
     },
     "world": {
         "aether_core": ("ring",    ALLY_TEAL,     1.00),

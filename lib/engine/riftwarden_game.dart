@@ -1,8 +1,12 @@
+import 'dart:ui' show Canvas;
+
 import 'package:flame/components.dart' show Vector2;
 import 'package:flame/game.dart' show FlameGame;
 import 'package:riftwarden/content/registry/content_registry.dart';
 import 'package:riftwarden/content/schema/schema.dart';
 import 'package:riftwarden/engine/bridge/battle_signals.dart';
+import 'package:riftwarden/engine/effects/effect_entity.dart';
+import 'package:riftwarden/engine/effects/effect_renderer.dart';
 import 'package:riftwarden/engine/render/atlas_registry.dart';
 import 'package:riftwarden/engine/render/field_background.dart';
 import 'package:riftwarden/engine/render/field_projection.dart';
@@ -13,6 +17,24 @@ import 'package:riftwarden/engine/simulation/battle_controller.dart';
 import 'package:riftwarden/engine/simulation/battle_simulation.dart';
 import 'package:riftwarden/engine/simulation/battle_world.dart';
 import 'package:riftwarden/engine/simulation/default_systems.dart';
+
+/// `EffectKind` -> atlas `fx` grubundaki kare adi.
+///
+/// ## Sapma: bazi turler icin ozel kare henuz yok
+/// `assets/images/atlas/fx.json` su an sadece `hit_spark`, `aether_mote`,
+/// `arc_lance`, `enemy_spit`, `pulse_bolt` kareleri iceriyor (bkz. asset
+/// uretimi `rw-assets` skill'inin isi, bu worker gorevinin kapsami DISINDA
+/// — CLAUDE.md rol tablosu: sprite/ikon Gemini + assetkit'in isi). Bu
+/// yuzden `deathPuff` ve `coreImpact` GECICI olarak `hit_spark`'i (farkli
+/// olcek/omurle) yeniden kullanir. Ozel kareler eklendiginde tek yapilacak
+/// sey bu tablodaki karsiliklari degistirmektir.
+const Map<EffectKind, String> _effectFrameNames = <EffectKind, String>{
+  EffectKind.hitSpark: 'hit_spark',
+  EffectKind.deathPuff: 'death_puff',
+  EffectKind.aetherMote: 'aether_mote',
+  EffectKind.coreImpact: 'core_impact',
+  EffectKind.abilityBlast: 'ability_blast',
+};
 
 /// Riftwarden savas ekraninin Flame kokü.
 ///
@@ -28,12 +50,29 @@ import 'package:riftwarden/engine/simulation/default_systems.dart';
 /// gercek kaynak olma ilkesini (bkz. `battle_simulation.dart` dosya basi
 /// yorumu) bozar.
 class RiftwardenGame extends FlameGame {
+  /// ## Neden simulasyon `onLoad`'da DEGIL burada kuruluyor
+  /// HUD, oyun yuklenmeden once `signals`/`commands`'e baglanabilmeli.
+  /// Bunlar `onLoad` icinde kurulursa UI onlari beklemek zorunda kalir ve
+  /// atlas yuklemesi herhangi bir sebeple takilirsa ekranda HIC BIR SEY
+  /// gorunmez (ne oyun, ne HUD, ne hata) — sessiz siyah ekran.
+  /// Simulasyonun hicbir parcasi atlas'a ihtiyac duymadigi icin hepsi
+  /// burada kurulur; `onLoad`'a yalnizca gorsel isler kalir.
   RiftwardenGame({
     required this.level,
     required this.content,
     required this.seed,
     required this.initialUpgrades,
-  });
+  })  : battleWorld = BattleWorld.create(
+          level: level,
+          content: content,
+          initialUpgrades: initialUpgrades,
+          seed: seed,
+        ),
+        signals = BattleSignals() {
+    simulation = BattleSimulation(signals: signals)..attachWorld(battleWorld);
+    registerDefaultSystems(simulation);
+    commands = BattleController(simulation);
+  }
 
   final LevelConfig level;
   final ContentRegistry content;
@@ -42,17 +81,19 @@ class RiftwardenGame extends FlameGame {
 
   /// Motordan HUD'a giden koprü (bkz. `battle_signals.dart` dosya basi
   /// yorumu). UI bunu dinler, asla yazmaz.
-  late final BattleSignals signals;
-
-  /// HUD'dan motora giden komutlar. UI bunu cagirir, asla dogrudan
-  /// [battleWorld]/[simulation] durumuna dokunmaz.
-  late final BattleCommands commands;
+  final BattleSignals signals;
 
   /// Savasin tum degisken durumu. Ad `battleWorld`: `FlameGame.world`
   /// zaten Flame'in kendi `World` component'i icin ayrilmis, ayni isim
   /// bunu golgeler (override hatasi verir).
-  late final BattleWorld battleWorld;
+  final BattleWorld battleWorld;
+
+  /// HUD'dan motora giden komutlar. UI bunu cagirir, asla dogrudan
+  /// [battleWorld]/[simulation] durumuna dokunmaz.
+  /// Constructor GOVDESINDE atanir (initializer list `this`'e erisemez).
+  late final BattleCommands commands;
   late final BattleSimulation simulation;
+
   late final AtlasRegistry atlas;
   late final FieldProjection projection;
 
@@ -73,18 +114,9 @@ class RiftwardenGame extends FlameGame {
     atlas = AtlasRegistry();
     await atlas.load();
 
-    battleWorld = BattleWorld.create(
-      level: level,
-      content: content,
-      initialUpgrades: initialUpgrades,
-      seed: seed,
-    );
+    // Simulasyon constructor'da kuruldu; burada yalnizca gorsel baglama
+    // kaldi (sprite indeksleri atlas'a, renderer'lar projeksiyona bagli).
     _resolveSpriteIndices();
-
-    signals = BattleSignals();
-    simulation = BattleSimulation(signals: signals)..attachWorld(battleWorld);
-    registerDefaultSystems(simulation);
-    commands = BattleController(simulation);
 
     projection = FieldProjection(_fieldSize);
 
@@ -109,6 +141,11 @@ class RiftwardenGame extends FlameGame {
         projection: projection,
       ),
     );
+    // Efektler EN USTTE: vurus kivilcimi/hasar sayisi altindaki
+    // birlik/dusman/mermiyi gizlememeli ama kendisi de gizlenmemeli.
+    add(
+      EffectRenderer(world: battleWorld, sim: simulation, atlas: atlas, projection: projection),
+    );
 
     simulation.start();
   }
@@ -127,6 +164,12 @@ class RiftwardenGame extends FlameGame {
       for (final id in content.units.keys) id: atlas.indexOf('units', content.unit(id).sprite),
     };
     battleWorld.setUnitSpriteIndices(unitIndices);
+
+    final effectIndices = <EffectKind, int>{
+      for (final entry in _effectFrameNames.entries)
+        entry.key: atlas.indexOf('fx', entry.value),
+    };
+    battleWorld.setEffectSpriteIndices(effectIndices);
   }
 
   @override
@@ -142,6 +185,22 @@ class RiftwardenGame extends FlameGame {
   void update(double dt) {
     super.update(dt);
     simulation.advance(dt);
+  }
+
+  /// Ekran sarsintisini TUM render agacinin ustune uygular (bkz.
+  /// `ScreenShake` dosya basi yorumu). `canvas.translate` component
+  /// agacini SARMALAR — tek bir yerde uygulanir, her render bileseninin
+  /// kendi offsetini eklemesi gerekmez.
+  @override
+  void render(Canvas canvas) {
+    final shake = battleWorld.screenShake;
+    final dx = projection.toScreenSize(shake.offsetX);
+    final dy = projection.toScreenSize(shake.offsetY);
+
+    canvas.save();
+    canvas.translate(dx, dy);
+    super.render(canvas);
+    canvas.restore();
   }
 
   @override

@@ -71,6 +71,46 @@ class AbilityState {
 /// Savasin nasil bittigi.
 enum BattleOutcome { running, victory, defeat }
 
+/// Titresim siddeti. Isimler platform haptic API'lerinin (bkz.
+/// `HapticFeedback` / `core/services`) siddet kademeleriyle birebir
+/// eslesecek sekilde secildi; motor bu API'yi DOGRUDAN cagirmaz (bkz.
+/// [HapticCue] dosya basi yorumu).
+enum HapticCueKind { light, medium, heavy, selection }
+
+/// Motordan HUD'a giden TEK titresim bildirimi.
+///
+/// ## Neden bu sinif, neden dogrudan HapticFeedback.vibrate() degil
+/// `engine/` katmani `lib/core/services/` import EDEMEZ (bkz. CLAUDE.md
+/// kural 2: engine sadece `domain/` ve `content/` bilir). Titresim ise
+/// platforma ozel bir servistir (`core/services/haptic_service.dart`).
+/// Bu yuzden motor SADECE "bir titresim olayi oldu, turu bu" der;
+/// `features/battle` katmani bu sinyali dinleyip gercek platform cagrisini
+/// yapar.
+///
+/// ## Neden sayac, neden dogrudan `ValueNotifier<HapticCueKind>`
+/// Ayni tur art arda (ornegin iki kritik vurus ayni HUD throttle
+/// penceresinde) gelirse `ValueNotifier<HapticCueKind>` deger DEGISMEDIGI
+/// icin ikinci bildirimi DUSURUR (Flutter `ValueNotifier` sadece deger
+/// gercekten degisince dinleyicileri uyarir). Sayac her tetiklemede
+/// artar; deger (kind, sayac) ciftinden olustugu icin ayni tur ust uste
+/// gelse bile her tetikleme ayri bir bildirim olarak gorulur.
+@immutable
+class HapticCue {
+  const HapticCue({required this.kind, required this.sequence});
+
+  static const HapticCue none = HapticCue(kind: HapticCueKind.selection, sequence: 0);
+
+  final HapticCueKind kind;
+  final int sequence;
+
+  @override
+  bool operator ==(Object other) =>
+      other is HapticCue && other.kind == kind && other.sequence == sequence;
+
+  @override
+  int get hashCode => Object.hash(kind, sequence);
+}
+
 /// Motordan HUD'a giden **tek** koprü.
 ///
 /// ## Neden ValueNotifier, neden Riverpod degil
@@ -120,6 +160,19 @@ class BattleSignals {
   final ValueNotifier<BattleOutcome> outcome =
       ValueNotifier<BattleOutcome>(BattleOutcome.running);
 
+  /// Her tetiklemede sayaci artar (bkz. [HapticCue] dosya basi yorumu);
+  /// UI degisimi dinleyip `core/services` altindaki gercek HapticService'i
+  /// cagirir. Motor titresim API'sini DOGRUDAN cagirmaz.
+  final ValueNotifier<HapticCue> hapticCue = ValueNotifier<HapticCue>(HapticCue.none);
+  int _hapticSequence = 0;
+
+  /// Yeni bir titresim olayi bildirir. Kesikli bir olaydir (bkz. dosya basi
+  /// "Throttle kurali"), throttle'a TABI DEGILDIR.
+  void triggerHaptic(HapticCueKind kind) {
+    _hapticSequence++;
+    hapticCue.value = HapticCue(kind: kind, sequence: _hapticSequence);
+  }
+
   /// Savas basinda tum sinyalleri varsayilana dondurur.
   void reset() {
     aether.value = 0;
@@ -132,6 +185,8 @@ class BattleSignals {
     upgradeOffer.value = null;
     bossIntro.value = null;
     outcome.value = BattleOutcome.running;
+    hapticCue.value = HapticCue.none;
+    _hapticSequence = 0;
   }
 
   void dispose() {
@@ -145,6 +200,7 @@ class BattleSignals {
     upgradeOffer.dispose();
     bossIntro.dispose();
     outcome.dispose();
+    hapticCue.dispose();
   }
 }
 

@@ -185,5 +185,33 @@
   "resultRewardCells": "Aether Cell",
   "@resultRewardCells": {
     "description": "Victory screen: hard currency name, first-clear bonus"
+  },
+  "unitPulseGuard": "Pulse Guard",
+  "@unitPulseGuard": {
+    "description": "Unit name for Pulse Guard"
+  },
+  "unitArcRanger": "Arc Ranger",
+  "@unitArcRanger": {
+    "description": "Unit name for Arc Ranger"
+  },
+  "unitTitanFrame": "Titan Frame",
+  "@unitTitanFrame": {
+    "description": "Unit name for Titan Frame"
+  },
+  "battlePauseTitle": "PAUSED",
+  "@battlePauseTitle": {
+    "description": "Title of the pause overlay dialog during battle"
+  },
+  "battleResume": "RESUME",
+  "@battleResume": {
+    "description": "Button to resume the battle from pause overlay"
+  },
+  "battleAimHint": "TAP TARGET TO CAST",
+  "@battleAimHint": {
+    "description": "Hint displayed when ability aiming mode is active"
+  },
+  "hudBossWave": "BOSS WAVE",
+  "@hudBossWave": {
+    "description": "Label displayed on boss waves"
   }
 }

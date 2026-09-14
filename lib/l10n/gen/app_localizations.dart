@@ -375,6 +375,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Aether Cell'**
   String get resultRewardCells;
+
+  /// Unit name for Pulse Guard
+  ///
+  /// In en, this message translates to:
+  /// **'Pulse Guard'**
+  String get unitPulseGuard;
+
+  /// Unit name for Arc Ranger
+  ///
+  /// In en, this message translates to:
+  /// **'Arc Ranger'**
+  String get unitArcRanger;
+
+  /// Unit name for Titan Frame
+  ///
+  /// In en, this message translates to:
+  /// **'Titan Frame'**
+  String get unitTitanFrame;
+
+  /// Title of the pause overlay dialog during battle
+  ///
+  /// In en, this message translates to:
+  /// **'PAUSED'**
+  String get battlePauseTitle;
+
+  /// Button to resume the battle from pause overlay
+  ///
+  /// In en, this message translates to:
+  /// **'RESUME'**
+  String get battleResume;
+
+  /// Hint displayed when ability aiming mode is active
+  ///
+  /// In en, this message translates to:
+  /// **'TAP TARGET TO CAST'**
+  String get battleAimHint;
+
+  /// Label displayed on boss waves
+  ///
+  /// In en, this message translates to:
+  /// **'BOSS WAVE'**
+  String get hudBossWave;
 }
 
 class _AppLocalizationsDelegate

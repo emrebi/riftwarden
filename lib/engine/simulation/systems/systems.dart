@@ -1,6 +1,7 @@
 /// Savas sistemleri icin barrel dosyasi.
 library;
 
+export 'ability_system.dart';
 export 'combat_system.dart';
 export 'compaction_system.dart';
 export 'economy_system.dart';
