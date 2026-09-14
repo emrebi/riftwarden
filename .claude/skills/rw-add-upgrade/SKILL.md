@@ -7,6 +7,13 @@ description: RIFTWARDEN savaş içi upgrade sistemine yeni upgrade ekler veya ha
 
 Dosya: `assets/content/upgrades.json`. Şema: `docs/CONTENT_SCHEMA.md` → "upgrades.json".
 
+## Kaynak: kart mı dükkan mı?
+Her upgrade `source` taşır: `card` (varsayılan, savaş içi eşik kartı — ücretsiz
+seçim) veya `shop` (Aether yetenek dükkanı — savaşçı yuvasının yanından satın
+alınır). `shop` olan upgrade'ler `cost` (Aether) ve `unit` (hangi savaşçı tipine
+ait) alanlarını taşımak zorundadır ve kart havuzuna GİRMEZ. Yeni bir savaşçı
+eklerken o savaşçı için 2-3 `shop` yeteneği ekle (bkz. `/rw-add-unit`).
+
 ## Tasarım kuralı (en önemli kısım)
 Salt sayı yığını istemiyoruz. `Damage +%10 / +%20 / +%30` zinciri **kabul edilmez**.
 

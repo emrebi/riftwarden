@@ -154,6 +154,91 @@ python tools/assetkit/assetkit.py pack --group ui
 
 ---
 
+## Parti 5 — Kale / citadel
+
+Style bible + aşağıdaki + teknik kurallar.
+
+> Create a single sci-fi citadel structure, viewed orthographic top-down 3/4,
+> designed to stand at the left edge of a battlefield facing right. Allied
+> engineered architecture — hard surfaces, cyan/teal energy seams, panel lines,
+> matching the allied defensive units' design language. The structure has
+> **six visible platform slots** on its upper section where defender units can
+> be seen standing — read clearly as "six troops can garrison here" even
+> without units present (subtle raised platforms or glowing floor markers).
+> A reinforced wall section faces right, toward where enemies would approach.
+> Silhouette must read instantly as "home base to defend" at small size.
+
+```bash
+python tools/assetkit/assetkit.py ingest indirilenler/world.zip --recipe world
+python tools/assetkit/assetkit.py pack --group world
+```
+
+---
+
+## Parti 6 — Çevre objeleri
+
+Style bible + aşağıdaki + teknik kurallar.
+
+> Create a **4 columns x 2 rows** sprite sheet (8 objects, extra cells empty
+> magenta) of sci-fi dimensional battlefield environment props, orthographic
+> top-down 3/4 view, purely decorative scenery pieces:
+>
+> 1. **CRYSTAL ROCK A** — jagged violet-cyan crystal outcropping.
+> 2. **CRYSTAL ROCK B** — smaller cluster variant, different silhouette.
+> 3. **ENERGY PYLON** — tall allied tech tower with a glowing teal beacon top.
+> 4. **RUIN A** — broken alien architecture fragment, partially collapsed.
+> 5. **ALIEN TREE A** — bioluminescent otherworldly tree/plant structure.
+> 6. **MOUNTAIN A** — distant rocky mountain silhouette piece, dimensional-fantasy style.
+>
+> All share the same dimensional-fantasy material language: crystalline growths,
+> void-touched stone, faint inner glow. Same style bible as other parties.
+
+```bash
+python tools/assetkit/assetkit.py ingest indirilenler/world.zip --recipe world
+python tools/assetkit/assetkit.py pack --group world
+```
+
+---
+
+## Parti 7 — Rift portalı
+
+Style bible + aşağıdaki + teknik kurallar.
+
+> Create a single image of a **Rift portal** — a vertical tear in space that
+> stands at the right edge of the battlefield (purely a visual/spawn-flavor
+> element, not a gameplay waypoint). Jagged violet-magenta energy tear with
+> unstable crackling edges, dark matter bleeding out of the center, dimensional
+> fantasy aesthetic matching the Riftborn creatures' energy signature.
+> Reads instantly as "this is where the enemies come from".
+
+```bash
+python tools/assetkit/assetkit.py ingest indirilenler/world.zip --recipe world
+python tools/assetkit/assetkit.py pack --group world
+```
+
+---
+
+## Parti 8 — Sektör arka planı
+
+Style bible (adapte) + aşağıdaki.
+
+> Create a single wide **landscape 16:9** background image for a sci-fi
+> dimensional battlefield floor, orthographic top-down 3/4 view, seen as the
+> ground plane the battle takes place on. Flat painted ground texture — NO
+> chroma background needed here (this is the background itself, not a cutout
+> object): subtle void-purple ground with faint crystalline veins, soft ambient
+> lighting from top-left, no characters, no props, no UI, no text, no vignette
+> that would clash with foreground decor placed on top of it. Must tile/blend
+> smoothly toward the edges since decor objects and the citadel will be
+> composited on top.
+
+```bash
+python tools/assetkit/assetkit.py ingest indirilenler/background.zip --recipe background
+python tools/assetkit/assetkit.py pack --group background
+```
+
+---
+
 ## Gemini'den zip alma
 
 Görseller üretildikten sonra:

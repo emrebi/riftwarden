@@ -13,6 +13,12 @@ description: RIFTWARDEN'a yeni level veya sektör ekler ya da mevcut level'ları
 
 Şema: `docs/CONTENT_SCHEMA.md` → "levels/sector_NN.json" bölümü. Önce onu oku.
 
+> **Birim kuralı:** `x`/`y`/`wallX`/`defenseLineX`/`yMin`/`yMax`/`band` JSON'da
+> 0..1 yazılır (motor x'i `kFieldAspect` = 16/9 ile çarpar). Her level: bir
+> `castle` (id + hp), bir `spawn` bandı (`yMin`, `yMax`, `riftCount`), bir
+> `defenseLineX` (`0 < wallX < defenseLineX < 1`), 0+ `terrain` alanı taşır.
+> Dalga grupları opsiyonel `band` ile kendi spawn aralığını verebilir.
+
 ## Level numaralandırma
 Sektör N → level `(N-1)*5 + 1` … `N*5`. Her sektör tam 5 level.
 Boss level'ları: 5, 10, 15, 20, 25, 30, 35, 40, 45, 50 (her sektörün sonuncusu).
@@ -20,11 +26,11 @@ Boss level'ları: 5, 10, 15, 20, 25, 30, 35, 40, 45, 50 (her sektörün sonuncus
 ## Zorluk eğrisi
 | Level aralığı | difficultyMultiplier | Yeni gelen |
 |---|---|---|
-| 1–5 | 1.00 → 1.10 | Tek rift, tek lane, sadece drifter + ilk upgrade'ler |
-| 6–10 | 1.10 → 1.30 | skitter, iki lane |
+| 1–5 | 1.00 → 1.10 | Dar spawn bandı, sadece drifter + ilk upgrade'ler |
+| 6–10 | 1.10 → 1.30 | skitter, geniş spawn bandı |
 | 11–20 | 1.30 → 1.80 | bulwark/splitter, elite sistemi (`eliteChance` 0.05→0.20) |
-| 21–30 | 1.80 → 2.60 | phaseborn/leech, battlefield modifier'lar |
-| 31–40 | 2.60 → 3.80 | 3 rift, spawner, eşzamanlı çoklu yön |
+| 21–30 | 1.80 → 2.60 | phaseborn/leech, battlefield modifier'lar, terrain alanları çoğalır |
+| 31–40 | 2.60 → 3.80 | `riftCount` artar, spawner, eşzamanlı çoklu bant |
 | 41–49 | 3.80 → 5.50 | Büyük karışık swarm, yoğun elite |
 | 50 | 6.50 | Final: özel battlefield, çok rift, 3 fazlı boss |
 
@@ -46,5 +52,6 @@ Fazla yüksek = boşuna bellek. Düşük = spawn'lar sessizce atlanır (oyun boz
 ```bash
 flutter test test/content_validation_test.dart
 ```
-Bu test şunları yakalar: bilinmeyen enemy/lane/rift id'si, `lane.from` ↔ `rift.id` uyumsuzluğu,
-negatif değer, level numarası boşluğu/çakışması, eksik sprite atfı.
+Bu test şunları yakalar: bilinmeyen enemy/castle/environment id'si, `wallX`/`defenseLineX`
+sıra ihlali, geçersiz `terrain.type`, negatif değer, level numarası boşluğu/çakışması,
+eksik sprite atfı.

@@ -2,7 +2,7 @@
 
 ## Context
 
-`C:\Users\ASUS\Desktop\flutter_projects\wargame` şu an boş bir Flutter 3.47.1 scaffold'u (`lib/main.dart` = counter demo, git repo değil, 6 platform klasörü var). Buradan portrait-only iOS/Android için bir **auto-battle + swarm defense + roguelite upgrade** oyunu (RIFTWARDEN) çıkaracağız.
+`C:\Users\ASUS\Desktop\flutter_projects\wargame` şu an boş bir Flutter 3.47.1 scaffold'u (`lib/main.dart` = counter demo, git repo değil, 6 platform klasörü var). Buradan landscape-only (yatay) iOS/Android için bir **auto-battle + swarm defense + roguelite upgrade** oyunu (RIFTWARDEN) çıkaracağız.
 
 Bu planın asıl amacı kod yazmak değil; **ileride içerik eklerken yapay zekanın repoyu baştan okumak zorunda kalmadığı** bir yapı kurmak. "Level 51 ekle" dendiğinde tek bir JSON dosyasına, "yeni düşman ekle" dendiğinde tek bir config + tek bir behavior dosyasına dokunulmalı. Mimarinin her kararı bu kısıt altında alındı.
 
@@ -156,9 +156,9 @@ BattleSimulation (düz Dart, Flame bilmez)     Flame World (sadece çizer)
 | **Targeting throttle** | Birlikler her karede değil, `id % 6` ile dağıtılmış şekilde ~100ms'de bir hedef tazeler. |
 | **Stat caching** | Upgrade alındığında `StatResolver` bir kez çalışır → `ResolvedStats`. Kare başına stat hesabı yok. |
 | **Behavior flags** | `chainLightning`, `pierce`, `explodeOnDeath` vb. tek `int` bitmask. Kontrol = bit testi. |
-| **AI basitliği** | Pathfinding yok. Level, normalize 0..1 uzayda `lanes` (waypoint listeleri) tanımlar; düşman waypoint takip eder + hafif separation. Engeller lane çizimiyle çözülür, A* ile değil. |
+| **AI basitliği** | Pathfinding yok. Kale sol ortada, savaşçılar kale yuvalarında sabit durur; düşmanlar sağ kenarın dışında spawn bandında rastgele yükseklikte doğar, sola ilerler (hafif dikey salınım + separation), `defenseLineX`'i geçmeden hedeflenemez, `wallX`'e varınca durup kaleye periyodik hasar verir. Motor koordinatı izotropiktir: yükseklik = 1, genişlik = `kFieldAspect` (16/9); JSON'daki tüm konumlar yine 0..1 yazılır, x motor kurulumunda `kFieldAspect` ile çarpılır — menzil/yarıçap/hız yükseklik birimi cinsindendir. |
 
-**HUD köprüsü** (`engine/bridge/battle_signals.dart`): `ValueNotifier<int> aether`, `ValueNotifier<double> coreHpRatio`, `ValueNotifier<WaveProgress>`, `ValueNotifier<UpgradeOffer?>`, `ValueNotifier<AbilityState>`. Sürekli değerler **100 ms'de bir** güncellenir; kesikli olaylar (upgrade teklifi, boss girişi, level sonu) anında. HUD `ValueListenableBuilder` kullanır → kare başına widget rebuild yok.
+**HUD köprüsü** (`engine/bridge/battle_signals.dart`): `ValueNotifier<int> aether`, `ValueNotifier<double> coreHpRatio`, `ValueNotifier<WaveProgress>`, `ValueNotifier<UpgradeOffer?>`, `ValueNotifier<AbilityState>`, `ValueNotifier<List<SlotState>> slots` (kale yuvası doluluğu — sadece değişince push), `ValueNotifier<Map<String, ShopOffer>> abilityShop` (Aether yetenek dükkanı). Sürekli değerler **100 ms'de bir** güncellenir; kesikli olaylar (upgrade teklifi, boss girişi, level sonu, yuva/dükkan değişimi) anında. HUD `ValueListenableBuilder` kullanır → kare başına widget rebuild yok. `BattleCommands`: `requestUnit(unitId)` (boş yuvaya savaşçı), `buyAbility(upgradeId)` (savaşçı yeteneği), `castAbilityAt(nx, ny)` (ekran-normalize koordinat; dünyaya dönüşümü `RiftwardenGame` projeksiyonla yapar).
 
 **Upgrade sunumu — karar:** Slow-motion değil, **tam pause**. 150 ms'lik slow-mo rampasıyla girilir, kartlar alttan yükselir. Gerekçe: tek elle mobil kullanımda oyuncu kart okurken ilerleme kaybetmemeli; ayrıca "ordun büyüdü" hissini veren geri dönüş anını pause temiz gösterir.
 
@@ -175,31 +175,35 @@ assets/content/
     ├── sector_01.json  (level 1-5)  ...  sector_10.json (level 46-50)
 ```
 
-`LevelConfig` şeması (kısaltılmış):
+`LevelConfig` şeması (kısaltılmış — tam şema `docs/CONTENT_SCHEMA.md`'de):
 ```jsonc
 {
   "levelId": 12, "sectorId": 3, "environmentId": "shattered_spires",
-  "coreHp": 1000, "startingAether": 120, "difficultyMultiplier": 1.35,
+  "castle": { "id": "citadel_basic", "hp": 1000 },
+  "startingAether": 120, "difficultyMultiplier": 1.35,
   "maxEnemies": 240,                      // pool kapasitesi
-  "rifts":  [{"id":"a","x":0.22,"y":0.06,"skin":"rift_violet"},
-             {"id":"b","x":0.78,"y":0.06,"skin":"rift_violet"}],
-  "lanes":  [{"id":"la","from":"a","waypoints":[[0.22,0.3],[0.4,0.6],[0.5,0.88]]}],
+  "spawn": { "yMin": 0.22, "yMax": 0.80, "riftSkin": "rift_violet", "riftCount": 3 },
+  "defenseLineX": 0.62,                   // bu cizgiyi gecmeden dusman hedeflenemez
+  "terrain": [
+    { "type": "slow", "x": 0.45, "y": 0.38, "radius": 0.12, "factor": 0.6 }
+  ],
   "modifiers": ["dense_fog"],
   "waves": [
     { "id":1, "delay":2.0, "groups":[
-        {"enemy":"drifter","count":20,"interval":0.35,"lane":"la"} ]},
+        {"enemy":"drifter","count":20,"interval":0.35} ]},
     { "id":2, "delay":4.0, "groups":[
-        {"enemy":"bulwark","count":6,"interval":1.2,"lane":"la","eliteChance":0.15},
-        {"enemy":"skitter","count":18,"interval":0.2,"lane":"lb","delay":3.0} ]}
+        {"enemy":"bulwark","count":6,"interval":1.2,"eliteChance":0.15},
+        {"enemy":"skitter","count":18,"interval":0.2,"delay":3.0,"band":[0.22,0.45]} ]}
   ],
   "boss": null,
   "rewards": {"shards": 25, "firstClearCells": 5}
 }
 ```
+Düşman sağ kenarın hemen dışında `spawn` bandında rastgele yükseklikte doğar (grup kendi `band`'ını verebilir), sola ilerler, `defenseLineX`'i geçene kadar hedeflenemez, kale yapısının `wallX`'ine varınca durup periyodik hasar verir — sur'daki düşman da vurulabilir, kaleye varınca intihar etmez. Rift'ler (`castles.json`/`environments.json` üzerinden görsel) sağ kenarda sadece görseldir, asıl spawn rastgele yüksekliktedir.
 
 **Sonuç:** "Level 51–55 ekle" = `levels/sector_11.json` yaz + `sectors.json`'a bir giriş. **Hiçbir Dart dosyasına dokunulmaz.** "Vortexer düşmanı ekle" = `enemies.json`'a giriş + gerekiyorsa `engine/simulation/systems/behaviors/vortexer_behavior.dart` + registry'ye tek satır.
 
-`test/content_validation_test.dart` tüm JSON'ları yükleyip doğrular: bilinmeyen enemy/lane/rift id'si, negatif değer, eksik atlas anahtarı, sector-level boşluğu → test kırmızı olur. Bu, worker'ın veri hatalarını bedava yakalar.
+`test/content_validation_test.dart` tüm JSON'ları yükleyip doğrular: bilinmeyen enemy/castle/environment id'si, geçersiz spawn bandı veya terrain değeri, negatif değer, eksik atlas anahtarı, sector-level boşluğu → test kırmızı olur. Bu, worker'ın veri hatalarını bedava yakalar.
 
 **Upgrade modeli** — salt sayı artışı değil, iki mekanizma:
 ```jsonc
@@ -240,9 +244,9 @@ Reklam sonrası revive tükenince "gerçek para ile devam et" (Cell harcama) se�
 
 ## 7. Platform, Lokalizasyon, Font
 
-**Mobil-only:** `web/`, `windows/`, `linux/`, `macos/` klasörleri silinir, `.metadata` temizlenir. `main.dart`'ta `SystemChrome.setPreferredOrientations([portraitUp, portraitDown])`.
-- Android: `applicationId` + `namespace` = `com.riftwarden.game`, `minSdk 24`, `targetSdk 36`, AdMob App ID meta-data.
-- iOS: deployment target `15.0`, Info.plist'te portrait-only, `GADApplicationIdentifier`, `SKAdNetworkItems`, `NSUserTrackingUsageDescription`.
+**Mobil-only:** `web/`, `windows/`, `linux/`, `macos/` klasörleri silinir, `.metadata` temizlenir. `bootstrap.dart`'ta `SystemChrome.setPreferredOrientations([landscapeLeft, landscapeRight])`.
+- Android: `applicationId` + `namespace` = `com.riftwarden.game`, `minSdk 24`, `targetSdk 36`, AdMob App ID meta-data, `MainActivity` `screenOrientation="sensorLandscape"`.
+- iOS: deployment target `15.0`, Info.plist'te landscape-only (`UIInterfaceOrientationLandscapeLeft/Right`), `GADApplicationIdentifier`, `SKAdNetworkItems`, `NSUserTrackingUsageDescription`.
 - Safe area: tüm ekranlar `SafeArea`; savaş HUD'u notch/Dynamic Island/Android gesture bar'ı hesaba katan `MediaQuery.viewPadding` ile konumlanır.
 
 **15 dil** (`l10n/app_*.arb`, gen-l10n): `en ja ko zh zh_Hant de fr es it pt_BR ru ar th id tr`. Sistem dili default, fallback `en`. Arapça için RTL — tüm UI `EdgeInsetsDirectional` ve `start/end` kullanacak (savaş alanı yön-bağımsız kalır).
@@ -305,7 +309,7 @@ Ek olarak kök `CLAUDE.md` (sert kurallar + komutlar) ve `docs/CONTENT_MAP.md` (
 
 Her adım = bir Sonnet worker görevi + bir commit. Commit mesajları önerilmiştir.
 
-### M0 — Temel (4 adım)
+### M0 — Temel (4 adım) ✅ bitti
 | # | İş | Commit |
 |---|---|---|
 | 1 | Platform temizliği: web/windows/linux/macos sil, bundle id `com.riftwarden.game`, portrait lock, minSdk 24 / iOS 15, `.metadata` temizle, counter demo sil | `proje mobil-only hale getirildi ve kimlik ayarlandı` |
@@ -313,7 +317,7 @@ Her adım = bir Sonnet worker görevi + bir commit. Commit mesajları önerilmi�
 | 3 | `core/services`: Storage, Audio, Haptic, Log + Riverpod `ProviderScope` + `bootstrap.dart` init sırası | `core servisler ve bootstrap eklendi` |
 | 4 | l10n altyapısı, 15 ARB dosyası (anahtarlar + en/tr dolu, diğerleri placeholder), `AppFonts.forLocale` | `15 dil altyapısı eklendi` |
 
-### M1 — İçerik ve Domain (4 adım)
+### M1 — İçerik ve Domain (4 adım) ✅ bitti (adım 7 kısmen — içerik genişletmesi M2.5 sonrasına ertelendi, bkz. `docs/KNOWN_GAPS.md`)
 | # | İş | Commit |
 |---|---|---|
 | 5 | `tools/assetkit/` tamamı + `docs/ASSET_PROMPTS.md` → **Gemini asset üretimi buradan sonra paralel başlayabilir** | `asset pipeline araçları eklendi` |
@@ -321,7 +325,7 @@ Her adım = bir Sonnet worker görevi + bir commit. Commit mesajları önerilmi�
 | 7 | İlk içerik verisi: 3 birlik, 7 düşman arketipi, ~40 upgrade, Rift Collapse ability, sector 1-2 level'ları | `başlangıç içerik verisi eklendi` |
 | 8 | `domain/rules`: StatResolver, DamageCalculator, UpgradePool, WavePlanner, RewardCalculator | `savaş kuralları katmanı eklendi` |
 
-### M2 — Motor (5 adım)
+### M2 — Motor (5 adım) ✅ bitti (adım 10 lane/movement modeli M2.5'te yeniden kuruldu)
 | # | İş | Commit |
 |---|---|---|
 | 9 | Simülasyon çekirdeği: entity struct'ları, `EntityPool`, `SpatialHashGrid`, fixed-timestep `BattleSimulation` | `simülasyon çekirdeği ve entity havuzu eklendi` |
@@ -329,6 +333,23 @@ Her adım = bir Sonnet worker görevi + bir commit. Commit mesajları önerilmi�
 | 11 | Render: `SpriteBatch` renderer'lar, placeholder atlas, kamera, interpolasyon | `batch render katmanı eklendi` |
 | 12 | Efektler: particle pool, hasar sayıları, screen shake, haptic tetikleyicileri, ölüm animasyonu | `görsel geri bildirim katmanı eklendi` |
 | 13 | `BattleSignals` köprüsü + Ability sistemi (Rift Collapse, dokunmalı hedefleme + warning) | `HUD köprüsü ve özel yetenek eklendi` |
+
+### M2.5 — Savaş alanı yeniden kurgusu (yatay kale savunması)
+
+İlk oynanabilir sürüm (dikey, lane/waypoint tabanlı) oynandı ve kurgu beğenilmedi.
+Yeni model: **yatay ekran, kale sol ortada, savaşçılar kale yuvalarında sabit,
+düşmanlar sağdan rastgele yükseklikten gelir, savunma sınırı geçilmeden ateş yok,
+sur'daki düşman kaleye saldırır, Aether ile savaşçı + yetenek alınır, arazi alanları
+(slow/cover) oynanışı etkiler**. Tam gerekçe ve şema: plan dosyası
+`flutter-flame-ile-bir-joyful-kazoo.md` bölüm 1-6, `docs/CONTENT_SCHEMA.md`.
+
+Adımlar P1-P14 (planner/worker arası, her biri ayrı commit): tasarım dokümanları →
+platform yönü → menü ekranları yatay (agy) → menü duman testi → şema + izotropik
+dünya + düşman tarafı → kale yuvaları + sınır + yetenek dükkanı → savaş HUD'u (agy) →
+arazi alanları → harita render + geçici asset → savaş ekranı duman testi.
+
+Durum: 1, 2, 3, 5, 6, 8, 9, 10, 11, 12, 13 bitti. 4 (l10n dil doldurma) ve 7
+(içerik genişletme — daha fazla level/upgrade/düşman) ertelendi.
 
 ### M3 — Oyun Akışı (4 adım)
 | # | İş | Commit |

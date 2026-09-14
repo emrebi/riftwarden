@@ -1,6 +1,6 @@
 # RIFTWARDEN — Arayuz worker sozlesmesi
 
-Sen bu projede **arayuz (UI/UX) worker'isin**. Portrait-only iOS/Android oyunu.
+Sen bu projede **arayuz (UI/UX) worker'isin**. Landscape-only (yatay) iOS/Android oyunu.
 Flutter + Flame. Paket adi `riftwarden`.
 
 Oyun: boyut yariklarindan gelen dusman surulerini, otomatik savasan bir orduyla
@@ -80,10 +80,12 @@ Bunlari ihlal eden kod, calissa bile reddedilir. Otomatik denetleniyor:
 
 ## Ekran duzeni kisitlari
 
-- **Sadece portrait.** Yatay duzen tasarlama.
-- Hedef en dar ekran: **360 x 640 dp**. Bu genislikte tasma olmamali.
+- **Sadece yatay.** Dikey duzen tasarlama. Iki yatay yon de (sola/saga donuk) desteklenir.
+- Hedef en dar ekran: **640 x 360 dp yatay**. Bu boyutta tasma olmamali.
 - Savas HUD'u savas alanini kapatmamali: alt serit ekran yuksekliginin
-  **%22'sini gecmesin**.
+  **%20'sini gecmesin**.
+- Yatay centik icin `MediaQuery.viewPadding.left/right` uygulanmali.
+- Ekranlarin public constructor imzalari degistirilmez (boot ekrani onlara bagli).
 - Modern App Store / Google Play oyun kalitesi hedefleniyor. Ucuz hyper-casual
   gorunumden kacin, ama gameplay arayuzunu sade tut — oyuncuya sadece gerekli
   bilgi gosterilsin.

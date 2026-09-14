@@ -16,6 +16,9 @@ Aşağıdaki tablodan işini bul, **sadece** listelenen dosyaları aç.
 | **Yeni upgrade ekle** | `assets/content/upgrades.json`, (yeni davranış ise) `lib/domain/rules/behavior_flags.dart` | `/rw-add-upgrade` |
 | **Yeni boss ekle** | `assets/content/bosses.json`, `lib/engine/simulation/systems/boss_system.dart` | `/rw-add-boss` |
 | **Yeni yetenek ekle** | `assets/content/abilities.json`, `lib/engine/simulation/systems/ability_system.dart` | — |
+| **Kale/harita objesi ekle veya değiştir** | `assets/content/castles.json`, `assets/content/environments.json` | `/rw-add-level` |
+| **Arazi alanı davranışı değiştir (slow/cover)** | `lib/engine/simulation/systems/terrain_system.dart` | — |
+| **Harita render'ını değiştir** | `lib/engine/render/map_renderer.dart` | — |
 | **Mağaza ürünü ekle/değiştir** | `assets/content/store.json`, `lib/core/services/iap_service.dart` | — |
 | **Meta upgrade ekle** | `assets/content/meta_upgrades.json` | — |
 | **Yeni dil metni ekle** | `lib/l10n/arb/app_en.arb` (şablon) + diğer 15 ARB, sonra `flutter gen-l10n` | — |
@@ -77,6 +80,8 @@ assets/content/
 ├── abilities.json        aktif yetenekler
 ├── modifiers.json        battlefield modifier'ları
 ├── sectors.json          10 sektör: ortam, palet, rift görünümü
+├── castles.json          kale tipleri: sprite, konum, duvar sınırı, savaşçı yuvaları
+├── environments.json     zemin + dekor öğeleri (dağ, ağaç, bina vb.)
 ├── meta_upgrades.json    kalıcı ilerleme (Rift Shard ile)
 ├── store.json            IAP + soft currency ürünleri
 └── levels/

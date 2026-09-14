@@ -9,12 +9,13 @@ Yeni bir açık fark edilirse buraya yazılır. Kapatılınca satır silinir.
 
 ## İçerik / denge
 
-### 1. Level'lar çok kısa
-**Durum:** Sector 1'de level başına 2-3 dalga, ~12-24 saniye.
+### 1. Level tempo ayarı bekliyor
+**Durum:** Yatay kale savunması kurgusuna (M2.5) geçildi; dalga/süre dengesi henüz
+oynanarak doğrulanmadı.
 **Hedef:** 5-9 dalga, 2-5 dakika (bkz. `docs/ARCHITECTURE.md` oyun süresi).
-**Neden ertelendi:** Motor çalışmadan tempo ayarlamak körlemesine olur. Oyuncunun
-Aether biriktirme ve upgrade alma ritmi görülmeden dalga sayısı anlamlı seçilemez.
-**Ne zaman:** Render (adım 11) bitip savaş ekranda görülebilir olunca.
+**Neden ertelendi:** Harita render + geçici asset (P13) bitip savaş alanı gerçek
+haliyle görülmeden tempo ayarı körlemesine olur.
+**Ne zaman:** P13 (harita render) sonrası, oynanarak ayarlanacak.
 **Nerede:** `assets/content/levels/sector_01.json`
 
 ### 2. Upgrade ailelerinde 2 üye var
@@ -45,6 +46,30 @@ GC'si bunu ucuz toplar, ama swarm hedefinde ölçülmesi gereken bir kalem.
 **Neden şimdi yapılmadı:** Profil almadan optimize etmek tahmin olur. Önce gerçek
 cihazda 200+ düşmanla FPS ölçülecek (bkz. `docs/ARCHITECTURE.md` doğrulama bölümü).
 **Ne zaman:** Adım 23 performans geçişi, ölçüm sonucuna göre.
+
+---
+
+## Yatay kale savunması (M2.5)
+
+### Arapça rakamlar
+**Durum:** Sayılar ham `'$deger'` interpolasyonuyla yazılıyor (ör. Aether, HP).
+**Sorun:** `ar` locale'i için Batı Arap rakamları yerine yerel basamak biçimi gerekir;
+ham interpolasyon bunu atlar.
+**Çözüm:** `intl` paketinin `NumberFormat`'ı ile locale'e duyarlı biçimlendirme.
+**Ne zaman:** Adım 21 (çeviri + font).
+
+### Sektör arka plan resmi
+**Durum:** Şu an `MapRenderer` prosedürel bir zemin gradyanı çiziyor, gerçek
+arka plan resmi yok.
+**Ne zaman:** Adım 22 (gerçek asset), `docs/ASSET_PROMPTS.md` Parti 8.
+
+### Release doğrulaması
+**Durum:** `flutter analyze` geçmesi uygulamanın gerçek cihazda çalıştığını
+GÖSTERMEZ. Görsel adımlarda release APK cihazda/emülatörde açılıp kontrol edilmeli.
+**Örnekler:** `Stack`'in tüm çocukları `Positioned*` ise `fit: StackFit.expand`
+olmadan `0x0`'a çöküp ekran sessizce boş görünür; R8'in `androidx.work`/`Room`
+sınıflarını silip açılışta çökertmesi (keep kuralları eksikse).
+**Ne zaman:** Her görsel adımdan sonra kullanıcı manuel kontrolü.
 
 ---
 

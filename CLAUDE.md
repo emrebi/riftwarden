@@ -1,6 +1,6 @@
 # RIFTWARDEN
 
-Portrait-only iOS/Android oyunu. Tur: auto-battle + swarm defense + roguelite upgrade.
+Landscape-only (yatay) iOS/Android oyunu. Tur: auto-battle + swarm defense + roguelite upgrade.
 Flutter + Flame. Paket adi `riftwarden`, bundle id `com.riftwarden.game`.
 
 Mimari planin tamami: `docs/ARCHITECTURE.md`
@@ -100,6 +100,12 @@ python tools/assetkit/assetkit.py verify
 
 ## Dikkat edilecek tuzaklar
 
+- **`Stack`'in tum cocuklari `Positioned*` ise `fit: StackFit.expand` olmadan
+  `0x0`'a coker.** Ekran sessizce bos gorunur, hata firlamaz.
+- **Release'de R8, reflection ile bulunan `androidx.work`/`Room` siniflarini siler.**
+  Keep kurallari `android/app/proguard-rules.pro` icinde, silinmemeli.
+- **Motor koordinati izotropiktir:** y 0..1, x 0..`kFieldAspect` (16/9).
+  JSON'daki x yine 0..1 yazilir, motor kurulumunda `kFieldAspect` ile carpilir.
 - **`Override` tipi Riverpod 3'te public degil.** `ProviderScope(overrides: [...])`
   listesine acik tip argumani yazma; cikarima birak.
 - **`pt_BR` icin `app_pt.arb` sart.** gen-l10n script/country kodlu locale'lerde
