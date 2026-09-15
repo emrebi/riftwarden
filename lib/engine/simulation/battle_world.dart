@@ -39,15 +39,16 @@ class BattleWorld {
     required this.coreMaxHp,
     required this.coreX,
     required this.coreY,
+    required this.wallX,
+    required this.defenseLineX,
+    required this.spawnYMin,
+    required this.spawnYMax,
+    required this.riftCount,
     required this.aether,
     required this.rng,
     required this.resolvedUnitStats,
     required this.unitStatsIndex,
     required this.spawnSchedule,
-    required this._laneOffsets,
-    required this._laneWaypointX,
-    required this._laneWaypointY,
-    required this._laneIndexOfId,
     required this.queryScratch,
     required this.unitProducedCount,
     required this.effects,
@@ -66,34 +67,10 @@ class BattleWorld {
     final rng = RngSource(seed);
     final spawnSchedule = WavePlanner.plan(level, rng);
 
-    // Lane waypoint'leri tek duz Float64List'te tutulur (X ve Y ayri
-    // dizilerde). Neden: her karede yuzlerce dusman icin lane bilgisine
-    // erisilir; `List<LaneConfig>` + `List<(double,double)>` gezmek her
-    // erisimde nesne dereferansi ve olasi kutu (boxing) demektir. Duz
-    // dizi + offset tablosu ise index'li, cache-dostu, allocation'siz
-    // erisim saglar. `laneOffsets[i]..laneOffsets[i+1]` o lane'in
-    // waypoint araligini verir.
-    var totalWaypoints = 0;
-    for (final lane in level.lanes) {
-      totalWaypoints += lane.waypoints.length;
-    }
-    final laneOffsets = Int32List(level.lanes.length + 1);
-    final laneWaypointX = Float64List(totalWaypoints);
-    final laneWaypointY = Float64List(totalWaypoints);
-    final laneIndexOfId = <String, int>{};
-
-    var cursor = 0;
-    for (var i = 0; i < level.lanes.length; i++) {
-      final lane = level.lanes[i];
-      laneIndexOfId[lane.id] = i;
-      laneOffsets[i] = cursor;
-      for (final point in lane.waypoints) {
-        laneWaypointX[cursor] = point.$1;
-        laneWaypointY[cursor] = point.$2;
-        cursor++;
-      }
-    }
-    laneOffsets[level.lanes.length] = cursor;
+    // Kale konumu ve sinir X'leri izotropik dunyaya cevrilir: JSON'da 0..1
+    // yazilir, motor kurulumunda `kFieldAspect` ile carpilir (bkz.
+    // `docs/CONTENT_SCHEMA.md` basi "Birim kurali"). Y degismez.
+    final castle = content.castle(level.castle.id);
 
     // Birlik stat cozumlemesi: her unit tipi icin tek bir ResolvedStats
     // blogu, indeksle referanslanir (bkz. UnitEntity.statsIndex yorumu).
@@ -113,28 +90,34 @@ class BattleWorld {
       units: EntityPool<UnitEntity>(kUnitPoolCapacity, UnitEntity.new),
       projectiles:
           EntityPool<ProjectileEntity>(level.maxProjectiles, ProjectileEntity.new),
-      enemyGrid: SpatialHashGrid(cellSize: kSpatialCellSize, capacity: level.maxEnemies),
-      unitGrid: SpatialHashGrid(cellSize: kSpatialCellSize, capacity: kUnitPoolCapacity),
+      enemyGrid: SpatialHashGrid(
+        cellSize: kSpatialCellSize,
+        capacity: level.maxEnemies,
+        width: kFieldWidth,
+      ),
+      unitGrid: SpatialHashGrid(
+        cellSize: kSpatialCellSize,
+        capacity: kUnitPoolCapacity,
+        width: kFieldWidth,
+      ),
       level: level,
       content: content,
       coreHp: level.coreHp,
       coreMaxHp: level.coreHp,
-      // Core konumu sabittir: tum level'larda savunulan yapi ayni yerde
-      // durur, sadece dusman lane'leri farklilasir.
-      coreX: 0.5,
-      coreY: 0.86,
+      // Kale konumu castles.json'dan gelir; sadece x izotropik dunyaya
+      // cevrilir (bkz. yukaridaki yorum).
+      coreX: castle.x * kFieldAspect,
+      coreY: castle.y,
+      wallX: castle.wallX * kFieldAspect,
+      defenseLineX: level.defenseLineX * kFieldAspect,
+      spawnYMin: level.spawn.yMin,
+      spawnYMax: level.spawn.yMax,
+      riftCount: level.spawn.riftCount,
       aether: level.startingAether.toInt(),
       rng: rng,
       resolvedUnitStats: resolvedUnitStats,
       unitStatsIndex: unitStatsIndex,
       spawnSchedule: spawnSchedule,
-      // `this._alan` initializing formal'inin cagri sitesindeki adi hala
-      // public isimdir (Dart kurali); ozel alan sadece sinif govdesinde
-      // ozeldir.
-      laneOffsets: laneOffsets,
-      laneWaypointX: laneWaypointX,
-      laneWaypointY: laneWaypointY,
-      laneIndexOfId: laneIndexOfId,
       queryScratch: Int32List(kMaxQueryResults),
       // Uretim sayaci kurulumda bos baslar; EconomySystem her uretimde
       // artirir (bkz. asagidaki yorum).
@@ -172,6 +155,23 @@ class BattleWorld {
   final double coreX;
   final double coreY;
 
+  /// Dusmanin durup sur'a saldirdigi sinir (izotropik dunya X'i, kFieldAspect
+  /// ile carpilmis). `castles.json > wallX`.
+  final double wallX;
+
+  /// Bu cizgiyi gecmeden dusman hedeflenemez (izotropik dunya X'i).
+  /// `level.defenseLineX`.
+  final double defenseLineX;
+
+  /// Dusman spawn bandinin Y araligi. X ekseninde carpim gerekmez (Y zaten
+  /// izotropik dunyada da 0..1).
+  final double spawnYMin;
+  final double spawnYMax;
+
+  /// Sag kenarda gorsel olarak cizilecek rift portali sayisi (bkz.
+  /// `FieldBackground`; spawn burada DEGIL, rastgele Y'de olur).
+  final int riftCount;
+
   int aether;
 
   final RngSource rng;
@@ -187,11 +187,6 @@ class BattleWorld {
   /// tukettigini isaretler.
   final List<SpawnEvent> spawnSchedule;
   int nextSpawnIndex = 0;
-
-  final Int32List _laneOffsets;
-  final Float64List _laneWaypointX;
-  final Float64List _laneWaypointY;
-  final Map<String, int> _laneIndexOfId;
 
   /// Spatial sorgu sonuclarinin yazildigi paylasilan tampon. Sorgu basina
   /// liste olusturmamak icin kurulumda bir kez ayrilir; cagiran sonucu
@@ -403,28 +398,6 @@ class BattleWorld {
     _productionQueueHead = (_productionQueueHead + 1) % _productionQueueCapacity;
     _productionQueueCount--;
     return id;
-  }
-
-  /// Bir lane'in kac waypoint'i oldugu.
-  int laneWaypointCount(int laneIndex) =>
-      _laneOffsets[laneIndex + 1] - _laneOffsets[laneIndex];
-
-  /// Bir lane'in [waypointIndex]. waypoint'inin X koordinati.
-  double laneWaypointX(int laneIndex, int waypointIndex) =>
-      _laneWaypointX[_laneOffsets[laneIndex] + waypointIndex];
-
-  /// Bir lane'in [waypointIndex]. waypoint'inin Y koordinati.
-  double laneWaypointY(int laneIndex, int waypointIndex) =>
-      _laneWaypointY[_laneOffsets[laneIndex] + waypointIndex];
-
-  /// `LaneConfig.id` -> lane indeksi. Spawn sistemi (adim 10) `SpawnEvent
-  /// .laneId` degerini bu indekse cevirip `EnemyEntity.laneIndex`'e yazar.
-  int laneIndexOfId(String id) {
-    final index = _laneIndexOfId[id];
-    if (index == null) {
-      throw StateError('BattleWorld: bilinmeyen lane id: "$id"');
-    }
-    return index;
   }
 
   /// Bir upgrade alindiginda cagrilir; [resolvedUnitStats] listesini

@@ -42,7 +42,7 @@ enum SystemPhase {
   /// hedefine dogru ayni adimda donebilsin.
   targeting,
 
-  /// Konum guncellemeleri (lane takibi, separation, mermi ucusu).
+  /// Konum guncellemeleri (dusman hareketi, separation, mermi ucusu).
   movement,
 
   /// Saldiri, hasar, olum isaretleme. Hareketten SONRA: menzil kontrolu

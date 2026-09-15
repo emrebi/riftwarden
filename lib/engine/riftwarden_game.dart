@@ -71,7 +71,16 @@ class RiftwardenGame extends FlameGame {
         signals = BattleSignals() {
     simulation = BattleSimulation(signals: signals)..attachWorld(battleWorld);
     registerDefaultSystems(simulation);
-    commands = BattleController(simulation);
+    // `BattleController` calisir DUNYA (izotropik motor) koordinatinda;
+    // UI'dan gelen dokunma ise EKRAN-normalize (0..1, ekranin kendi
+    // genislik/yuksekligine gore) koordinattir (bkz. `battle_screen.dart`
+    // `onTapDown`). Bu ikisi arasindaki cevrim `FieldProjection`e (letterbox
+    // `offsetX` + `scale`) ihtiyac duyar; `BattleController`
+    // (`engine/simulation`) render katmanini TANIMAMALI (bkz. CLAUDE.md
+    // kural 2). Bu yuzden cevrim, simulasyon ile render'i zaten birbirine
+    // baglayan TEK yer olan bu sinifta (`RiftwardenGame`, bkz. dosya basi
+    // yorumu) `_ProjectionAwareCommands` sarmalayicisiyla yapilir.
+    commands = _ProjectionAwareCommands(BattleController(simulation), this);
   }
 
   final LevelConfig level;
@@ -208,4 +217,44 @@ class RiftwardenGame extends FlameGame {
     signals.dispose();
     super.onDispose();
   }
+}
+
+/// [BattleCommands] sarmalayicisi: `castAbilityAt` disindaki tum komutlari
+/// oldugu gibi devreder, sadece nisan koordinatini EKRAN-normalize'den
+/// DUNYA'ya cevirir (bkz. `RiftwardenGame` constructor'indaki yorum).
+///
+/// `_game.projection` `late final` oldugu ve `RiftwardenGame.onLoad`de
+/// kuruldugu icin bu sarmalayici sadece oyun yuklendikten SONRA (yani UI
+/// yetenek nisanini gosterebildikten sonra) cagrilabilir; erken cagri
+/// olmaz cunku nisan alma UI'i zaten `signals.ability.isAiming` uzerinden
+/// acilir ve bu sinyal ancak savas basladiktan sonra true olabilir.
+class _ProjectionAwareCommands implements BattleCommands {
+  _ProjectionAwareCommands(this._inner, this._game);
+
+  final BattleCommands _inner;
+  final RiftwardenGame _game;
+
+  @override
+  void requestUnit(String unitId) => _inner.requestUnit(unitId);
+
+  @override
+  void toggleAbilityAiming() => _inner.toggleAbilityAiming();
+
+  @override
+  void castAbilityAt(double x, double y) {
+    final projection = _game.projection;
+    _inner.castAbilityAt(projection.toWorldX(x), projection.toWorldY(y));
+  }
+
+  @override
+  void chooseUpgrade(String upgradeId) => _inner.chooseUpgrade(upgradeId);
+
+  @override
+  void rerollUpgrades() => _inner.rerollUpgrades();
+
+  @override
+  void pause() => _inner.pause();
+
+  @override
+  void resume() => _inner.resume();
 }

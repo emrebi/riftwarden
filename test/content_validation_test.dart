@@ -1,9 +1,9 @@
 // Icerik JSON dosyalarinin semaya ve capraz referanslara uydugunu dogrular.
 //
 // Neden bu test var: icerik artik koddan ayri (`assets/content/*.json`).
-// Bir level dosyasinda yazim hatasi (var olmayan lane id'si, enemy id'si vb.)
-// derleme zamaninda YAKALANMAZ, sadece calisma zamaninda patlar. Bu test
-// o hatalari CI'da/analyze asamasinda yakalar.
+// Bir level dosyasinda yazim hatasi (var olmayan enemy id'si, castle id'si
+// vb.) derleme zamaninda YAKALANMAZ, sadece calisma zamaninda patlar. Bu
+// test o hatalari CI'da/analyze asamasinda yakalar.
 import 'package:flutter_test/flutter_test.dart';
 import 'package:riftwarden/content/loader/content_loader.dart';
 import 'package:riftwarden/content/registry/content_registry.dart';
@@ -26,35 +26,108 @@ void main() {
     expect(registry.abilities, isNotEmpty);
     expect(registry.sectors, isNotEmpty);
     expect(registry.levels, isNotEmpty);
+    expect(registry.castles, isNotEmpty);
+    expect(registry.environments, isNotEmpty);
   });
 
-  test('her lane.from var olan bir rift.id\'ye isaret eder', () {
+  test('her level.castle.id castles.json icinde tanimli ve en az 1 yuvasi var', () {
     for (final level in registry.levels.values) {
-      final riftIds = level.rifts.map((r) => r.id).toSet();
-      for (final lane in level.lanes) {
-        expect(
-          riftIds.contains(lane.from),
-          isTrue,
-          reason: 'level ${level.levelId}: lane "${lane.id}" bilinmeyen rift '
-              '"${lane.from}" isaret ediyor',
-        );
+      expect(
+        registry.castles.containsKey(level.castle.id),
+        isTrue,
+        reason: 'level ${level.levelId}: bilinmeyen castle "${level.castle.id}"',
+      );
+      final castle = registry.castle(level.castle.id);
+      expect(
+        castle.slots, isNotEmpty,
+        reason: 'castle "${castle.id}": en az 1 yuva olmali',
+      );
+    }
+  });
+
+  test('castle.wallX < level.defenseLineX < 1 ve 0 < wallX', () {
+    for (final level in registry.levels.values) {
+      final castle = registry.castle(level.castle.id);
+      expect(
+        castle.wallX > 0,
+        isTrue,
+        reason: 'castle "${castle.id}": wallX 0dan buyuk olmali',
+      );
+      expect(
+        castle.wallX < level.defenseLineX,
+        isTrue,
+        reason: 'level ${level.levelId}: wallX (${castle.wallX}) < '
+            'defenseLineX (${level.defenseLineX}) olmali',
+      );
+      expect(
+        level.defenseLineX < 1,
+        isTrue,
+        reason: 'level ${level.levelId}: defenseLineX 1den kucuk olmali',
+      );
+    }
+  });
+
+  test('spawn.yMin < yMax, 0..1 icinde; grup band\'lari bu aralikta', () {
+    for (final level in registry.levels.values) {
+      final spawn = level.spawn;
+      expect(spawn.yMin >= 0, isTrue, reason: 'level ${level.levelId}: yMin >= 0 olmali');
+      expect(
+        spawn.yMin < spawn.yMax,
+        isTrue,
+        reason: 'level ${level.levelId}: yMin < yMax olmali',
+      );
+      expect(spawn.yMax <= 1, isTrue, reason: 'level ${level.levelId}: yMax <= 1 olmali');
+
+      for (final wave in level.waves) {
+        for (final group in wave.groups) {
+          final band = group.band;
+          if (band == null) continue;
+          expect(
+            band.$1 >= spawn.yMin && band.$2 <= spawn.yMax && band.$1 < band.$2,
+            isTrue,
+            reason: 'level ${level.levelId}, dalga ${wave.id}: grup band '
+                '$band spawn araligi [${spawn.yMin}, ${spawn.yMax}] disinda',
+          );
+        }
       }
     }
   });
 
-  test('her group.lane var olan bir lane.id\'ye isaret eder', () {
+  test('terrain.type slow veya cover; slow icin 0<factor<1, cover icin 0<damageTakenMul<1', () {
     for (final level in registry.levels.values) {
-      final laneIds = level.lanes.map((l) => l.id).toSet();
-      for (final wave in level.waves) {
-        for (final group in wave.groups) {
+      for (final zone in level.terrain) {
+        expect(
+          zone.type == 'slow' || zone.type == 'cover',
+          isTrue,
+          reason: 'level ${level.levelId}: gecersiz terrain type "${zone.type}"',
+        );
+        if (zone.type == 'slow') {
           expect(
-            laneIds.contains(group.lane),
+            zone.factor != null && zone.factor! > 0 && zone.factor! < 1,
             isTrue,
-            reason: 'level ${level.levelId}, dalga ${wave.id}: grup bilinmeyen '
-                'lane "${group.lane}" isaret ediyor',
+            reason: 'level ${level.levelId}: slow terrain icin 0<factor<1 olmali',
+          );
+        } else {
+          expect(
+            zone.damageTakenMul != null &&
+                zone.damageTakenMul! > 0 &&
+                zone.damageTakenMul! < 1,
+            isTrue,
+            reason: 'level ${level.levelId}: cover terrain icin 0<damageTakenMul<1 olmali',
           );
         }
       }
+    }
+  });
+
+  test('level.environmentId environments.json icinde tanimli', () {
+    for (final level in registry.levels.values) {
+      expect(
+        registry.environments.containsKey(level.environmentId),
+        isTrue,
+        reason: 'level ${level.levelId}: bilinmeyen environment '
+            '"${level.environmentId}"',
+      );
     }
   });
 

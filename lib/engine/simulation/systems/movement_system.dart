@@ -12,9 +12,16 @@ import 'package:riftwarden/engine/simulation/entities/entities.dart';
 /// `slowTimer`'i dolduracak, buradaki carpan ise motor sabitidir.
 const double kSlowSpeedMultiplier = 0.5;
 
-/// Core'un carpisma yaricapi (normalize birim). Core konumu sabit oldugu
-/// icin bu deger de sabit tutulur; icerik JSON'unda Core geometrisi yok.
-const double kCoreRadius = 0.03;
+/// Dusmanin sag kenardan sola ilerlerken yaptigi dikey salinimin acisal
+/// frekansi (radyan/saniye). Formasyon halinde degil, "swarm" gibi
+/// dagitik gorunmesi icin her dusman [EnemyEntity.wanderPhase] ile farkli
+/// baslangic acisindan salinir (bkz. o alanin dosya basi yorumu).
+const double kEnemyWanderFrequency = 1.6;
+
+/// Dikey salinimin genligi (yukseklik birimi/saniye). `sin(...) *
+/// kEnemyWanderAmplitude * dt` seklinde uygulanir; kucuk tutulur ki
+/// salinim gorsel bir "titreme" degil hafif bir "suzulme" hissi versin.
+const double kEnemyWanderAmplitude = 0.05;
 
 /// Separation (boids-lite) sorgu yaricapi. `kSpatialCellSize`'dan kucuk
 /// tutulur ki sorgu tek hucreye yakin kalsin.
@@ -46,12 +53,17 @@ const double kUnitSeparationStrength = 0.15;
 /// zaten kisa (yakin dovus) oldugu icin pratikte on hatta yigilir; bu
 /// sabitler esas olarak HENUZ hedef yokken (dalga henuz gelmemisken)
 /// birliklerin nerede bekleyecegini belirler.
+///
+/// P9 kapsami DISI (brief kurali "BIRLIK bolumune DOKUNMA"): bu sabitler
+/// ve asagidaki `_stepUnits` eski (dusman yolu takip modeli) modeline
+/// gore yazildi, kale yuvasi sistemi (P10) birlik konumlanmasini
+/// tamamen degistirecek.
 const double kTankFrontDistance = 0.55;
 const double kSwarmFrontDistance = 0.35;
 const double kRangedFrontDistance = 0.15;
 const double kSupportFrontDistance = 0.05;
 
-/// Core hasari sarsintisi. Brief: "Core hasari (orta)" — vurus
+/// Core (kale) hasari sarsintisi. Brief: "Core hasari (orta)" — vurus
 /// kivilcimlarindan (sarsintisiz) belirgin sekilde daha guclu, ama Rift
 /// Collapse patlamasindan (bkz. `AbilitySystem.kAbilityBlastShakeIntensity`)
 /// hafif daha az: oyuncu Core'un TEHDIT ALTINDA oldugunu hissetmeli ama
@@ -59,10 +71,15 @@ const double kSupportFrontDistance = 0.05;
 const double kCoreHitShakeIntensity = 0.016;
 const double kCoreHitShakeDuration = 0.22;
 
-/// Dusman lane takibi, Core'a varis ve hafif ayrisma (separation).
+/// Dusman hareketi (sagdan sola, dikey salinim, sur'da durup saldirma) ve
+/// birlik/mermi hareketi.
 ///
-/// 10a kapsaminda SADECE dusmanlar hareket ediyordu; 10b ile birlik ve
-/// mermi hareketi asagida eklendi (dusman bolumune dokunulmadi).
+/// P9 (A1) ile dusman bolumu tamamen yeniden yazildi: sabit yol takibi
+/// yerine dusman dogrudan sola ilerler, hafif dikey salinimla "swarm"
+/// hissi verir, `wallX`'e varinca durur ve periyodik olarak sur'a hasar
+/// verir (Core'a ULASIP silinmez — tur standardi, bkz. plan "Planner
+/// kararlari"). Birlik/mermi bolumune DOKUNULMADI (P10'da yuva sistemiyle
+/// degisecek).
 class MovementSystem implements BattleSystem {
   @override
   SystemPhase get phase => SystemPhase.movement;
@@ -86,80 +103,63 @@ class MovementSystem implements BattleSystem {
       enemy.prevX = enemy.x;
       enemy.prevY = enemy.y;
 
-      var speed = enemy.speed;
-      if (enemy.slowTimer > 0) {
-        enemy.slowTimer -= dt;
-        speed *= kSlowSpeedMultiplier;
+      if (!enemy.atWall) {
+        var speed = enemy.speed;
+        if (enemy.slowTimer > 0) {
+          enemy.slowTimer -= dt;
+          speed *= kSlowSpeedMultiplier;
+        }
+
+        enemy.x -= speed * dt;
+
+        // Dikey salinim: allocation yok, sadece skaler trigonometri.
+        enemy.y += math.sin(sim.elapsed * kEnemyWanderFrequency + enemy.wanderPhase) *
+            kEnemyWanderAmplitude *
+            dt;
+        if (enemy.y < world.spawnYMin) {
+          enemy.y = world.spawnYMin;
+        } else if (enemy.y > world.spawnYMax) {
+          enemy.y = world.spawnYMax;
+        }
+
+        // Separation: ayni bolgedeki cok yakin komsulardan hafifce uzaklas.
+        // Scratch tampon kullanilir, yeni liste yaratilmaz.
+        final neighborCount = grid.queryCircle(enemy.x, enemy.y, kSeparationRadius, scratch);
+        var pushX = 0.0;
+        var pushY = 0.0;
+        for (var n = 0; n < neighborCount; n++) {
+          final otherIndex = scratch[n];
+          if (otherIndex == i) continue;
+          final other = enemies[otherIndex];
+          final ox = enemy.x - other.x;
+          final oy = enemy.y - other.y;
+          final oDistSq = ox * ox + oy * oy;
+          if (oDistSq <= 0 || oDistSq >= kSeparationRadius * kSeparationRadius) {
+            continue;
+          }
+          final oDist = math.sqrt(oDistSq);
+          pushX += ox / oDist;
+          pushY += oy / oDist;
+        }
+        if (pushX != 0 || pushY != 0) {
+          enemy.x += pushX * kSeparationStrength * dt;
+          enemy.y += pushY * kSeparationStrength * dt;
+        }
+
+        if (enemy.x <= world.wallX + enemy.radius) {
+          enemy.x = world.wallX + enemy.radius;
+          enemy.atWall = true;
+        }
       }
 
-      final waypointCount = world.laneWaypointCount(enemy.laneIndex);
-      var headingToCore = enemy.waypointIndex >= waypointCount;
-      var targetX = headingToCore
-          ? world.coreX
-          : world.laneWaypointX(enemy.laneIndex, enemy.waypointIndex);
-      var targetY = headingToCore
-          ? world.coreY
-          : world.laneWaypointY(enemy.laneIndex, enemy.waypointIndex);
-
-      var dx = targetX - enemy.x;
-      var dy = targetY - enemy.y;
-      var distSq = dx * dx + dy * dy;
-
-      // Mesafe karsilastirmalari kare mesafeyle yapilir; sqrt sadece
-      // asagida gercek normalizasyon gerektiginde cagrilir.
-      final arriveRadius = headingToCore ? enemy.radius + kCoreRadius : enemy.radius;
-      if (distSq <= arriveRadius * arriveRadius) {
-        if (headingToCore) {
-          enemy.reachedCore = true;
+      if (enemy.atWall) {
+        enemy.wallAttackCooldown -= dt;
+        if (enemy.wallAttackCooldown <= 0) {
           world.coreHp -= enemy.coreDamage;
-          enemy.pendingRemove = true;
+          enemy.wallAttackCooldown += enemy.wallAttackInterval;
           _emitCoreHitFeedback(sim, world.coreX, world.coreY);
           _pushCoreHpImmediately(sim);
-          continue;
         }
-
-        enemy.waypointIndex++;
-        headingToCore = enemy.waypointIndex >= waypointCount;
-        targetX = headingToCore
-            ? world.coreX
-            : world.laneWaypointX(enemy.laneIndex, enemy.waypointIndex);
-        targetY = headingToCore
-            ? world.coreY
-            : world.laneWaypointY(enemy.laneIndex, enemy.waypointIndex);
-        dx = targetX - enemy.x;
-        dy = targetY - enemy.y;
-        distSq = dx * dx + dy * dy;
-      }
-
-      if (distSq > 0) {
-        final dist = math.sqrt(distSq);
-        final step = speed * dt;
-        enemy.x += dx / dist * step;
-        enemy.y += dy / dist * step;
-      }
-
-      // Separation: ayni bolgedeki cok yakin komsulardan hafifce uzaklas.
-      // Scratch tampon kullanilir, yeni liste yaratilmaz.
-      final neighborCount = grid.queryCircle(enemy.x, enemy.y, kSeparationRadius, scratch);
-      var pushX = 0.0;
-      var pushY = 0.0;
-      for (var n = 0; n < neighborCount; n++) {
-        final otherIndex = scratch[n];
-        if (otherIndex == i) continue;
-        final other = enemies[otherIndex];
-        final ox = enemy.x - other.x;
-        final oy = enemy.y - other.y;
-        final oDistSq = ox * ox + oy * oy;
-        if (oDistSq <= 0 || oDistSq >= kSeparationRadius * kSeparationRadius) {
-          continue;
-        }
-        final oDist = math.sqrt(oDistSq);
-        pushX += ox / oDist;
-        pushY += oy / oDist;
-      }
-      if (pushX != 0 || pushY != 0) {
-        enemy.x += pushX * kSeparationStrength * dt;
-        enemy.y += pushY * kSeparationStrength * dt;
       }
     }
 
@@ -171,6 +171,13 @@ class MovementSystem implements BattleSystem {
   /// hedefine dogru yurur ya da Core'a gore sabit bir formasyon hattinda
   /// bekler. Menzile giren birlik saldirmak icin durur (ilerlemeye devam
   /// etmesi hedefin ustune yurumesi demek olurdu).
+  ///
+  /// P9 kapsami DISI (brief kurali "BIRLIK bolumune DOKUNMA", P10'da
+  /// yuva sistemiyle degisecek): asagidaki mantik BILEREK ONCEKI HALIYLE
+  /// birakildi. `world.coreY` hala gecerli bir alan oldugu icin derlenir
+  /// ve calisir, ama gorsel olarak artik dogru degildir (Core alanin
+  /// ustunde degil solunda) — bu P2-P11 arasi "savas ekrani bilerek
+  /// bozuk gorunur" beklentisinin bir parcasi (bkz. plan bolum 8).
   void _stepUnits(BattleSimulation sim, double dt) {
     final world = sim.world;
     final units = world.units;
@@ -318,7 +325,7 @@ class MovementSystem implements BattleSystem {
     }
   }
 
-  /// Core vurus geri bildirimi: carpma efekti + orta siddette ekran
+  /// Core (kale) vurus geri bildirimi: carpma efekti + orta siddette ekran
   /// sarsintisi + agir titresim (brief: "Core hasari (heavy)"). Sarsinti/
   /// titresim throttle'a TABI DEGILDIR (kesikli olay), her isabette tetiklenir.
   void _emitCoreHitFeedback(BattleSimulation sim, double x, double y) {

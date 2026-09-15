@@ -1,0 +1,14 @@
+{
+  "fractured_edge": {
+    "background": "bg_fractured_edge",
+    "decor": [
+      { "sprite": "crystal_rock_a", "x": 0.31, "y": 0.18, "scale": 1.0 },
+      { "sprite": "crystal_rock_b", "x": 0.58, "y": 0.14, "scale": 0.8 },
+      { "sprite": "energy_pylon", "x": 0.40, "y": 0.90, "scale": 1.1 },
+      { "sprite": "ruin_a", "x": 0.66, "y": 0.30, "scale": 0.9 },
+      { "sprite": "alien_tree_a", "x": 0.72, "y": 0.86, "scale": 0.8 },
+      { "sprite": "alien_tree_a", "x": 0.24, "y": 0.92, "scale": 0.6 },
+      { "sprite": "mountain_a", "x": 0.85, "y": 0.10, "scale": 1.3 }
+    ]
+  }
+}

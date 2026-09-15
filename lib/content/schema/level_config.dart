@@ -1,82 +1,119 @@
-/// Bir rift (dusman spawn noktasi).
-///
-/// Koordinatlar normalize 0..1 uzayindadir (bkz. `docs/CONTENT_SCHEMA.md`).
-class RiftConfig {
-  const RiftConfig({
+/// Bir level'in kale referansi: hangi `castles.json` girdisi kullanilacagi
+/// ve o level'a ozel can puani (kale gorseli/yuvalari `castles.json`da
+/// paylasilir, can puani level'a gore olcekler).
+class CastleRef {
+  const CastleRef({
     required this.id,
-    required this.x,
-    required this.y,
-    required this.skin,
+    required this.hp,
   });
 
-  factory RiftConfig.fromJson(String levelId, Map<String, Object?> json) {
+  factory CastleRef.fromJson(String levelId, Map<String, Object?> json) {
     Object? require(String field) {
       final value = json[field];
       if (value == null) {
         throw FormatException(
-          'RiftConfig (level $levelId): zorunlu alan eksik: "$field"',
+          'CastleRef (level $levelId): zorunlu alan eksik: "$field"',
         );
       }
       return value;
     }
 
-    return RiftConfig(
+    return CastleRef(
       id: require('id') as String,
-      x: (require('x') as num).toDouble(),
-      y: (require('y') as num).toDouble(),
-      skin: require('skin') as String,
+      hp: (require('hp') as num).toDouble(),
     );
   }
 
   final String id;
-  final double x;
-  final double y;
-  final String skin;
+  final double hp;
 }
 
-/// Bir lane (dusman yolu). Pathfinding YOKTUR; dusmanlar bu waypoint
-/// zincirini birebir takip eder.
-class LaneConfig {
-  const LaneConfig({
-    required this.id,
-    required this.from,
-    required this.waypoints,
+/// Dusman spawn bandi: sag kenarin hemen disinda, bu Y araliginda rastgele
+/// yukseklikte dogar (bkz. `docs/CONTENT_SCHEMA.md`).
+class SpawnConfig {
+  const SpawnConfig({
+    required this.yMin,
+    required this.yMax,
+    required this.riftSkin,
+    required this.riftCount,
   });
 
-  factory LaneConfig.fromJson(String levelId, Map<String, Object?> json) {
+  factory SpawnConfig.fromJson(String levelId, Map<String, Object?> json) {
     Object? require(String field) {
       final value = json[field];
       if (value == null) {
         throw FormatException(
-          'LaneConfig (level $levelId): zorunlu alan eksik: "$field"',
+          'SpawnConfig (level $levelId): zorunlu alan eksik: "$field"',
         );
       }
       return value;
     }
 
-    final waypointsJson = require('waypoints') as List<Object?>;
-
-    return LaneConfig(
-      id: require('id') as String,
-      from: require('from') as String,
-      waypoints: waypointsJson.map((point) {
-        final pair = point! as List<Object?>;
-        if (pair.length != 2) {
-          throw FormatException(
-            'LaneConfig (level $levelId): waypoint [x,y] cifti olmali: $point',
-          );
-        }
-        return (
-          (pair[0]! as num).toDouble(),
-          (pair[1]! as num).toDouble(),
-        );
-      }).toList(growable: false),
+    return SpawnConfig(
+      yMin: (require('yMin') as num).toDouble(),
+      yMax: (require('yMax') as num).toDouble(),
+      riftSkin: require('riftSkin') as String,
+      riftCount: (require('riftCount') as num).toInt(),
     );
   }
 
-  final String id;
-  final String from;
-  final List<(double, double)> waypoints;
+  final double yMin;
+  final double yMax;
+  final String riftSkin;
+  final int riftCount;
+}
+
+/// Bir arazi alani. Pathfinding YOKTUR; sadece alan icindeki dusmana
+/// `slowFactor` veya `damageTakenMul` uygulanir (bkz. `docs/CONTENT_SCHEMA.md`).
+class TerrainZoneConfig {
+  const TerrainZoneConfig({
+    required this.type,
+    required this.x,
+    required this.y,
+    required this.radius,
+    this.factor,
+    this.damageTakenMul,
+  });
+
+  factory TerrainZoneConfig.fromJson(String levelId, Map<String, Object?> json) {
+    Object? require(String field) {
+      final value = json[field];
+      if (value == null) {
+        throw FormatException(
+          'TerrainZoneConfig (level $levelId): zorunlu alan eksik: "$field"',
+        );
+      }
+      return value;
+    }
+
+    final type = require('type') as String;
+    if (type != 'slow' && type != 'cover') {
+      throw FormatException(
+        'TerrainZoneConfig (level $levelId): bilinmeyen type: "$type"',
+      );
+    }
+
+    return TerrainZoneConfig(
+      type: type,
+      x: (require('x') as num).toDouble(),
+      y: (require('y') as num).toDouble(),
+      radius: (require('radius') as num).toDouble(),
+      factor: type == 'slow' ? (require('factor') as num).toDouble() : null,
+      damageTakenMul:
+          type == 'cover' ? (require('damageTakenMul') as num).toDouble() : null,
+    );
+  }
+
+  final String type;
+  final double x;
+  final double y;
+  final double radius;
+
+  /// Sadece `type == 'slow'` icin dolu: hiz carpani (0..1).
+  final double? factor;
+
+  /// Sadece `type == 'cover'` icin dolu: alinan hasar carpani (0..1).
+  final double? damageTakenMul;
 }
 
 /// Bir dalga (wave) icindeki tek bir dusman grubu.
@@ -85,9 +122,9 @@ class WaveGroupConfig {
     required this.enemy,
     required this.count,
     required this.interval,
-    required this.lane,
     required this.delay,
     required this.eliteChance,
+    required this.band,
   });
 
   factory WaveGroupConfig.fromJson(String levelId, Map<String, Object?> json) {
@@ -101,23 +138,39 @@ class WaveGroupConfig {
       return value;
     }
 
+    final bandJson = json['band'] as List<Object?>?;
+    (double, double)? band;
+    if (bandJson != null) {
+      if (bandJson.length != 2) {
+        throw FormatException(
+          'WaveGroupConfig (level $levelId): band [yMin,yMax] cifti olmali: $bandJson',
+        );
+      }
+      band = (
+        (bandJson[0]! as num).toDouble(),
+        (bandJson[1]! as num).toDouble(),
+      );
+    }
+
     return WaveGroupConfig(
       enemy: require('enemy') as String,
       count: (require('count') as num).toInt(),
       interval: (require('interval') as num).toDouble(),
-      lane: require('lane') as String,
       // grup ici ek gecikme; cogu grup icin 0.
       delay: ((json['delay'] as num?) ?? 0.0).toDouble(),
       eliteChance: ((json['eliteChance'] as num?) ?? 0.0).toDouble(),
+      // opsiyonel: grubun kendi spawn bandi. Yoksa level.spawn kullanilir
+      // (bkz. WavePlanner).
+      band: band,
     );
   }
 
   final String enemy;
   final int count;
   final double interval;
-  final String lane;
   final double delay;
   final double eliteChance;
+  final (double, double)? band;
 }
 
 /// Bir dalga (wave). Onceki dalga bitince `delay` kadar beklenip baslar.
@@ -188,13 +241,14 @@ class LevelConfig {
   const LevelConfig({
     required this.levelId,
     required this.environmentId,
-    required this.coreHp,
+    required this.castle,
     required this.startingAether,
     required this.difficultyMultiplier,
     required this.maxEnemies,
     required this.maxProjectiles,
-    required this.rifts,
-    required this.lanes,
+    required this.spawn,
+    required this.defenseLineX,
+    required this.terrain,
     required this.modifiers,
     required this.waves,
     required this.boss,
@@ -219,24 +273,24 @@ class LevelConfig {
       return value;
     }
 
-    final riftsJson = require('rifts') as List<Object?>;
-    final lanesJson = require('lanes') as List<Object?>;
+    final castleJson = require('castle') as Map<String, Object?>;
+    final spawnJson = require('spawn') as Map<String, Object?>;
+    final terrainJson = (json['terrain'] as List<Object?>?) ?? const <Object?>[];
     final wavesJson = require('waves') as List<Object?>;
     final rewardsJson = require('rewards') as Map<String, Object?>;
 
     return LevelConfig(
       levelId: levelId,
       environmentId: require('environmentId') as String,
-      coreHp: (require('coreHp') as num).toDouble(),
+      castle: CastleRef.fromJson(levelIdStr, castleJson),
       startingAether: (require('startingAether') as num).toDouble(),
       difficultyMultiplier: (require('difficultyMultiplier') as num).toDouble(),
       maxEnemies: (require('maxEnemies') as num).toInt(),
       maxProjectiles: (require('maxProjectiles') as num).toInt(),
-      rifts: riftsJson
-          .map((e) => RiftConfig.fromJson(levelIdStr, e! as Map<String, Object?>))
-          .toList(growable: false),
-      lanes: lanesJson
-          .map((e) => LaneConfig.fromJson(levelIdStr, e! as Map<String, Object?>))
+      spawn: SpawnConfig.fromJson(levelIdStr, spawnJson),
+      defenseLineX: (require('defenseLineX') as num).toDouble(),
+      terrain: terrainJson
+          .map((e) => TerrainZoneConfig.fromJson(levelIdStr, e! as Map<String, Object?>))
           .toList(growable: false),
       modifiers: (json['modifiers'] as List<Object?>?)?.cast<String>() ??
           const <String>[],
@@ -251,15 +305,20 @@ class LevelConfig {
 
   final int levelId;
   final String environmentId;
-  final double coreHp;
+  final CastleRef castle;
   final double startingAether;
   final double difficultyMultiplier;
   final int maxEnemies;
   final int maxProjectiles;
-  final List<RiftConfig> rifts;
-  final List<LaneConfig> lanes;
+  final SpawnConfig spawn;
+  final double defenseLineX;
+  final List<TerrainZoneConfig> terrain;
   final List<String> modifiers;
   final List<WaveConfig> waves;
   final String? boss;
   final LevelRewards rewards;
+
+  /// Motor tarihsel ismini korur (bkz. `docs/CONTENT_SCHEMA.md` basi):
+  /// `core*` adlari kale yapisini ifade eder.
+  double get coreHp => castle.hp;
 }

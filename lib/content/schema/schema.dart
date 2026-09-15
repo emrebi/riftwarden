@@ -3,7 +3,9 @@ library;
 
 export 'ability_config.dart';
 export 'boss_config.dart';
+export 'castle_config.dart';
 export 'enemy_config.dart';
+export 'environment_config.dart';
 export 'level_config.dart';
 export 'modifier_config.dart';
 export 'sector_config.dart';

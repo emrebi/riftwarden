@@ -17,6 +17,8 @@ class ContentRegistry {
     required this.modifiers,
     required this.sectors,
     required this.levels,
+    required this.castles,
+    required this.environments,
   });
 
   final Map<String, UnitConfig> units;
@@ -27,6 +29,8 @@ class ContentRegistry {
   final Map<String, ModifierConfig> modifiers;
   final Map<int, SectorConfig> sectors;
   final Map<int, LevelConfig> levels;
+  final Map<String, CastleConfig> castles;
+  final Map<String, EnvironmentConfig> environments;
 
   UnitConfig unit(String id) {
     final config = units[id];
@@ -88,6 +92,22 @@ class ContentRegistry {
     final config = levels[id];
     if (config == null) {
       throw StateError('ContentRegistry: bilinmeyen level id: $id');
+    }
+    return config;
+  }
+
+  CastleConfig castle(String id) {
+    final config = castles[id];
+    if (config == null) {
+      throw StateError('ContentRegistry: bilinmeyen castle id: "$id"');
+    }
+    return config;
+  }
+
+  EnvironmentConfig environment(String id) {
+    final config = environments[id];
+    if (config == null) {
+      throw StateError('ContentRegistry: bilinmeyen environment id: "$id"');
     }
     return config;
   }

@@ -23,6 +23,8 @@ class ContentLoader {
     final bossesJson = await _readJsonMap('bosses.json');
     final modifiersJson = await _readJsonMap('modifiers.json');
     final sectorsJson = await _readJsonMap('sectors.json');
+    final castlesJson = await _readJsonMap('castles.json');
+    final environmentsJson = await _readJsonMap('environments.json');
 
     final units = _parseMap(unitsJson, 'units.json', UnitConfig.fromJson);
     final enemies = _parseMap(enemiesJson, 'enemies.json', EnemyConfig.fromJson);
@@ -30,6 +32,9 @@ class ContentLoader {
     final abilities = _parseMap(abilitiesJson, 'abilities.json', AbilityConfig.fromJson);
     final bosses = _parseMap(bossesJson, 'bosses.json', BossConfig.fromJson);
     final modifiers = _parseMap(modifiersJson, 'modifiers.json', ModifierConfig.fromJson);
+    final castles = _parseMap(castlesJson, 'castles.json', CastleConfig.fromJson);
+    final environments =
+        _parseMap(environmentsJson, 'environments.json', EnvironmentConfig.fromJson);
 
     final sectors = <int, SectorConfig>{};
     for (final entry in sectorsJson.entries) {
@@ -80,6 +85,8 @@ class ContentLoader {
       modifiers: modifiers,
       sectors: sectors,
       levels: levels,
+      castles: castles,
+      environments: environments,
     );
   }
 

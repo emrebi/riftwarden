@@ -6,7 +6,7 @@ import 'package:riftwarden/engine/simulation/pools/entity_pool.dart';
 /// oncesi hepsini bu varsayilanlara dondurur. `PooledEntity.id` ve
 /// `pendingRemove` [EntityPool] tarafindan yonetilir, burada dokunulmaz.
 class EnemyEntity extends PooledEntity {
-  /// Guncel konum (normalize 0..1).
+  /// Guncel konum (izotropik dunya: y 0..1, x 0..kFieldAspect).
   double x = 0;
   double y = 0;
 
@@ -31,9 +31,20 @@ class EnemyEntity extends PooledEntity {
   double coreDamage = 0;
   double aetherReward = 0;
 
-  /// Hangi lane'i takip ettigi ve o lane'deki bir sonraki hedef waypoint.
-  int laneIndex = 0;
-  int waypointIndex = 0;
+  /// Sur'a ({@link atWall}) vurus araligi (saniye). `enemies.json ->
+  /// wallAttackInterval`.
+  double wallAttackInterval = 1.0;
+
+  /// Bir sonraki sur vurusuna kalan sure. `atWall` oldugunda geri sayar;
+  /// sifira inince Core'a hasar verir ve tekrar [wallAttackInterval]'a
+  /// dolar (bkz. `MovementSystem`).
+  double wallAttackCooldown = 0;
+
+  /// `sin` tabanli dikey salinimin faz kaymasi (bkz. `MovementSystem`
+  /// dosya basi yorumu). Her dusman farkli fazda salinsin diye spawn
+  /// aninda rastgele atanir; sabit olmasaydi TUM dusmanlar ayni anda
+  /// yukari/asagi salinir, "swarm" hissi yerine mekanik bir desen olurdu.
+  double wanderPhase = 0;
 
   bool isElite = false;
 
@@ -47,9 +58,10 @@ class EnemyEntity extends PooledEntity {
   double burnTimer = 0;
   double stunTimer = 0;
 
-  /// Core'a ulasip hasar verdiyse true; ayni adimda iki kez hasar
-  /// vermemesi icin compaction'a kadar bu bayrakla korunur.
-  bool reachedCore = false;
+  /// `wallX`'e varip durdu mu. Durunca sola ilerlemeyi birakir, periyodik
+  /// olarak sur'a (`Core`) hasar verir. Dusman bu durumda SILINMEZ; oyuncu
+  /// onu oldurebilir (bkz. `MovementSystem` dosya basi yorumu).
+  bool atWall = false;
 
   @override
   void reset() {
@@ -65,14 +77,15 @@ class EnemyEntity extends PooledEntity {
     radius = 0;
     coreDamage = 0;
     aetherReward = 0;
-    laneIndex = 0;
-    waypointIndex = 0;
+    wallAttackInterval = 1.0;
+    wallAttackCooldown = 0;
+    wanderPhase = 0;
     isElite = false;
     behaviorMask = 0;
     phaseTimer = 0;
     slowTimer = 0;
     burnTimer = 0;
     stunTimer = 0;
-    reachedCore = false;
+    atWall = false;
   }
 }

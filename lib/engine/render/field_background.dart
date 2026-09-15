@@ -1,18 +1,22 @@
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flame/components.dart' show Component, Vector2;
 import 'package:flame/sprite.dart' show SpriteBatch;
+import 'package:riftwarden/core/constants/game_constants.dart';
 import 'package:riftwarden/engine/render/atlas_registry.dart';
 import 'package:riftwarden/engine/render/field_projection.dart';
 import 'package:riftwarden/engine/simulation/battle_world.dart';
 
-/// Savas alani zemini: gradyan arka plan, lane cizgileri, rift'ler ve Core.
+/// Savas alani zemini: gradyan arka plan, savunma sinir cizgisi, rift
+/// portallari ve kale.
 ///
-/// [BattleWorld]'u SADECE OKUR; sadece Core'un statik konumunu ve
-/// level'in lane/rift geometrisini kullanir (bu geometri savas boyunca
-/// DEGISMEZ, bu yuzden lane yollari [onLoad]'da bir kez hesaplanip
-/// [_lanePaths] icinde onbelleklenir — render sicak yolunda `Path`
-/// yaratilmaz).
+/// GECICI RENDER: bu sinif P13'te `MapRenderer`e donusecek (bkz. plan
+/// bolum 5). Simdilik kale ve rift'ler icin ozel sprite yok; kale
+/// `aether_core` karesiyle, rift portallari `riftSkin` karesiyle
+/// (genelde `rift_violet`) cizilir.
+///
+/// [BattleWorld]'u SADECE OKUR.
 ///
 /// ## Renkler hakkinda
 /// `engine/` katmani `features`/`app` import EDEMEZ (bkz. CLAUDE.md kural
@@ -34,7 +38,7 @@ class FieldBackground extends Component {
   // `AppColors.surfaceRaised` / `AppColors.accentTeal` ile eslesmelidir.
   static const Color _bgTop = Color(0xFF0B0B14);
   static const Color _bgBottom = Color(0xFF181830);
-  static const Color _laneColor = Color(0x33FFFFFF);
+  static const Color _defenseLineColor = Color(0x55FFFFFF);
   static const Color _hpRingTrack = Color(0x40FFFFFF);
   static const Color _hpRingFill = Color(0xFF6FE3C8);
 
@@ -44,11 +48,23 @@ class FieldBackground extends Component {
   static const double _hpRingStrokeWidth = 4;
   static const double _hpRingGap = 0.014;
 
+  /// Rift portallarinin sag kenarda cizildigi sabit X (izotropik dunya).
+  /// Dusman spawn overshoot'undan (`kSpawnOvershoot`) biraz iceride durur
+  /// ki portal ekranin hemen disina tasmasin ama yine de kenara yakin
+  /// gorunsun.
+  static const double _riftFieldX = kFieldAspect - 0.06;
+
+  /// Sinir cizgisi kesikli (dashed): "gecmeden ates yok" cizgisinin bir
+  /// duvar degil, GORULEBILIR bir esik oldugunu vurgular.
+  static const double _defenseLineDashLength = 10;
+  static const double _defenseLineGapLength = 8;
+  static const double _defenseLineStrokeWidth = 2;
+
   final Paint _bgPaint = Paint();
-  final Paint _lanePaint = Paint()
+  final Paint _defenseLinePaint = Paint()
     ..style = PaintingStyle.stroke
-    ..strokeWidth = 2
-    ..color = _laneColor;
+    ..strokeWidth = _defenseLineStrokeWidth
+    ..color = _defenseLineColor;
   final Paint _hpRingTrackPaint = Paint()
     ..style = PaintingStyle.stroke
     ..strokeWidth = _hpRingStrokeWidth
@@ -61,95 +77,73 @@ class FieldBackground extends Component {
 
   late final SpriteBatch _worldBatch = SpriteBatch(atlas.imageOf('world'));
 
-  /// Lane basina onceden hesaplanmis ekran-uzayi yol. Render sicak
-  /// yolunda YENIDEN kurulmaz (bkz. dosya basi yorumu).
-  late List<Path> _lanePaths;
-
-  /// [_lanePaths] hangi ekran boyutu icin kuruldu; boyut degisirse
-  /// (donme, katlanabilir cihaz) yeniden kurulur.
-  Vector2? _lanePathsSize;
+  /// Arka plan gradyani hangi ekran boyutu icin kuruldu; boyut degisirse
+  /// (donme, katlanabilir cihaz) yeniden kurulur. Render sicak yolunda
+  /// HER karede DEGIL, sadece boyut degistiginde yeniden hesaplanir.
+  Vector2? _bgSize;
 
   @override
   Future<void> onLoad() async {
-    _rebuildForSize(projection.size);
+    _rebuildBackgroundGradient(projection.size);
   }
 
-  /// Boyuta bagli her seyi (lane yollari + arka plan gradyani) tek yerde
-  /// yeniden kurar. Sadece [onLoad]'da ve [render] icinde boyut
-  /// degistiginde cagrilir — render sicak yolunda HER karede DEGIL.
-  void _rebuildForSize(Vector2 size) {
-    _lanePathsSize = size.clone();
-
+  void _rebuildBackgroundGradient(Vector2 size) {
+    _bgSize = size.clone();
     _bgPaint.shader = Gradient.linear(
       Offset.zero,
       Offset(0, size.y),
       const <Color>[_bgTop, _bgBottom],
     );
-
-    _lanePaths = List<Path>.generate(world.level.lanes.length, (laneIndex) {
-      final lane = world.level.lanes[laneIndex];
-      final path = Path();
-
-      var startX = 0.0;
-      var startY = 0.0;
-      for (final rift in world.level.rifts) {
-        if (rift.id == lane.from) {
-          startX = rift.x;
-          startY = rift.y;
-          break;
-        }
-      }
-      path.moveTo(projection.toScreenX(startX), projection.toScreenY(startY));
-
-      final waypointCount = world.laneWaypointCount(laneIndex);
-      for (var w = 0; w < waypointCount; w++) {
-        path.lineTo(
-          projection.toScreenX(world.laneWaypointX(laneIndex, w)),
-          projection.toScreenY(world.laneWaypointY(laneIndex, w)),
-        );
-      }
-      // Son bacak: Core'a kadar. Oyuncu dusmanin nereden gelip nereye
-      // gittigini gorsun (bkz. brief: "oyuncu dusmanin nereden gelecegini
-      // gorsun").
-      path.lineTo(projection.toScreenX(world.coreX), projection.toScreenY(world.coreY));
-
-      return path;
-    }, growable: false);
   }
 
   @override
   void render(Canvas canvas) {
     final size = projection.size;
-    if (_lanePathsSize == null || _lanePathsSize!.x != size.x || _lanePathsSize!.y != size.y) {
-      _rebuildForSize(size);
+    if (_bgSize == null || _bgSize!.x != size.x || _bgSize!.y != size.y) {
+      _rebuildBackgroundGradient(size);
     }
 
     _drawBackground(canvas, size);
-    _drawLanes(canvas);
-    _drawRiftsAndCore(canvas);
+    _drawDefenseLine(canvas, size);
+    _drawRiftsAndCastle(canvas);
   }
 
   void _drawBackground(Canvas canvas, Vector2 size) {
     canvas.drawRect(Rect.fromLTWH(0, 0, size.x, size.y), _bgPaint);
   }
 
-  void _drawLanes(Canvas canvas) {
-    for (final path in _lanePaths) {
-      canvas.drawPath(path, _lanePaint);
+  /// Kesikli dikey sinir cizgisi: bu cizgiyi gecmeden dusman hedeflenemez
+  /// (bkz. `TargetingSystem`, P10'da eklenecek filtre).
+  void _drawDefenseLine(Canvas canvas, Vector2 size) {
+    final x = projection.toScreenX(world.defenseLineX);
+    var y = 0.0;
+    while (y < size.y) {
+      final segmentEnd = math.min(y + _defenseLineDashLength, size.y);
+      canvas.drawLine(Offset(x, y), Offset(x, segmentEnd), _defenseLinePaint);
+      y += _defenseLineDashLength + _defenseLineGapLength;
     }
   }
 
-  void _drawRiftsAndCore(Canvas canvas) {
+  void _drawRiftsAndCastle(Canvas canvas) {
     _worldBatch.clear();
 
-    for (final rift in world.level.rifts) {
+    // riftCount kadar rift portali sag kenarda, spawn bandina esit
+    // araliklarla dizilir (bkz. `docs/CONTENT_SCHEMA.md` > spawn.riftCount).
+    // Spawn'in kendisi BURADAN degil, rastgele Y'de olur (bkz. WavePlanner);
+    // bu portallar sadece gorseldir.
+    final riftCount = world.riftCount;
+    final riftSkin = world.level.spawn.riftSkin;
+    for (var i = 0; i < riftCount; i++) {
+      final t = riftCount == 1 ? 0.5 : i / (riftCount - 1);
+      final normalizedY = world.spawnYMin + (world.spawnYMax - world.spawnYMin) * t;
       _addWorldSprite(
-        frameName: rift.skin,
-        normalizedX: rift.x,
-        normalizedY: rift.y,
+        frameName: riftSkin,
+        normalizedX: _riftFieldX,
+        normalizedY: normalizedY,
         normalizedRadius: _riftVisualRadius,
       );
     }
+
     _addWorldSprite(
       frameName: 'aether_core',
       normalizedX: world.coreX,

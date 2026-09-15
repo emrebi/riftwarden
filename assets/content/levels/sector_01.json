@@ -4,33 +4,30 @@
     {
       "levelId": 1,
       "environmentId": "fractured_edge",
-      "coreHp": 500,
+      "castle": { "id": "citadel_basic", "hp": 500 },
       "startingAether": 50,
       "difficultyMultiplier": 1.00,
       "maxEnemies": 40,
       "maxProjectiles": 80,
-      "rifts": [
-        { "id": "a", "x": 0.5, "y": 0.06, "skin": "rift_violet" }
-      ],
-      "lanes": [
-        { "id": "la", "from": "a", "waypoints": [[0.5, 0.3], [0.5, 0.6], [0.5, 0.84]] }
+      "spawn": { "yMin": 0.22, "yMax": 0.80, "riftSkin": "rift_violet", "riftCount": 2 },
+      "defenseLineX": 0.60,
+      "terrain": [
+        { "type": "slow", "x": 0.45, "y": 0.50, "radius": 0.10, "factor": 0.6 }
       ],
       "modifiers": [],
       "waves": [
-        {
-          "id": 1,
-          "delay": 1.0,
-          "groups": [
-            { "enemy": "drifter", "count": 8, "interval": 0.6, "lane": "la" }
-          ]
-        },
-        {
-          "id": 2,
-          "delay": 3.0,
-          "groups": [
-            { "enemy": "drifter", "count": 12, "interval": 0.5, "lane": "la" }
-          ]
-        }
+        { "id": 1, "delay": 2.0, "groups": [
+            { "enemy": "drifter", "count": 10, "interval": 0.8 } ] },
+        { "id": 2, "delay": 4.0, "groups": [
+            { "enemy": "drifter", "count": 12, "interval": 0.7 } ] },
+        { "id": 3, "delay": 4.0, "groups": [
+            { "enemy": "drifter", "count": 14, "interval": 0.6 } ] },
+        { "id": 4, "delay": 4.0, "groups": [
+            { "enemy": "drifter", "count": 16, "interval": 0.55 } ] },
+        { "id": 5, "delay": 4.0, "groups": [
+            { "enemy": "drifter", "count": 18, "interval": 0.5 } ] },
+        { "id": 6, "delay": 5.0, "groups": [
+            { "enemy": "drifter", "count": 20, "interval": 0.45 } ] }
       ],
       "boss": null,
       "rewards": { "shards": 10, "firstClearCells": 1 }
@@ -38,36 +35,34 @@
     {
       "levelId": 2,
       "environmentId": "fractured_edge",
-      "coreHp": 550,
+      "castle": { "id": "citadel_basic", "hp": 550 },
       "startingAether": 55,
-      "difficultyMultiplier": 1.025,
-      "maxEnemies": 50,
+      "difficultyMultiplier": 1.05,
+      "maxEnemies": 55,
       "maxProjectiles": 100,
-      "rifts": [
-        { "id": "a", "x": 0.25, "y": 0.06, "skin": "rift_violet" },
-        { "id": "b", "x": 0.75, "y": 0.06, "skin": "rift_violet" }
-      ],
-      "lanes": [
-        { "id": "la", "from": "a", "waypoints": [[0.25, 0.3], [0.38, 0.6], [0.5, 0.84]] },
-        { "id": "lb", "from": "b", "waypoints": [[0.75, 0.3], [0.62, 0.6], [0.5, 0.84]] }
+      "spawn": { "yMin": 0.22, "yMax": 0.80, "riftSkin": "rift_violet", "riftCount": 2 },
+      "defenseLineX": 0.61,
+      "terrain": [
+        { "type": "slow", "x": 0.42, "y": 0.32, "radius": 0.10, "factor": 0.6 },
+        { "type": "cover", "x": 0.48, "y": 0.68, "radius": 0.09, "damageTakenMul": 0.6 }
       ],
       "modifiers": [],
       "waves": [
-        {
-          "id": 1,
-          "delay": 1.0,
-          "groups": [
-            { "enemy": "drifter", "count": 10, "interval": 0.5, "lane": "la" },
-            { "enemy": "drifter", "count": 10, "interval": 0.5, "lane": "lb" }
-          ]
-        },
-        {
-          "id": 2,
-          "delay": 3.0,
-          "groups": [
-            { "enemy": "drifter", "count": 16, "interval": 0.4, "lane": "la" }
-          ]
-        }
+        { "id": 1, "delay": 2.0, "groups": [
+            { "enemy": "drifter", "count": 12, "interval": 0.6 },
+            { "enemy": "skitter", "count": 6, "interval": 0.5, "delay": 3.0 } ] },
+        { "id": 2, "delay": 4.0, "groups": [
+            { "enemy": "drifter", "count": 14, "interval": 0.55 } ] },
+        { "id": 3, "delay": 4.0, "groups": [
+            { "enemy": "skitter", "count": 10, "interval": 0.4 },
+            { "enemy": "drifter", "count": 10, "interval": 0.5, "delay": 2.0 } ] },
+        { "id": 4, "delay": 4.0, "groups": [
+            { "enemy": "drifter", "count": 18, "interval": 0.45 } ] },
+        { "id": 5, "delay": 4.0, "groups": [
+            { "enemy": "skitter", "count": 16, "interval": 0.3 } ] },
+        { "id": 6, "delay": 5.0, "groups": [
+            { "enemy": "drifter", "count": 20, "interval": 0.4 },
+            { "enemy": "skitter", "count": 12, "interval": 0.3, "delay": 1.5 } ] }
       ],
       "boss": null,
       "rewards": { "shards": 12, "firstClearCells": 1 }
@@ -75,37 +70,34 @@
     {
       "levelId": 3,
       "environmentId": "fractured_edge",
-      "coreHp": 600,
+      "castle": { "id": "citadel_basic", "hp": 600 },
       "startingAether": 60,
-      "difficultyMultiplier": 1.05,
-      "maxEnemies": 60,
+      "difficultyMultiplier": 1.10,
+      "maxEnemies": 65,
       "maxProjectiles": 120,
-      "rifts": [
-        { "id": "a", "x": 0.25, "y": 0.06, "skin": "rift_violet" },
-        { "id": "b", "x": 0.75, "y": 0.06, "skin": "rift_violet" }
-      ],
-      "lanes": [
-        { "id": "la", "from": "a", "waypoints": [[0.25, 0.3], [0.38, 0.6], [0.5, 0.84]] },
-        { "id": "lb", "from": "b", "waypoints": [[0.75, 0.3], [0.62, 0.6], [0.5, 0.84]] }
+      "spawn": { "yMin": 0.22, "yMax": 0.80, "riftSkin": "rift_violet", "riftCount": 3 },
+      "defenseLineX": 0.62,
+      "terrain": [
+        { "type": "slow", "x": 0.44, "y": 0.28, "radius": 0.10, "factor": 0.55 },
+        { "type": "cover", "x": 0.50, "y": 0.72, "radius": 0.10, "damageTakenMul": 0.55 }
       ],
       "modifiers": [],
       "waves": [
-        {
-          "id": 1,
-          "delay": 1.0,
-          "groups": [
-            { "enemy": "drifter", "count": 12, "interval": 0.4, "lane": "la" },
-            { "enemy": "skitter", "count": 8, "interval": 0.3, "lane": "lb" }
-          ]
-        },
-        {
-          "id": 2,
-          "delay": 3.0,
-          "groups": [
-            { "enemy": "drifter", "count": 14, "interval": 0.35, "lane": "lb" },
-            { "enemy": "skitter", "count": 10, "interval": 0.25, "lane": "la", "delay": 2.0 }
-          ]
-        }
+        { "id": 1, "delay": 2.0, "groups": [
+            { "enemy": "drifter", "count": 14, "interval": 0.5 },
+            { "enemy": "skitter", "count": 10, "interval": 0.35, "band": [0.22, 0.45] } ] },
+        { "id": 2, "delay": 4.0, "groups": [
+            { "enemy": "drifter", "count": 16, "interval": 0.45, "band": [0.55, 0.80] } ] },
+        { "id": 3, "delay": 4.0, "groups": [
+            { "enemy": "skitter", "count": 14, "interval": 0.3 },
+            { "enemy": "drifter", "count": 12, "interval": 0.4, "delay": 2.0 } ] },
+        { "id": 4, "delay": 4.0, "groups": [
+            { "enemy": "drifter", "count": 20, "interval": 0.4, "band": [0.30, 0.60] } ] },
+        { "id": 5, "delay": 4.0, "groups": [
+            { "enemy": "skitter", "count": 18, "interval": 0.25 } ] },
+        { "id": 6, "delay": 5.0, "groups": [
+            { "enemy": "drifter", "count": 22, "interval": 0.35 },
+            { "enemy": "skitter", "count": 16, "interval": 0.25, "delay": 1.5 } ] }
       ],
       "boss": null,
       "rewards": { "shards": 14, "firstClearCells": 2 }
@@ -113,45 +105,35 @@
     {
       "levelId": 4,
       "environmentId": "fractured_edge",
-      "coreHp": 650,
+      "castle": { "id": "citadel_basic", "hp": 650 },
       "startingAether": 65,
-      "difficultyMultiplier": 1.075,
-      "maxEnemies": 70,
+      "difficultyMultiplier": 1.15,
+      "maxEnemies": 75,
       "maxProjectiles": 140,
-      "rifts": [
-        { "id": "a", "x": 0.25, "y": 0.06, "skin": "rift_violet" },
-        { "id": "b", "x": 0.75, "y": 0.06, "skin": "rift_violet" }
-      ],
-      "lanes": [
-        { "id": "la", "from": "a", "waypoints": [[0.25, 0.3], [0.38, 0.6], [0.5, 0.84]] },
-        { "id": "lb", "from": "b", "waypoints": [[0.75, 0.3], [0.62, 0.6], [0.5, 0.84]] }
+      "spawn": { "yMin": 0.22, "yMax": 0.80, "riftSkin": "rift_violet", "riftCount": 3 },
+      "defenseLineX": 0.64,
+      "terrain": [
+        { "type": "slow", "x": 0.43, "y": 0.30, "radius": 0.11, "factor": 0.55 },
+        { "type": "cover", "x": 0.49, "y": 0.70, "radius": 0.10, "damageTakenMul": 0.5 }
       ],
       "modifiers": [],
       "waves": [
-        {
-          "id": 1,
-          "delay": 1.0,
-          "groups": [
-            { "enemy": "drifter", "count": 14, "interval": 0.35, "lane": "la" },
-            { "enemy": "skitter", "count": 12, "interval": 0.25, "lane": "lb" }
-          ]
-        },
-        {
-          "id": 2,
-          "delay": 3.0,
-          "groups": [
-            { "enemy": "skitter", "count": 16, "interval": 0.2, "lane": "la" },
-            { "enemy": "drifter", "count": 10, "interval": 0.4, "lane": "lb", "delay": 1.5 }
-          ]
-        },
-        {
-          "id": 3,
-          "delay": 4.0,
-          "groups": [
-            { "enemy": "drifter", "count": 18, "interval": 0.3, "lane": "la" },
-            { "enemy": "skitter", "count": 14, "interval": 0.2, "lane": "lb" }
-          ]
-        }
+        { "id": 1, "delay": 2.0, "groups": [
+            { "enemy": "drifter", "count": 16, "interval": 0.45 },
+            { "enemy": "skitter", "count": 12, "interval": 0.3, "band": [0.22, 0.45] } ] },
+        { "id": 2, "delay": 4.0, "groups": [
+            { "enemy": "bulwark", "count": 4, "interval": 1.2 } ] },
+        { "id": 3, "delay": 4.0, "groups": [
+            { "enemy": "skitter", "count": 18, "interval": 0.25 },
+            { "enemy": "drifter", "count": 14, "interval": 0.35, "delay": 2.0 } ] },
+        { "id": 4, "delay": 4.0, "groups": [
+            { "enemy": "bulwark", "count": 5, "interval": 1.0 },
+            { "enemy": "drifter", "count": 16, "interval": 0.35, "delay": 1.0, "band": [0.55, 0.80] } ] },
+        { "id": 5, "delay": 4.0, "groups": [
+            { "enemy": "skitter", "count": 20, "interval": 0.22 } ] },
+        { "id": 6, "delay": 5.0, "groups": [
+            { "enemy": "drifter", "count": 22, "interval": 0.3 },
+            { "enemy": "bulwark", "count": 6, "interval": 0.9, "delay": 2.0 } ] }
       ],
       "boss": null,
       "rewards": { "shards": 16, "firstClearCells": 2 }
@@ -159,45 +141,38 @@
     {
       "levelId": 5,
       "environmentId": "fractured_edge",
-      "coreHp": 700,
+      "castle": { "id": "citadel_basic", "hp": 700 },
       "startingAether": 70,
-      "difficultyMultiplier": 1.10,
-      "maxEnemies": 80,
+      "difficultyMultiplier": 1.20,
+      "maxEnemies": 85,
       "maxProjectiles": 160,
-      "rifts": [
-        { "id": "a", "x": 0.25, "y": 0.06, "skin": "rift_violet" },
-        { "id": "b", "x": 0.75, "y": 0.06, "skin": "rift_violet" }
-      ],
-      "lanes": [
-        { "id": "la", "from": "a", "waypoints": [[0.25, 0.3], [0.38, 0.6], [0.5, 0.84]] },
-        { "id": "lb", "from": "b", "waypoints": [[0.75, 0.3], [0.62, 0.6], [0.5, 0.84]] }
+      "spawn": { "yMin": 0.22, "yMax": 0.80, "riftSkin": "rift_violet", "riftCount": 3 },
+      "defenseLineX": 0.65,
+      "terrain": [
+        { "type": "slow", "x": 0.44, "y": 0.30, "radius": 0.11, "factor": 0.5 },
+        { "type": "cover", "x": 0.50, "y": 0.72, "radius": 0.11, "damageTakenMul": 0.5 }
       ],
       "modifiers": ["dense_fog"],
       "waves": [
-        {
-          "id": 1,
-          "delay": 1.0,
-          "groups": [
-            { "enemy": "drifter", "count": 16, "interval": 0.3, "lane": "la" },
-            { "enemy": "skitter", "count": 14, "interval": 0.2, "lane": "lb" }
-          ]
-        },
-        {
-          "id": 2,
-          "delay": 3.0,
-          "groups": [
-            { "enemy": "skitter", "count": 18, "interval": 0.18, "lane": "la" },
-            { "enemy": "drifter", "count": 16, "interval": 0.3, "lane": "lb", "delay": 1.5 }
-          ]
-        },
-        {
-          "id": 3,
-          "delay": 4.0,
-          "groups": [
-            { "enemy": "drifter", "count": 20, "interval": 0.25, "lane": "la" },
-            { "enemy": "skitter", "count": 20, "interval": 0.15, "lane": "lb" }
-          ]
-        }
+        { "id": 1, "delay": 2.0, "groups": [
+            { "enemy": "drifter", "count": 18, "interval": 0.4 },
+            { "enemy": "skitter", "count": 14, "interval": 0.25, "band": [0.22, 0.45] } ] },
+        { "id": 2, "delay": 4.0, "groups": [
+            { "enemy": "bulwark", "count": 6, "interval": 1.0 },
+            { "enemy": "skitter", "count": 12, "interval": 0.25, "delay": 1.0, "band": [0.55, 0.80] } ] },
+        { "id": 3, "delay": 4.0, "groups": [
+            { "enemy": "drifter", "count": 20, "interval": 0.32 },
+            { "enemy": "skitter", "count": 18, "interval": 0.2, "delay": 2.0 } ] },
+        { "id": 4, "delay": 4.0, "groups": [
+            { "enemy": "bulwark", "count": 7, "interval": 0.85 },
+            { "enemy": "drifter", "count": 18, "interval": 0.3, "delay": 1.5, "band": [0.30, 0.60] } ] },
+        { "id": 5, "delay": 4.0, "groups": [
+            { "enemy": "skitter", "count": 22, "interval": 0.18 },
+            { "enemy": "drifter", "count": 16, "interval": 0.3, "delay": 1.0 } ] },
+        { "id": 6, "delay": 5.0, "groups": [
+            { "enemy": "bulwark", "count": 8, "interval": 0.8 },
+            { "enemy": "skitter", "count": 20, "interval": 0.18, "delay": 1.5 },
+            { "enemy": "drifter", "count": 24, "interval": 0.28, "delay": 2.5 } ] }
       ],
       "boss": null,
       "rewards": { "shards": 20, "firstClearCells": 3 }

@@ -8,14 +8,18 @@ class SpawnEvent {
   const SpawnEvent({
     required this.time,
     required this.enemyId,
-    required this.laneId,
+    required this.y,
     required this.isElite,
     required this.waveIndex,
   });
 
   final double time;
   final String enemyId;
-  final String laneId;
+
+  /// Dusmanin dogacagi Y (spawn bandi icinde, grup `band`'i varsa oradan,
+  /// yoksa level `spawn` bandindan secilir; bkz. [WavePlanner.plan]).
+  final double y;
+
   final bool isElite;
 
   /// `level.waves` icindeki 0-tabanli konum (wave id DEGIL — waveId icerik
@@ -52,14 +56,20 @@ abstract final class WavePlanner {
         final groupStart = waveStart + group.delay;
         var latestInGroup = groupStart;
 
+        // Grubun kendi bandi varsa onu kullan, yoksa level'in genel spawn
+        // bandini kullan (bkz. `docs/CONTENT_SCHEMA.md` > WaveGroupConfig.band).
+        final bandYMin = group.band?.$1 ?? level.spawn.yMin;
+        final bandYMax = group.band?.$2 ?? level.spawn.yMax;
+
         for (var i = 0; i < group.count; i++) {
           final spawnTime = groupStart + group.interval * i;
           final isElite = group.eliteChance > 0 && rng.chance(group.eliteChance);
+          final y = bandYMin + rng.nextDouble() * (bandYMax - bandYMin);
 
           events.add(SpawnEvent(
             time: spawnTime,
             enemyId: group.enemy,
-            laneId: group.lane,
+            y: y,
             isElite: isElite,
             waveIndex: waveIndex,
           ));

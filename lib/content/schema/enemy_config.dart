@@ -11,6 +11,7 @@ class EnemyConfig {
     required this.hp,
     required this.speed,
     required this.coreDamage,
+    required this.wallAttackInterval,
     required this.aetherReward,
     required this.radius,
     required this.behavior,
@@ -33,9 +34,11 @@ class EnemyConfig {
       hp: (require('hp') as num).toDouble(),
       speed: (require('speed') as num).toDouble(),
       coreDamage: (require('coreDamage') as num).toDouble(),
+      // sur'a vurus araligi (saniye); eksikse 1.0.
+      wallAttackInterval: ((json['wallAttackInterval'] as num?) ?? 1.0).toDouble(),
       aetherReward: (require('aetherReward') as num).toDouble(),
       radius: (require('radius') as num).toDouble(),
-      // varsayilan davranis "march" (lane'i takip et, Core'a hasar ver).
+      // varsayilan davranis "march" (sola ilerle, sur'da dur, kaleye hasar ver).
       behavior: (json['behavior'] as String?) ?? 'march',
       flags: (json['flags'] as List<Object?>?)?.cast<String>() ?? const <String>[],
     );
@@ -47,6 +50,7 @@ class EnemyConfig {
   final double hp;
   final double speed;
   final double coreDamage;
+  final double wallAttackInterval;
   final double aetherReward;
   final double radius;
   final String behavior;

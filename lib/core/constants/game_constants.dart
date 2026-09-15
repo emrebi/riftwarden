@@ -19,12 +19,16 @@ const double kFixedTimeStep = 1.0 / 60.0;
 /// Asilan zaman atilir; oyun yavaslar ama donmaz.
 const int kMaxStepsPerFrame = 5;
 
-/// Savas alani normalize koordinat uzayi.
+/// Savas alani izotropik motor koordinat uzayi.
 ///
-/// Tum icerik JSON'lari (rift konumlari, lane waypoint'leri) 0..1 arasinda
-/// tanimlanir. Boylece icerik ekran boyutundan tamamen bagimsizdir.
-/// Piksele cevirme sadece render katmaninda yapilir.
-const double kFieldWidth = 1.0;
+/// Motor dunyasi y ekseninde [0, 1], x ekseninde [0, kFieldAspect]
+/// araligindadir (yukseklik = 1 birim, genislik = 16/9). Boylece bir daire
+/// ekranda da daire kalir, elipse donmez (bkz. `FieldProjection` dosya
+/// basi yorumu). Icerik JSON'larindaki tum konumlar yine 0..1 yazilir;
+/// motor kurulumunda (`BattleWorld.create`) x degerleri bu sabitle
+/// carpilir. Piksele cevirme sadece render katmaninda yapilir.
+const double kFieldAspect = 16 / 9;
+const double kFieldWidth = kFieldAspect;
 const double kFieldHeight = 1.0;
 
 /// Birliklerin hedef tazeleme araligi (saniye).
@@ -37,8 +41,10 @@ const int kTargetingStagger = 6;
 /// Spatial hash grid hucre boyutu (normalize birim).
 ///
 /// Kabaca en uzun menzilin ~2 kati olmali: cok kucuk olursa cok hucre
-/// taranir, cok buyuk olursa hucre basina cok aday duser.
-const double kSpatialCellSize = 0.08;
+/// taranir, cok buyuk olursa hucre basina cok aday duser. Kale savunmasi
+/// kurgusunda savasci menzilleri yuvadan sinira kadar uzaniyor (0.7-1.3
+/// yukseklik birimi), bu yuzden deger 0.08'den 0.25'e cikarildi.
+const double kSpatialCellSize = 0.25;
 
 /// Tek bir spatial sorgunun dondurebilecegi maksimum aday sayisi.
 /// Scratch buffer boyutu; asilirsa sonuc kirpilir (davranis bozulmaz).

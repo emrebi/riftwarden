@@ -1,3 +1,6 @@
+import 'dart:math' as math;
+
+import 'package:riftwarden/core/constants/game_constants.dart';
 import 'package:riftwarden/domain/rules/rules.dart';
 import 'package:riftwarden/engine/simulation/battle_simulation.dart';
 import 'package:riftwarden/engine/simulation/battle_system.dart';
@@ -14,6 +17,11 @@ const double kEliteHpMultiplier = 1.8;
 /// elite'i oldurmek zaten daha zor oldugu icin odulu asiri sismek
 /// ekonomiyi (upgrade hizini) bozar.
 const double kEliteRewardMultiplier = 1.5;
+
+/// Dusmanin sag kenarin ne kadar disinda dogdugu (izotropik dunya birimi).
+/// Ekran disinda dogmasi, oyuncunun aniden beliren bir dusman gormesini
+/// engeller; `MovementSystem` onu sola dogru ekrana getirir.
+const double kSpawnOvershoot = 0.03;
 
 /// Zamanlanmis spawn olaylarini havuza dusman olarak yerlestirir.
 ///
@@ -51,27 +59,14 @@ class SpawnSystem implements BattleSystem {
     if (enemy == null) return;
 
     final config = world.content.enemy(event.enemyId);
-    final laneIndex = world.laneIndexOfId(event.laneId);
-
-    // Baslangic konumu: lane'in ciktigi rift. `LaneConfig.from` bir rift
-    // id'sine isaret eder; level basina rift sayisi az oldugu icin
-    // dogrusal arama burada kabul edilebilir (spawn, her karede degil
-    // sadece zamanlanmis olaylarda calisir).
-    final lane = world.level.lanes[laneIndex];
-    var startX = world.laneWaypointX(laneIndex, 0);
-    var startY = world.laneWaypointY(laneIndex, 0);
-    for (var i = 0; i < world.level.rifts.length; i++) {
-      final rift = world.level.rifts[i];
-      if (rift.id == lane.from) {
-        startX = rift.x;
-        startY = rift.y;
-        break;
-      }
-    }
 
     final hpMultiplier =
         world.level.difficultyMultiplier * (event.isElite ? kEliteHpMultiplier : 1.0);
     final rewardMultiplier = event.isElite ? kEliteRewardMultiplier : 1.0;
+
+    // Sag kenarin hemen disinda dogar; sola dogru MovementSystem ilerletir.
+    const startX = kFieldAspect + kSpawnOvershoot;
+    final startY = event.y;
 
     enemy
       ..configId = config.id
@@ -84,11 +79,15 @@ class SpawnSystem implements BattleSystem {
       ..speed = config.speed
       ..radius = config.radius
       ..coreDamage = config.coreDamage
+      ..wallAttackInterval = config.wallAttackInterval
+      // 0'dan baslar: dusman sur'a VARDIGI anda ilk vurusunu hemen yapar
+      // (bkz. MovementSystem "atWall" bolumu); sonraki vuruslar
+      // wallAttackInterval'a gore periyodik olur.
+      ..wallAttackCooldown = 0
       ..aetherReward = config.aetherReward * rewardMultiplier
       ..isElite = event.isElite
-      ..laneIndex = laneIndex
-      // Lane'in ilk waypoint'i hedeftir; hareket sistemi buradan devam eder.
-      ..waypointIndex = 0
+      ..wanderPhase = world.rng.nextDouble() * (2 * math.pi)
+      ..atWall = false
       ..x = startX
       ..y = startY
       // prevX/prevY baslangic konumuyla ayni olmali, yoksa dogan dusman
