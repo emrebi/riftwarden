@@ -9,6 +9,7 @@ import 'package:riftwarden/content/registry/content_registry.dart';
 import 'package:riftwarden/engine/bridge/battle_signals.dart';
 import 'package:riftwarden/engine/riftwarden_game.dart';
 import 'package:riftwarden/features/battle/widgets/ability_button.dart';
+import 'package:riftwarden/features/battle/widgets/ability_shop_panel.dart';
 import 'package:riftwarden/features/battle/widgets/battle_pause_overlay.dart';
 import 'package:riftwarden/features/battle/widgets/battle_top_bar.dart';
 import 'package:riftwarden/features/battle/widgets/core_health_bar.dart';
@@ -43,6 +44,7 @@ class BattleScreen extends ConsumerStatefulWidget {
 class _BattleScreenState extends ConsumerState<BattleScreen> {
   late final RiftwardenGame _game;
   bool _isPaused = false;
+  String? _selectedShopUnitId;
 
   VoidCallback get _handleExit => widget.onExit ?? widget.onBack ?? () {};
 
@@ -74,9 +76,20 @@ class _BattleScreenState extends ConsumerState<BattleScreen> {
     _handleExit();
   }
 
+  String _unitName(AppLocalizations l10n, String unitId) => switch (unitId) {
+        'pulse_guard' => l10n.unitPulseGuard,
+        'arc_ranger' => l10n.unitArcRanger,
+        'titan_frame' => l10n.unitTitanFrame,
+        _ => unitId,
+      };
+
   @override
   Widget build(BuildContext context) {
     final viewPadding = MediaQuery.viewPaddingOf(context);
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+    final startPadding = isRtl ? viewPadding.right : viewPadding.left;
+    final endPadding = isRtl ? viewPadding.left : viewPadding.right;
+    final l10n = AppLocalizations.of(context);
 
     return PopScope(
       canPop: false,
@@ -127,135 +140,177 @@ class _BattleScreenState extends ConsumerState<BattleScreen> {
             ),
 
             // Yetenek nisan alma modu katmani
-              ValueListenableBuilder<AbilityState>(
-                valueListenable: _game.signals.ability,
-                builder: (BuildContext context, AbilityState ability, _) {
-                  if (!ability.isAiming) {
-                    return const SizedBox.shrink();
-                  }
-                  return Positioned.fill(
-                    child: LayoutBuilder(
-                      builder: (
-                        BuildContext context,
-                        BoxConstraints constraints,
-                      ) {
-                        final l10n = AppLocalizations.of(context);
-                        return GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTapDown: (TapDownDetails details) {
-                            final width = constraints.maxWidth;
-                            final height = constraints.maxHeight;
-                            if (width > 0 && height > 0) {
-                              final nx = (details.localPosition.dx / width)
-                                  .clamp(0.0, 1.0);
-                              final ny = (details.localPosition.dy / height)
-                                  .clamp(0.0, 1.0);
-                              _game.commands.castAbilityAt(nx, ny);
-                            }
-                          },
-                          child: Container(
-                            color: AppColors.voidDeep.withValues(alpha: 0.35),
-                            child: Center(
-                              child: Container(
-                                padding: const EdgeInsetsDirectional.symmetric(
-                                  horizontal: AppSpacing.lg,
-                                  vertical: AppSpacing.sm,
+            ValueListenableBuilder<AbilityState>(
+              valueListenable: _game.signals.ability,
+              builder: (BuildContext context, AbilityState ability, _) {
+                if (!ability.isAiming) {
+                  return const SizedBox.shrink();
+                }
+                return Positioned.fill(
+                  child: LayoutBuilder(
+                    builder: (
+                      BuildContext context,
+                      BoxConstraints constraints,
+                    ) {
+                      return GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTapDown: (TapDownDetails details) {
+                          final width = constraints.maxWidth;
+                          final height = constraints.maxHeight;
+                          if (width > 0 && height > 0) {
+                            final nx = (details.localPosition.dx / width)
+                                .clamp(0.0, 1.0);
+                            final ny = (details.localPosition.dy / height)
+                                .clamp(0.0, 1.0);
+                            _game.commands.castAbilityAt(nx, ny);
+                          }
+                        },
+                        child: Container(
+                          color: AppColors.voidDeep.withValues(alpha: 0.35),
+                          child: Center(
+                            child: Container(
+                              padding: const EdgeInsetsDirectional.symmetric(
+                                horizontal: AppSpacing.lg,
+                                vertical: AppSpacing.sm,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.surfaceOverlay,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(AppRadius.pill),
                                 ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.surfaceOverlay,
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(AppRadius.pill),
-                                  ),
-                                  border: Border.all(
+                                border: Border.all(
+                                  color: AppColors.aetherCyan,
+                                  width: 1.0,
+                                ),
+                                boxShadow: AppShadows.glow(
+                                  AppColors.aetherCyan,
+                                  blurRadius: 12.0,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  const Icon(
+                                    Icons.crisis_alert_rounded,
+                                    size: 20.0,
                                     color: AppColors.aetherCyan,
-                                    width: 1.0,
                                   ),
-                                  boxShadow: AppShadows.glow(
-                                    AppColors.aetherCyan,
-                                    blurRadius: 12.0,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    const Icon(
-                                      Icons.crisis_alert_rounded,
-                                      size: 20.0,
+                                  const SizedBox(width: AppSpacing.sm),
+                                  Text(
+                                    l10n.battleAimHint,
+                                    style: AppTypography.label.copyWith(
                                       color: AppColors.aetherCyan,
+                                      letterSpacing: 1.2,
                                     ),
-                                    const SizedBox(width: AppSpacing.sm),
-                                    Text(
-                                      l10n.battleAimHint,
-                                      style: AppTypography.label.copyWith(
-                                        color: AppColors.aetherCyan,
-                                        letterSpacing: 1.2,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
 
-            // Ust serit: Duraklatma, dalga ilerlemesi, Aether sayaci
-              PositionedDirectional(
-                top: 0.0,
-                start: 0.0,
-                end: 0.0,
-                child: BattleTopBar(
-                  waveProgress: _game.signals.wave,
-                  aether: _game.signals.aether,
-                  onPause: _pause,
-                  topPadding: viewPadding.top,
+            // Ust ince serit: Duraklatma, dalga ilerlemesi, Aether sayaci
+            PositionedDirectional(
+              top: 0.0,
+              start: 0.0,
+              end: 0.0,
+              child: BattleTopBar(
+                waveProgress: _game.signals.wave,
+                aether: _game.signals.aether,
+                onPause: _pause,
+                topPadding: viewPadding.top,
+                startPadding: startPadding,
+                endPadding: endPadding,
+              ),
+            ),
+
+            // Kale HP bari: Ust seridin altinda, sol tarafta (kalenin ustu)
+            PositionedDirectional(
+              top: viewPadding.top + 48.0,
+              start: startPadding + AppSpacing.md,
+              child: SizedBox(
+                width: 180.0,
+                child: CoreHealthBar(
+                  coreHpRatio: _game.signals.coreHpRatio,
+                  coreHp: _game.signals.coreHp,
+                ),
+              ),
+            ),
+
+            // Yetenek dukkani acikken arkaya tiklamayla kapatma katmani
+            if (_selectedShopUnitId != null)
+              Positioned.fill(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => setState(() => _selectedShopUnitId = null),
                 ),
               ),
 
-            // Alt serit: Core HP ve birlik uretim / yetenek butonlari
+            // Secilen savascinin yetenek dukkani paneli
+            if (_selectedShopUnitId != null)
               PositionedDirectional(
-                bottom: 0.0,
-                start: 0.0,
-                end: 0.0,
-                child: Container(
-                  padding: EdgeInsetsDirectional.only(
-                    bottom: viewPadding.bottom + AppSpacing.xs,
-                  ),
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: AlignmentDirectional.topCenter,
-                      end: AlignmentDirectional.bottomCenter,
-                      colors: <Color>[
-                        Colors.transparent,
-                        AppColors.surfaceOverlay,
-                      ],
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      CoreHealthBar(
-                        coreHpRatio: _game.signals.coreHpRatio,
-                        coreHp: _game.signals.coreHp,
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      UnitSpawnBar(
-                        aether: _game.signals.aether,
-                        unitCosts: _game.signals.unitCosts,
-                        onSpawnUnit: _game.commands.requestUnit,
-                        abilityButton: AbilityButton(
-                          ability: _game.signals.ability,
-                          onToggleAiming: _game.commands.toggleAbilityAiming,
-                        ),
-                      ),
+                bottom: viewPadding.bottom + 64.0,
+                start: startPadding + AppSpacing.md,
+                child: AbilityShopPanel(
+                  unitId: _selectedShopUnitId!,
+                  unitName: _unitName(l10n, _selectedShopUnitId!),
+                  abilityShop: _game.signals.abilityShop,
+                  onBuyAbility: _game.commands.buyAbility,
+                  onClose: () => setState(() => _selectedShopUnitId = null),
+                ),
+              ),
+
+            // Alt serit: Savasci uretim butonlari, yetenek alanlari ve Rift Collapse
+            PositionedDirectional(
+              bottom: 0.0,
+              start: 0.0,
+              end: 0.0,
+              child: Container(
+                padding: EdgeInsetsDirectional.only(
+                  start: startPadding + AppSpacing.md,
+                  end: endPadding + AppSpacing.md,
+                  top: AppSpacing.xs,
+                  bottom: viewPadding.bottom + AppSpacing.xs,
+                ),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: AlignmentDirectional.topCenter,
+                    end: AlignmentDirectional.bottomCenter,
+                    colors: <Color>[
+                      Colors.transparent,
+                      AppColors.surfaceOverlay,
                     ],
                   ),
                 ),
+                child: UnitSpawnBar(
+                  aether: _game.signals.aether,
+                  unitCosts: _game.signals.unitCosts,
+                  slots: _game.signals.slots,
+                  abilityShop: _game.signals.abilityShop,
+                  selectedShopUnitId: _selectedShopUnitId,
+                  onSpawnUnit: _game.commands.requestUnit,
+                  onToggleAbilities: (String unitId) {
+                    setState(() {
+                      if (_selectedShopUnitId == unitId) {
+                        _selectedShopUnitId = null;
+                      } else {
+                        _selectedShopUnitId = unitId;
+                      }
+                    });
+                  },
+                  abilityButton: AbilityButton(
+                    ability: _game.signals.ability,
+                    onToggleAiming: _game.commands.toggleAbilityAiming,
+                  ),
+                ),
               ),
+            ),
 
             // Duraklatma ekrani
             if (_isPaused)

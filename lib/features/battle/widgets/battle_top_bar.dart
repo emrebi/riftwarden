@@ -18,6 +18,8 @@ class BattleTopBar extends StatelessWidget {
     required this.aether,
     required this.onPause,
     required this.topPadding,
+    this.startPadding = 0.0,
+    this.endPadding = 0.0,
     super.key,
   });
 
@@ -30,15 +32,21 @@ class BattleTopBar extends StatelessWidget {
   /// Duraklatma butonuna basildiginda tetiklenen eylem.
   final VoidCallback onPause;
 
-  /// Centik guvenli alan yuksekligi.
+  /// Centik guvenli alan ust payi.
   final double topPadding;
+
+  /// Yatay guvenli alan baslangic payi.
+  final double startPadding;
+
+  /// Yatay guvenli alan bitis payi.
+  final double endPadding;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsetsDirectional.only(
-        start: AppSpacing.md,
-        end: AppSpacing.md,
+        start: startPadding + AppSpacing.md,
+        end: endPadding + AppSpacing.md,
         top: topPadding + AppSpacing.xs,
         bottom: AppSpacing.xs,
       ),

@@ -175,4 +175,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rotateTapToContinue => 'Tap to continue';
+
+  @override
+  String get hudCastle => 'Castle';
+
+  @override
+  String get hudAbilities => 'Abilities';
+
+  @override
+  String get hudSlotsFull => 'Full';
+
+  @override
+  String get hudBuy => 'BUY';
+
+  @override
+  String get hudOwned => 'OWNED';
+
+  @override
+  String get upgradePulseGuardDualshot => 'Dual Shot';
+
+  @override
+  String get upgradePulseGuardDualshotDesc => '+40% Attack Speed';
+
+  @override
+  String get upgradePulseGuardOvercharge => 'Overcharge';
+
+  @override
+  String get upgradePulseGuardOverchargeDesc => '+4 Damage';
+
+  @override
+  String get upgradeArcRangerOvercharge => 'Chain Overcharge';
+
+  @override
+  String get upgradeArcRangerOverchargeDesc => '+2 Chain Targets';
+
+  @override
+  String get upgradeArcRangerFocus => 'Focus';
+
+  @override
+  String get upgradeArcRangerFocusDesc => '+15% Critical Chance';
+
+  @override
+  String get upgradeTitanFrameShockwave => 'Shockwave';
+
+  @override
+  String get upgradeTitanFrameShockwaveDesc => 'Explosion radius + Knockback';
+
+  @override
+  String get upgradeTitanFrameJuggernaut => 'Juggernaut';
+
+  @override
+  String get upgradeTitanFrameJuggernautDesc => '+10 Damage, +50 HP';
 }

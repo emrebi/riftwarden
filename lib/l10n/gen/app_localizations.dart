@@ -441,6 +441,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tap to continue'**
   String get rotateTapToContinue;
+
+  /// Label for the player castle
+  ///
+  /// In en, this message translates to:
+  /// **'Castle'**
+  String get hudCastle;
+
+  /// Label for the warrior abilities button
+  ///
+  /// In en, this message translates to:
+  /// **'Abilities'**
+  String get hudAbilities;
+
+  /// Label when castle slots are completely occupied
+  ///
+  /// In en, this message translates to:
+  /// **'Full'**
+  String get hudSlotsFull;
+
+  /// Action button to purchase an upgrade in the ability shop
+  ///
+  /// In en, this message translates to:
+  /// **'BUY'**
+  String get hudBuy;
+
+  /// Status text for already purchased upgrades
+  ///
+  /// In en, this message translates to:
+  /// **'OWNED'**
+  String get hudOwned;
+
+  /// Pulse Guard upgrade: Dual Shot
+  ///
+  /// In en, this message translates to:
+  /// **'Dual Shot'**
+  String get upgradePulseGuardDualshot;
+
+  /// Pulse Guard upgrade description: Dual Shot
+  ///
+  /// In en, this message translates to:
+  /// **'+40% Attack Speed'**
+  String get upgradePulseGuardDualshotDesc;
+
+  /// Pulse Guard upgrade: Overcharge
+  ///
+  /// In en, this message translates to:
+  /// **'Overcharge'**
+  String get upgradePulseGuardOvercharge;
+
+  /// Pulse Guard upgrade description: Overcharge
+  ///
+  /// In en, this message translates to:
+  /// **'+4 Damage'**
+  String get upgradePulseGuardOverchargeDesc;
+
+  /// Arc Ranger upgrade: Chain Overcharge
+  ///
+  /// In en, this message translates to:
+  /// **'Chain Overcharge'**
+  String get upgradeArcRangerOvercharge;
+
+  /// Arc Ranger upgrade description: Chain Overcharge
+  ///
+  /// In en, this message translates to:
+  /// **'+2 Chain Targets'**
+  String get upgradeArcRangerOverchargeDesc;
+
+  /// Arc Ranger upgrade: Focus
+  ///
+  /// In en, this message translates to:
+  /// **'Focus'**
+  String get upgradeArcRangerFocus;
+
+  /// Arc Ranger upgrade description: Focus
+  ///
+  /// In en, this message translates to:
+  /// **'+15% Critical Chance'**
+  String get upgradeArcRangerFocusDesc;
+
+  /// Titan Frame upgrade: Shockwave
+  ///
+  /// In en, this message translates to:
+  /// **'Shockwave'**
+  String get upgradeTitanFrameShockwave;
+
+  /// Titan Frame upgrade description: Shockwave
+  ///
+  /// In en, this message translates to:
+  /// **'Explosion radius + Knockback'**
+  String get upgradeTitanFrameShockwaveDesc;
+
+  /// Titan Frame upgrade: Juggernaut
+  ///
+  /// In en, this message translates to:
+  /// **'Juggernaut'**
+  String get upgradeTitanFrameJuggernaut;
+
+  /// Titan Frame upgrade description: Juggernaut
+  ///
+  /// In en, this message translates to:
+  /// **'+10 Damage, +50 HP'**
+  String get upgradeTitanFrameJuggernautDesc;
 }
 
 class _AppLocalizationsDelegate

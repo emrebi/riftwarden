@@ -52,5 +52,22 @@
   "rotateTitle": "Rotate your device",
   "rotateHint": "Turn your phone sideways to play",
   "rotateAutoIn": "Switching to landscape in {seconds}s",
-  "rotateTapToContinue": "Tap to continue"
+  "rotateTapToContinue": "Tap to continue",
+  "hudCastle": "Castle",
+  "hudAbilities": "Abilities",
+  "hudSlotsFull": "Full",
+  "hudBuy": "BUY",
+  "hudOwned": "OWNED",
+  "upgradePulseGuardDualshot": "Dual Shot",
+  "upgradePulseGuardDualshotDesc": "+40% Attack Speed",
+  "upgradePulseGuardOvercharge": "Overcharge",
+  "upgradePulseGuardOverchargeDesc": "+4 Damage",
+  "upgradeArcRangerOvercharge": "Chain Overcharge",
+  "upgradeArcRangerOverchargeDesc": "+2 Chain Targets",
+  "upgradeArcRangerFocus": "Focus",
+  "upgradeArcRangerFocusDesc": "+15% Critical Chance",
+  "upgradeTitanFrameShockwave": "Shockwave",
+  "upgradeTitanFrameShockwaveDesc": "Explosion radius + Knockback",
+  "upgradeTitanFrameJuggernaut": "Juggernaut",
+  "upgradeTitanFrameJuggernautDesc": "+10 Damage, +50 HP"
 }

@@ -175,4 +175,55 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get rotateTapToContinue => 'Devam etmek için dokun';
+
+  @override
+  String get hudCastle => 'Kale';
+
+  @override
+  String get hudAbilities => 'Yetenekler';
+
+  @override
+  String get hudSlotsFull => 'Dolu';
+
+  @override
+  String get hudBuy => 'SATIN AL';
+
+  @override
+  String get hudOwned => 'SAHİP';
+
+  @override
+  String get upgradePulseGuardDualshot => 'Çift Atış';
+
+  @override
+  String get upgradePulseGuardDualshotDesc => '+%40 Atış Hızı';
+
+  @override
+  String get upgradePulseGuardOvercharge => 'Aşırı Yükleme';
+
+  @override
+  String get upgradePulseGuardOverchargeDesc => '+4 Hasar';
+
+  @override
+  String get upgradeArcRangerOvercharge => 'Zincir Aşırı Yükleme';
+
+  @override
+  String get upgradeArcRangerOverchargeDesc => '+2 Zincir Hedefi';
+
+  @override
+  String get upgradeArcRangerFocus => 'Odak';
+
+  @override
+  String get upgradeArcRangerFocusDesc => '+%15 Kritik Şans';
+
+  @override
+  String get upgradeTitanFrameShockwave => 'Şok Dalgası';
+
+  @override
+  String get upgradeTitanFrameShockwaveDesc => 'Patlama Yarıçapı + Geri Tepme';
+
+  @override
+  String get upgradeTitanFrameJuggernaut => 'Devbaş';
+
+  @override
+  String get upgradeTitanFrameJuggernautDesc => '+10 Hasar, +50 Can';
 }

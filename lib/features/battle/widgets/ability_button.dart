@@ -5,7 +5,7 @@ import 'package:riftwarden/app/theme/app_decorations.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/engine/bridge/battle_signals.dart';
 
-/// Savas ekraninda aktif yetenek butonu.
+/// Savas ekraninda Rift Collapse aktif yetenek butonu.
 ///
 /// Yetenek hazir degilken dairesel dolgu ile bekleme suresini (cooldown) gosterir.
 /// Hazirken dokunuldugunda nisan alma modunu acar veya kapatir.
@@ -14,7 +14,7 @@ class AbilityButton extends StatelessWidget {
     required this.ability,
     required this.onToggleAiming,
     super.key,
-    this.height = AppSpacing.minTouchTarget + AppSpacing.lg,
+    this.height = 52.0,
   });
 
   /// Yetenek durumu sinyali (cooldown, hazirlik, nisan durumu).
@@ -56,8 +56,9 @@ class AbilityButton extends StatelessWidget {
             behavior: HitTestBehavior.opaque,
             child: AnimatedContainer(
               duration: AppDuration.fast,
+              width: height,
               height: height,
-              padding: const EdgeInsetsDirectional.all(AppSpacing.sm),
+              padding: const EdgeInsetsDirectional.all(AppSpacing.xs),
               decoration: BoxDecoration(
                 color: isAiming
                     ? AppColors.surfaceRaised
@@ -86,18 +87,18 @@ class AbilityButton extends StatelessWidget {
                         isAiming
                             ? Icons.crisis_alert_rounded
                             : Icons.flare_rounded,
-                        size: 26.0,
+                        size: 24.0,
                         color: iconColor,
                       )
                     : SizedBox(
-                        width: 32.0,
-                        height: 32.0,
+                        width: 28.0,
+                        height: 28.0,
                         child: Stack(
                           alignment: AlignmentDirectional.center,
                           children: <Widget>[
                             CircularProgressIndicator(
                               value: state.cooldownRatio,
-                              strokeWidth: 3.0,
+                              strokeWidth: 2.5,
                               backgroundColor: AppColors.surface,
                               valueColor: const AlwaysStoppedAnimation<Color>(
                                 AppColors.aetherCyanDim,
@@ -105,7 +106,7 @@ class AbilityButton extends StatelessWidget {
                             ),
                             Icon(
                               Icons.flare_rounded,
-                              size: 18.0,
+                              size: 14.0,
                               color: iconColor,
                             ),
                           ],

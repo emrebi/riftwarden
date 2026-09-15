@@ -7,10 +7,10 @@ import 'package:riftwarden/app/theme/app_typography.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
 import 'package:riftwarden/shared/widgets/rw_progress_bar.dart';
 
-/// Savas alaninin altinda Core canini gosteren bar bileseni.
+/// Kalenin canini gosteren kompakt bar bileseni.
 ///
-/// Hasar alindiginda hasar izi gosterir. Oran %25 altina indiginde
-/// tehlike rengine doner ve hafif nabiz animasyonu uygular.
+/// Ust seridin altinda, sol tarafta kalenin uzerinde konumlanir.
+/// Can %25 altina indiginde tehlike rengine doner ve hafif nabiz uygular.
 class CoreHealthBar extends StatefulWidget {
   const CoreHealthBar({
     required this.coreHpRatio,
@@ -36,7 +36,7 @@ class _CoreHealthBarState extends State<CoreHealthBar>
   @override
   void initState() {
     super.initState();
-    // Dusuk canda panik hissi icin hafif nabiz efekti
+    // Dusuk canda uyari icin hafif nabiz efekti
     _pulseController = AnimationController(
       vsync: this,
       duration: AppDuration.slow,
@@ -72,86 +72,86 @@ class _CoreHealthBarState extends State<CoreHealthBar>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsetsDirectional.symmetric(
-        horizontal: AppSpacing.md,
-      ),
-      child: ValueListenableBuilder<double>(
-        valueListenable: widget.coreHpRatio,
-        builder: (BuildContext context, double ratio, _) {
-          final isLow = ratio < 0.25;
-          _syncPulse(isLow);
-          final barColor = isLow ? AppColors.danger : AppColors.coreTeal;
+    return ValueListenableBuilder<double>(
+      valueListenable: widget.coreHpRatio,
+      builder: (BuildContext context, double ratio, _) {
+        final isLow = ratio < 0.25;
+        _syncPulse(isLow);
+        final barColor = isLow ? AppColors.danger : AppColors.coreTeal;
 
-          return AnimatedBuilder(
-            animation: _pulseAnimation,
-            builder: (BuildContext context, Widget? child) {
-              return Opacity(
-                opacity: isLow ? _pulseAnimation.value : 1.0,
-                child: Container(
-                  padding: const EdgeInsetsDirectional.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.sm,
+        return AnimatedBuilder(
+          animation: _pulseAnimation,
+          builder: (BuildContext context, Widget? child) {
+            return Opacity(
+              opacity: isLow ? _pulseAnimation.value : 1.0,
+              child: Container(
+                padding: const EdgeInsetsDirectional.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceOverlay,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(AppRadius.md),
                   ),
-                  decoration: BoxDecoration(
-                    color: AppColors.surfaceOverlay,
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(AppRadius.md),
-                    ),
-                    border: Border.all(
+                  border: Border.all(
+                    color: isLow
+                        ? AppColors.danger.withValues(alpha: 0.8)
+                        : AppColors.surfaceRaised,
+                    width: 1.0,
+                  ),
+                  boxShadow: isLow
+                      ? AppShadows.glow(
+                          AppColors.danger,
+                          blurRadius: 10.0,
+                        )
+                      : null,
+                ),
+                child: child,
+              ),
+            );
+          },
+          child: Row(
+            children: <Widget>[
+              Icon(
+                Icons.shield_rounded,
+                size: 14.0,
+                color: isLow ? AppColors.danger : AppColors.coreTeal,
+              ),
+              const SizedBox(width: AppSpacing.xs),
+              Text(
+                l10n.hudCastle,
+                style: AppTypography.label.copyWith(
+                  color: isLow ? AppColors.danger : AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.xs),
+              Expanded(
+                child: RwProgressBar(
+                  value: ratio,
+                  color: barColor,
+                  showDamageTrail: true,
+                  height: AppSpacing.xs,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.xs),
+              ValueListenableBuilder<int>(
+                valueListenable: widget.coreHp,
+                builder: (BuildContext context, int hpValue, _) {
+                  return Text(
+                    hpValue.toString(),
+                    style: AppTypography.numeric.copyWith(
                       color: isLow
-                          ? AppColors.danger.withValues(alpha: 0.8)
-                          : AppColors.surfaceRaised,
-                      width: 1.0,
+                          ? AppColors.danger
+                          : AppColors.textPrimary,
                     ),
-                    boxShadow: isLow
-                        ? AppShadows.glow(
-                            AppColors.danger,
-                            blurRadius: 10.0,
-                          )
-                        : null,
-                  ),
-                  child: child,
-                ),
-              );
-            },
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: RwProgressBar(
-                    value: ratio,
-                    color: barColor,
-                    showDamageTrail: true,
-                    height: AppSpacing.sm,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Text(
-                  l10n.hudCore,
-                  style: AppTypography.label.copyWith(
-                    color:
-                        isLow ? AppColors.danger : AppColors.textSecondary,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                ValueListenableBuilder<int>(
-                  valueListenable: widget.coreHp,
-                  builder: (BuildContext context, int hpValue, _) {
-                    return Text(
-                      hpValue.toString(),
-                      style: AppTypography.numeric.copyWith(
-                        color: isLow
-                            ? AppColors.danger
-                            : AppColors.textPrimary,
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          );
-        },
-      ),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

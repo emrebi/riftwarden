@@ -42,6 +42,23 @@ TR_OVERRIDES: dict[str, str] = {
     "unitPulseGuard": "Pulse Guard",
     "unitArcRanger": "Arc Ranger",
     "unitTitanFrame": "Titan Frame",
+    "hudCastle": "Kale",
+    "hudAbilities": "Yetenekler",
+    "hudSlotsFull": "Dolu",
+    "hudBuy": "SATIN AL",
+    "hudOwned": "SAHİP",
+    "upgradePulseGuardDualshot": "Çift Atış",
+    "upgradePulseGuardDualshotDesc": "+%40 Atış Hızı",
+    "upgradePulseGuardOvercharge": "Aşırı Yükleme",
+    "upgradePulseGuardOverchargeDesc": "+4 Hasar",
+    "upgradeArcRangerOvercharge": "Zincir Aşırı Yükleme",
+    "upgradeArcRangerOverchargeDesc": "+2 Zincir Hedefi",
+    "upgradeArcRangerFocus": "Odak",
+    "upgradeArcRangerFocusDesc": "+%15 Kritik Şans",
+    "upgradeTitanFrameShockwave": "Şok Dalgası",
+    "upgradeTitanFrameShockwaveDesc": "Patlama Yarıçapı + Geri Tepme",
+    "upgradeTitanFrameJuggernaut": "Devbaş",
+    "upgradeTitanFrameJuggernautDesc": "+10 Hasar, +50 Can",
 }
 
 
