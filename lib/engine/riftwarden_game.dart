@@ -8,8 +8,8 @@ import 'package:riftwarden/engine/bridge/battle_signals.dart';
 import 'package:riftwarden/engine/effects/effect_entity.dart';
 import 'package:riftwarden/engine/effects/effect_renderer.dart';
 import 'package:riftwarden/engine/render/atlas_registry.dart';
-import 'package:riftwarden/engine/render/field_background.dart';
 import 'package:riftwarden/engine/render/field_projection.dart';
+import 'package:riftwarden/engine/render/map_renderer.dart';
 import 'package:riftwarden/engine/render/projectile_renderer.dart';
 import 'package:riftwarden/engine/render/swarm_renderer.dart';
 import 'package:riftwarden/engine/render/unit_renderer.dart';
@@ -135,7 +135,7 @@ class RiftwardenGame extends FlameGame {
     // kamera pan/zoom donusumune tabi olmadan `FieldProjection`in urettigi
     // mutlak ekran pikselinde cizilir (bu oyunda kamera hareketi yok,
     // bkz. brief).
-    add(FieldBackground(world: battleWorld, atlas: atlas, projection: projection));
+    add(MapRenderer(world: battleWorld, atlas: atlas, projection: projection));
     add(
       SwarmRenderer(world: battleWorld, sim: simulation, atlas: atlas, projection: projection),
     );

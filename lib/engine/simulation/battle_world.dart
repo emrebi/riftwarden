@@ -234,7 +234,7 @@ class BattleWorld {
   final double spawnYMax;
 
   /// Sag kenarda gorsel olarak cizilecek rift portali sayisi (bkz.
-  /// `FieldBackground`; spawn burada DEGIL, rastgele Y'de olur).
+  /// `MapRenderer`; spawn burada DEGIL, rastgele Y'de olur).
   final int riftCount;
 
   /// Kale yuvalarinin merkez konumlari (izotropik dunya, x zaten

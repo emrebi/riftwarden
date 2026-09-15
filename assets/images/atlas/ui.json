@@ -6,52 +6,88 @@
       "x": 0,
       "y": 0
     },
-    "upgrade_chain": {
+    "upgrade_arc_focus": {
       "h": 128,
       "w": 128,
       "x": 130,
+      "y": 0
+    },
+    "upgrade_arc_overcharge": {
+      "h": 128,
+      "w": 128,
+      "x": 260,
+      "y": 0
+    },
+    "upgrade_chain": {
+      "h": 128,
+      "w": 128,
+      "x": 390,
       "y": 0
     },
     "upgrade_core": {
       "h": 128,
       "w": 128,
-      "x": 260,
+      "x": 520,
       "y": 0
     },
     "upgrade_crit": {
       "h": 128,
       "w": 128,
-      "x": 0,
-      "y": 130
+      "x": 650,
+      "y": 0
     },
     "upgrade_economy": {
       "h": 128,
       "w": 128,
-      "x": 130,
-      "y": 130
+      "x": 780,
+      "y": 0
     },
     "upgrade_explosion": {
       "h": 128,
       "w": 128,
-      "x": 260,
+      "x": 0,
       "y": 130
     },
     "upgrade_pierce": {
       "h": 128,
       "w": 128,
-      "x": 0,
-      "y": 260
+      "x": 130,
+      "y": 130
+    },
+    "upgrade_pulse_dualshot": {
+      "h": 128,
+      "w": 128,
+      "x": 260,
+      "y": 130
+    },
+    "upgrade_pulse_overcharge": {
+      "h": 128,
+      "w": 128,
+      "x": 390,
+      "y": 130
     },
     "upgrade_swarm": {
       "h": 128,
       "w": 128,
-      "x": 130,
-      "y": 260
+      "x": 520,
+      "y": 130
+    },
+    "upgrade_titan_juggernaut": {
+      "h": 128,
+      "w": 128,
+      "x": 650,
+      "y": 130
+    },
+    "upgrade_titan_shockwave": {
+      "h": 128,
+      "w": 128,
+      "x": 780,
+      "y": 130
     }
   },
   "image": "ui.webp",
   "size": [
-    512,
-    512
+    1024,
+    1024
   ]
 }

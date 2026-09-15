@@ -32,13 +32,16 @@ SIZE = 128          # kaynak cozunurluk; atlas paketlerken kuculecek
 PAD = 8
 
 # Sanat yonu (docs/ASSET_PROMPTS.md): dusmanlar menekse/macenta,
-# muttefikler cyan/teal, kaynaklar kehribar.
+# muttefikler cyan/teal, kaynaklar kehribar, dogal harita ogeleri
+# koyu mor/lacivert tonlari (bkz. plan P13: harita render + gecici asset).
 ENEMY_VIOLET = (155, 92, 255)
 ENEMY_MAGENTA = (232, 74, 196)
 ALLY_CYAN = (63, 224, 255)
 ALLY_TEAL = (43, 245, 200)
 AMBER = (255, 196, 77)
 DANGER = (255, 77, 94)
+NATURE_PURPLE = (74, 42, 122)
+NATURE_NAVY = (30, 34, 74)
 
 
 def _canvas() -> tuple[Image.Image, ImageDraw.ImageDraw]:
@@ -144,6 +147,18 @@ GROUPS: dict[str, dict[str, tuple[str, tuple[int, int, int], float]]] = {
         "aether_core": ("ring",    ALLY_TEAL,     1.00),
         "rift_violet": ("ring",    ENEMY_VIOLET,  1.00),
         "rift_magenta": ("ring",   ENEMY_MAGENTA, 1.00),
+        # Harita ogeleri (docs/CONTENT_SCHEMA.md > environments/castles):
+        # kale en buyuk siluet olmali (oyuncu her zaman nereyi savundugunu
+        # anlamali), dogal dekor mor/lacivert, rift portali menekse ama
+        # rift_violet'ten farkli sekille (hexagon) ayirt edilir.
+        "castle_citadel": ("hexagon",  ALLY_TEAL,     1.35),
+        "crystal_rock_a": ("diamond",  NATURE_PURPLE, 0.85),
+        "crystal_rock_b": ("diamond",  NATURE_NAVY,   0.70),
+        "energy_pylon":   ("triangle", ALLY_CYAN,     0.95),
+        "ruin_a":         ("square",   NATURE_NAVY,   0.80),
+        "alien_tree_a":   ("star",     NATURE_PURPLE, 0.90),
+        "mountain_a":     ("pentagon", NATURE_NAVY,   1.10),
+        "rift_portal":    ("hexagon",  ENEMY_VIOLET,  1.10),
     },
     # Upgrade kartlari ve yetenek butonu icin arayuz ikonlari.
     # Her aile farkli sekil: oyuncu karti okumadan once aileyi tanisin.
@@ -156,6 +171,16 @@ GROUPS: dict[str, dict[str, tuple[str, tuple[int, int, int], float]]] = {
         "upgrade_economy":   ("diamond",  AMBER,         0.80),
         "upgrade_core":      ("pentagon", ALLY_TEAL,     0.80),
         "ability_collapse":  ("ring",     ENEMY_VIOLET,  0.90),
+        # Savas ici Aether yetenek dukkani ikonlari (source: shop,
+        # docs/CONTENT_SCHEMA.md > upgrades): birlik basina sekil+renk
+        # kombinasyonu diger tum "ui" girdileriyle CAKISMAYACAK sekilde
+        # secildi, oyuncu dukkanda hangi birlige ait oldugunu ayirt etsin.
+        "upgrade_pulse_dualshot":   ("square",   ALLY_CYAN, 0.80),
+        "upgrade_pulse_overcharge": ("diamond",  ALLY_CYAN, 0.80),
+        "upgrade_arc_overcharge":   ("bolt",     ALLY_TEAL, 0.80),
+        "upgrade_arc_focus":        ("triangle", ALLY_TEAL, 0.80),
+        "upgrade_titan_shockwave":  ("ring",     ALLY_TEAL, 0.90),
+        "upgrade_titan_juggernaut": ("hexagon",  DANGER,    0.80),
     },
 }
 
