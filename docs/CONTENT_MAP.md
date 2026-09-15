@@ -27,6 +27,7 @@ Aşağıdaki tablodan işini bul, **sadece** listelenen dosyaları aç.
 | **Sprite/ikon işle** | `tools/assetkit/`, `docs/ASSET_PROMPTS.md` | `/rw-assets` |
 | **Reklam yerleşimi değiştir** | `lib/core/services/ad_service.dart`, ilgili `features/*/viewmodel` | — |
 | **Performans sorunu (FPS)** | `lib/engine/simulation/`, `lib/engine/render/`, level JSON'undaki `maxEnemies` | — |
+| **Açılış yön kapısı** | `lib/features/orientation_gate/`, `lib/core/services/orientation_service.dart`, `lib/app/router/app_router.dart` | — |
 
 ---
 

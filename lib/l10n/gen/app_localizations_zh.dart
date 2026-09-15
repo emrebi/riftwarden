@@ -161,6 +161,20 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get hudBossWave => 'BOSS WAVE';
+
+  @override
+  String get rotateTitle => 'Rotate your device';
+
+  @override
+  String get rotateHint => 'Turn your phone sideways to play';
+
+  @override
+  String rotateAutoIn(int seconds) {
+    return 'Switching to landscape in ${seconds}s';
+  }
+
+  @override
+  String get rotateTapToContinue => 'Tap to continue';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -319,4 +333,18 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get hudBossWave => 'BOSS WAVE';
+
+  @override
+  String get rotateTitle => 'Rotate your device';
+
+  @override
+  String get rotateHint => 'Turn your phone sideways to play';
+
+  @override
+  String rotateAutoIn(int seconds) {
+    return 'Switching to landscape in ${seconds}s';
+  }
+
+  @override
+  String get rotateTapToContinue => 'Tap to continue';
 }

@@ -109,9 +109,11 @@
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 
-	<!-- Landscape-only. iPad hedeflenmiyor (TARGETED_DEVICE_FAMILY = 1). -->
+	<!-- Acilista dikey serbest; yon kapisi yataya kilitler. iPad hedeflenmiyor
+	     (TARGETED_DEVICE_FAMILY = 1). -->
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
+		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>

@@ -161,4 +161,18 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get hudBossWave => 'BOSS DALGASI';
+
+  @override
+  String get rotateTitle => 'Cihazını çevir';
+
+  @override
+  String get rotateHint => 'Oynamak için telefonunu yan çevir';
+
+  @override
+  String rotateAutoIn(int seconds) {
+    return '$seconds sn sonra yataya geçiliyor';
+  }
+
+  @override
+  String get rotateTapToContinue => 'Devam etmek için dokun';
 }

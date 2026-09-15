@@ -34,6 +34,10 @@ TR_OVERRIDES: dict[str, str] = {
     "battleResume": "DEVAM ET",
     "battleAimHint": "HEDEFE DOKUN",
     "hudBossWave": "BOSS DALGASI",
+    "rotateTitle": "Cihazını çevir",
+    "rotateHint": "Oynamak için telefonunu yan çevir",
+    "rotateAutoIn": "{seconds} sn sonra yataya geçiliyor",
+    "rotateTapToContinue": "Devam etmek için dokun",
     # Birlik adlari ozel isim: ceviri yok, tum dillerde ayni kalir.
     "unitPulseGuard": "Pulse Guard",
     "unitArcRanger": "Arc Ranger",

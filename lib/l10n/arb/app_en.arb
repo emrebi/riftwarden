@@ -213,5 +213,26 @@
   "hudBossWave": "BOSS WAVE",
   "@hudBossWave": {
     "description": "Label displayed on boss waves"
+  },
+  "rotateTitle": "Rotate your device",
+  "@rotateTitle": {
+    "description": "Orientation gate: title shown while the device is portrait"
+  },
+  "rotateHint": "Turn your phone sideways to play",
+  "@rotateHint": {
+    "description": "Orientation gate: hint explaining what to do"
+  },
+  "rotateAutoIn": "Switching to landscape in {seconds}s",
+  "@rotateAutoIn": {
+    "description": "Orientation gate: countdown before the app locks to landscape automatically",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "rotateTapToContinue": "Tap to continue",
+  "@rotateTapToContinue": {
+    "description": "Orientation gate: tapping the screen skips the countdown"
   }
 }

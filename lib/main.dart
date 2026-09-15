@@ -20,6 +20,7 @@ Future<void> main() async {
         storageServiceProvider.overrideWithValue(boot.storage),
         audioServiceProvider.overrideWithValue(boot.audio),
         hapticServiceProvider.overrideWithValue(boot.haptics),
+        orientationServiceProvider.overrideWithValue(boot.orientation),
         contentRegistryProvider.overrideWithValue(boot.content),
       ],
       child: const RiftwardenApp(),

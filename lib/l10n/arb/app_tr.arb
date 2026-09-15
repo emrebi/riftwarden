@@ -48,5 +48,9 @@
   "battlePauseTitle": "DURAKLATILDI",
   "battleResume": "DEVAM ET",
   "battleAimHint": "HEDEFE DOKUN",
-  "hudBossWave": "BOSS DALGASI"
+  "hudBossWave": "BOSS DALGASI",
+  "rotateTitle": "Cihazını çevir",
+  "rotateHint": "Oynamak için telefonunu yan çevir",
+  "rotateAutoIn": "{seconds} sn sonra yataya geçiliyor",
+  "rotateTapToContinue": "Devam etmek için dokun"
 }

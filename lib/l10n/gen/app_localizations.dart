@@ -417,6 +417,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'BOSS WAVE'**
   String get hudBossWave;
+
+  /// Orientation gate: title shown while the device is portrait
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate your device'**
+  String get rotateTitle;
+
+  /// Orientation gate: hint explaining what to do
+  ///
+  /// In en, this message translates to:
+  /// **'Turn your phone sideways to play'**
+  String get rotateHint;
+
+  /// Orientation gate: countdown before the app locks to landscape automatically
+  ///
+  /// In en, this message translates to:
+  /// **'Switching to landscape in {seconds}s'**
+  String rotateAutoIn(int seconds);
+
+  /// Orientation gate: tapping the screen skips the countdown
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to continue'**
+  String get rotateTapToContinue;
 }
 
 class _AppLocalizationsDelegate

@@ -81,6 +81,8 @@ Bunlari ihlal eden kod, calissa bile reddedilir. Otomatik denetleniyor:
 ## Ekran duzeni kisitlari
 
 - **Sadece yatay.** Dikey duzen tasarlama. Iki yatay yon de (sola/saga donuk) desteklenir.
+  Tek istisna: `lib/features/orientation_gate/` ekrani acilista dikey gorunur; hem dikey
+  (360x640) hem yatay (640x360) dogru cizilmelidir.
 - Hedef en dar ekran: **640 x 360 dp yatay**. Bu boyutta tasma olmamali.
 - Savas HUD'u savas alanini kapatmamali: alt serit ekran yuksekliginin
   **%20'sini gecmesin**.

@@ -48,5 +48,9 @@
   "battlePauseTitle": "PAUSED",
   "battleResume": "RESUME",
   "battleAimHint": "TAP TARGET TO CAST",
-  "hudBossWave": "BOSS WAVE"
+  "hudBossWave": "BOSS WAVE",
+  "rotateTitle": "Rotate your device",
+  "rotateHint": "Turn your phone sideways to play",
+  "rotateAutoIn": "Switching to landscape in {seconds}s",
+  "rotateTapToContinue": "Tap to continue"
 }

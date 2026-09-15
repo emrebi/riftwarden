@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:riftwarden/core/services/audio_service.dart';
 import 'package:riftwarden/core/services/haptic_service.dart';
+import 'package:riftwarden/core/services/orientation_service.dart';
 import 'package:riftwarden/core/services/storage_service.dart';
 
 /// Servis provider'lari.
@@ -19,5 +20,10 @@ final Provider<AudioService> audioServiceProvider = Provider<AudioService>(
 );
 
 final Provider<HapticService> hapticServiceProvider = Provider<HapticService>(
+  (ref) => throw UnimplementedError('bootstrap tarafindan override edilmeli'),
+);
+
+final Provider<OrientationService> orientationServiceProvider =
+    Provider<OrientationService>(
   (ref) => throw UnimplementedError('bootstrap tarafindan override edilmeli'),
 );

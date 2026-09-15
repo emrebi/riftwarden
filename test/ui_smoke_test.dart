@@ -5,14 +5,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:riftwarden/app/theme/app_theme.dart';
+import 'package:riftwarden/core/services/orientation_service.dart';
+import 'package:riftwarden/core/services/service_providers.dart';
 import 'package:riftwarden/features/boot/view/boot_screen.dart';
 import 'package:riftwarden/features/level_select/view/level_select_data.dart';
 import 'package:riftwarden/features/level_select/view/level_select_screen.dart';
 import 'package:riftwarden/features/main_menu/view/main_menu_screen.dart';
+import 'package:riftwarden/features/orientation_gate/view/orientation_gate_screen.dart';
 import 'package:riftwarden/features/result/view/result_data.dart';
 import 'package:riftwarden/features/result/view/result_screen.dart';
 import 'package:riftwarden/features/settings/view/settings_screen.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
+
+class _FakeOrientationService extends OrientationService {
+  int lockLandscapeCallCount = 0;
+
+  @override
+  Future<void> lockLandscape() async {
+    lockLandscapeCallCount++;
+  }
+}
 
 void main() {
   const surfaces = <(String, Size)>[
@@ -197,4 +209,63 @@ void main() {
       });
     });
   }
+
+  group('OrientationGateScreen', () {
+    Future<void> setSurface(WidgetTester tester, Size physicalSize) async {
+      final view = tester.view;
+      view.physicalSize = physicalSize;
+      view.devicePixelRatio = 3.0;
+      addTearDown(view.resetPhysicalSize);
+      addTearDown(view.resetDevicePixelRatio);
+    }
+
+    Widget wrapWithService(Widget child, OrientationService service) {
+      return ProviderScope(
+        overrides: [
+          orientationServiceProvider.overrideWithValue(service),
+        ],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          theme: AppTheme.build(const Locale('en')),
+          locale: const Locale('en'),
+          home: child,
+        ),
+      );
+    }
+
+    testWidgets('360x640 DIKEY yuzeyde tasma yok', (WidgetTester tester) async {
+      const physicalSize = Size(1080, 1920);
+      await setSurface(tester, physicalSize);
+
+      final service = _FakeOrientationService();
+      await tester.pumpWidget(
+        wrapWithService(OrientationGateScreen(onReady: noop), service),
+      );
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(tester.takeException(), isNull);
+      final scaffoldSize = tester.getSize(find.byType(Scaffold).first);
+      expect(scaffoldSize, physicalSize / 3.0);
+    });
+
+    testWidgets('640x360 YATAY yuzeyde onReady cagrilir', (WidgetTester tester) async {
+      const physicalSize = Size(1920, 1080);
+      await setSurface(tester, physicalSize);
+
+      final service = _FakeOrientationService();
+      var onReadyCalled = false;
+      await tester.pumpWidget(
+        wrapWithService(
+          OrientationGateScreen(onReady: () => onReadyCalled = true),
+          service,
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(tester.takeException(), isNull);
+      expect(onReadyCalled, isTrue);
+      expect(service.lockLandscapeCallCount, 1);
+    });
+  });
 }

@@ -4,6 +4,7 @@ import 'package:riftwarden/content/loader/content_loader.dart';
 import 'package:riftwarden/content/registry/content_registry.dart';
 import 'package:riftwarden/core/services/audio_service.dart';
 import 'package:riftwarden/core/services/haptic_service.dart';
+import 'package:riftwarden/core/services/orientation_service.dart';
 import 'package:riftwarden/core/services/storage_service.dart';
 
 /// [bootstrap] ciktisi: acilista kurulmus, senkron erisilmesi gereken
@@ -18,12 +19,14 @@ class BootstrapResult {
     required this.storage,
     required this.audio,
     required this.haptics,
+    required this.orientation,
     required this.content,
   });
 
   final StorageService storage;
   final AudioService audio;
   final HapticService haptics;
+  final OrientationService orientation;
   final ContentRegistry content;
 
   // TODO(adim 17): final SaveGame save;
@@ -44,12 +47,11 @@ class BootstrapResult {
 Future<BootstrapResult> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Landscape kilidi. Oyun yalnizca yatay calisir; manifest/plist tarafinda
-  // da kilitli ama uygulama ici gecisler icin burasi da gerekli.
-  await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
-    DeviceOrientation.landscapeLeft,
-    DeviceOrientation.landscapeRight,
-  ]);
+  // Acilista dikey de serbest: manifest fullUser, plist portrait+landscape.
+  // Yon kapisi (orientation_gate) telefon yatirilinca ya da 10 sn dolunca
+  // OrientationService.lockLandscape() ile yataya kilitler.
+  final orientation = OrientationService();
+  await orientation.allowPortraitAndLandscape();
 
   // Tam ekran: sistem cubuklari gizli, kenardan cekilince geri gelir.
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
@@ -75,6 +77,7 @@ Future<BootstrapResult> bootstrap() async {
     storage: storage,
     audio: audio,
     haptics: haptics,
+    orientation: orientation,
     content: content,
   );
 }

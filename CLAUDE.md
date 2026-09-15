@@ -123,3 +123,6 @@ python tools/assetkit/assetkit.py verify
   `agy mcp add unity-mcp -- "C:\Users\ASUS\.unity\relay\relay_win.exe" --mcp`
 - **Reklam/IAP kimlikleri TEST kimlikleridir.** `AndroidManifest.xml`, `Info.plist`
   ve `AdConfig` icinde TODO ile isaretli. Yayin oncesi degistirilecek.
+- **Yon kapisi:** uygulama acilista dikeyi de destekler (manifest `fullUser`,
+  plist portrait+landscape); yataya kilidi `OrientationService` yapar. Manifest/plist'i
+  tekrar landscape-only yapma — kapi dikeyde hic gorunmez olur.
