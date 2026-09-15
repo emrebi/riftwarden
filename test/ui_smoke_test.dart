@@ -5,8 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:riftwarden/app/theme/app_theme.dart';
+import 'package:riftwarden/content/loader/content_loader.dart';
+import 'package:riftwarden/content/registry/content_registry.dart';
 import 'package:riftwarden/core/services/orientation_service.dart';
 import 'package:riftwarden/core/services/service_providers.dart';
+import 'package:riftwarden/features/battle/view/battle_screen.dart';
+import 'package:riftwarden/features/battle/widgets/ability_button.dart';
+import 'package:riftwarden/features/battle/widgets/battle_top_bar.dart';
+import 'package:riftwarden/features/battle/widgets/core_health_bar.dart';
+import 'package:riftwarden/features/battle/widgets/unit_spawn_bar.dart';
 import 'package:riftwarden/features/boot/view/boot_screen.dart';
 import 'package:riftwarden/features/level_select/view/level_select_data.dart';
 import 'package:riftwarden/features/level_select/view/level_select_screen.dart';
@@ -27,6 +34,8 @@ class _FakeOrientationService extends OrientationService {
 }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   const surfaces = <(String, Size)>[
     ('640x360', Size(1920, 1080)),
     ('800x360', Size(2400, 1080)),
@@ -267,5 +276,69 @@ void main() {
       expect(onReadyCalled, isTrue);
       expect(service.lockLandscapeCallCount, 1);
     });
+  });
+
+  group('BattleScreen', () {
+    late ContentRegistry content;
+
+    setUpAll(() async {
+      content = await const ContentLoader().load();
+    });
+
+    Future<void> setSurface(WidgetTester tester, Size physicalSize) async {
+      final view = tester.view;
+      view.physicalSize = physicalSize;
+      view.devicePixelRatio = 3.0;
+      addTearDown(view.resetPhysicalSize);
+      addTearDown(view.resetDevicePixelRatio);
+    }
+
+    Widget wrapBattle() {
+      return ProviderScope(
+        overrides: [
+          contentRegistryProvider.overrideWithValue(content),
+        ],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          theme: AppTheme.build(const Locale('en')),
+          locale: const Locale('en'),
+          home: BattleScreen(levelId: 1, onExit: noop),
+        ),
+      );
+    }
+
+    const battleSurfaces = <(String, Size)>[
+      ('640x360', Size(1920, 1080)),
+      ('800x360', Size(2400, 1080)),
+    ];
+
+    for (final (label, physicalSize) in battleSurfaces) {
+      testWidgets('$label yuzeyinde tasmiyor', (WidgetTester tester) async {
+        await setSurface(tester, physicalSize);
+        await tester.pumpWidget(wrapBattle());
+        await tester.pump(const Duration(milliseconds: 200));
+
+        final stackSize = tester.getSize(find.byType(Stack).first);
+        expect(stackSize, physicalSize / 3.0);
+
+        const hudTypes = <Type>[
+          AbilityButton,
+          BattleTopBar,
+          CoreHealthBar,
+          UnitSpawnBar,
+        ];
+        for (final hudType in hudTypes) {
+          final finder = find.byWidgetPredicate(
+            (Widget widget) => widget.runtimeType == hudType,
+          );
+          expect(finder, findsOneWidget, reason: '$hudType agacta bulunamadi');
+          final size = tester.getSize(finder);
+          expect(size.width, greaterThan(0.0), reason: '$hudType genisligi 0');
+        }
+
+        expect(tester.takeException(), isNull);
+      });
+    }
   });
 }
