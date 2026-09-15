@@ -118,7 +118,7 @@ class AbilitySystem implements BattleSystem {
     final count = grid.queryCircle(_pendingBlastX, _pendingBlastY, _config.radius, scratch);
     for (var i = 0; i < count; i++) {
       final enemy = world.enemies[scratch[i]];
-      enemy.hp -= _config.damage;
+      enemy.hp -= _config.damage * enemy.damageTakenMul;
       if (enemy.hp <= 0) enemy.pendingRemove = true;
     }
 

@@ -15,6 +15,7 @@ void registerDefaultSystems(BattleSimulation sim) {
     SpawnSystem(),
     SpatialIndexSystem(),
     TargetingSystem(),
+    TerrainSystem(),
     MovementSystem(),
     CombatSystem(),
     AbilitySystem(),

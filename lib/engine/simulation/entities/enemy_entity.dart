@@ -63,6 +63,16 @@ class EnemyEntity extends PooledEntity {
   /// onu oldurebilir (bkz. `MovementSystem` dosya basi yorumu).
   bool atWall = false;
 
+  /// Bu adimda uzerinde durdugu `slow` arazi alanindan gelen hiz carpani
+  /// (0..1). `TerrainSystem` her adim basinda 1.0'a resetleyip alanlari
+  /// tarayarak yeniden hesaplar (bkz. o dosyanin basi yorumu).
+  double slowFactor = 1.0;
+
+  /// Bu adimda uzerinde durdugu `cover` arazi alanindan gelen alinan hasar
+  /// carpani (0..1). [slowFactor] ile AYNI desen: `TerrainSystem` her adim
+  /// yeniden hesaplar.
+  double damageTakenMul = 1.0;
+
   @override
   void reset() {
     x = 0;
@@ -87,5 +97,7 @@ class EnemyEntity extends PooledEntity {
     burnTimer = 0;
     stunTimer = 0;
     atWall = false;
+    slowFactor = 1.0;
+    damageTakenMul = 1.0;
   }
 }

@@ -42,6 +42,13 @@ enum SystemPhase {
   /// hedefine dogru ayni adimda donebilsin.
   targeting,
 
+  /// Arazi alan etkilerinin (slow, cover) her dusmana yeniden uygulanmasi.
+  /// Hareket ve hasar hesabindan ONCE olmali: MovementSystem hizi
+  /// `slowFactor` ile carpar, CombatSystem/AbilitySystem hasari
+  /// `damageTakenMul` ile carpar — ikisi de bu fazda tazelenmis degerleri
+  /// okur. Targeting'den SONRA (hedef secimi arazi etkisinden bagimsizdir).
+  terrain,
+
   /// Konum guncellemeleri (dusman hareketi, separation, mermi ucusu).
   movement,
 

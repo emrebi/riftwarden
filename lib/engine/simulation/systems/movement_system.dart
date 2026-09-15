@@ -79,6 +79,9 @@ class MovementSystem implements BattleSystem {
           enemy.slowTimer -= dt;
           speed *= kSlowSpeedMultiplier;
         }
+        // Arazi `slow` alani (bkz. TerrainSystem) durum efektinden BAGIMSIZ
+        // ikinci bir carpan; ikisi ayni anda etkindeyse birlikte carpilir.
+        speed *= enemy.slowFactor;
 
         enemy.x -= speed * dt;
 

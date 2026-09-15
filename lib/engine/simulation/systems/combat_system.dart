@@ -134,7 +134,7 @@ class CombatSystem implements BattleSystem {
           behaviorMask: stats.behaviorMask,
           rng: world.rng,
         );
-        enemy.hp -= result.amount;
+        enemy.hp -= result.amount * enemy.damageTakenMul;
         _emitHitFeedback(sim, enemy.x, enemy.y, result);
         _applyKnockback(enemy, stats.behaviorMask);
         if (enemy.hp <= 0) {
@@ -210,7 +210,7 @@ class CombatSystem implements BattleSystem {
         behaviorMask: projectile.behaviorMask,
         rng: world.rng,
       );
-      enemy.hp -= result.amount;
+      enemy.hp -= result.amount * enemy.damageTakenMul;
       _emitHitFeedback(sim, enemy.x, enemy.y, result);
       _applyKnockback(enemy, projectile.behaviorMask);
       if (enemy.hp <= 0) {

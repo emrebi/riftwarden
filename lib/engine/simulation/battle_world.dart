@@ -18,6 +18,12 @@ import 'package:riftwarden/engine/simulation/spatial/spatial_hash_grid.dart';
 /// CAKISMAMASINI garanti eder.
 const int _kScreenShakeSeedOffset = 104729;
 
+/// `terrainType` degerleri. Int kullanilir cunku Int32List allocation'siz
+/// (savas ici) taranacak (bkz. `TerrainSystem`); enum yerine int, tipli
+/// listeyle dogrudan uyumlu olsun diye secildi.
+const int kTerrainTypeSlow = 0;
+const int kTerrainTypeCover = 1;
+
 /// Ayni anda alanda bulunabilecek maksimum birlik sayisi.
 ///
 /// Bir savasin tum degisken durumunu tutan kap.
@@ -57,6 +63,11 @@ class BattleWorld {
     required this.slotY,
     required this.slotUnitId,
     required this.takenUpgrades,
+    required this.terrainX,
+    required this.terrainY,
+    required this.terrainRadius,
+    required this.terrainValue,
+    required this.terrainType,
   });
 
   /// Level'i, icerigi ve baslangic upgrade'lerini kullanarak yeni bir
@@ -100,6 +111,30 @@ class BattleWorld {
       final slot = castle.slots[i];
       slotX[i] = slot.$1 * kFieldAspect;
       slotY[i] = slot.$2;
+    }
+
+    // Arazi alanlari sabit boyutlu tipli listelere donusturulur: alan sayisi
+    // level basina kucuk (<= 8, bkz. `TerrainSystem`), savas ici taramada
+    // liste/nesne allocation'i olmamasi icin. x izotropik dunyaya cevrilir
+    // (kFieldAspect ile carpim, bkz. dosya basi "Kale konumu" yorumu).
+    final terrainCount = level.terrain.length;
+    final terrainX = Float64List(terrainCount);
+    final terrainY = Float64List(terrainCount);
+    final terrainRadius = Float64List(terrainCount);
+    final terrainValue = Float64List(terrainCount);
+    final terrainType = Int32List(terrainCount);
+    for (var i = 0; i < terrainCount; i++) {
+      final zone = level.terrain[i];
+      terrainX[i] = zone.x * kFieldAspect;
+      terrainY[i] = zone.y;
+      terrainRadius[i] = zone.radius;
+      if (zone.type == 'slow') {
+        terrainType[i] = kTerrainTypeSlow;
+        terrainValue[i] = zone.factor!;
+      } else {
+        terrainType[i] = kTerrainTypeCover;
+        terrainValue[i] = zone.damageTakenMul!;
+      }
     }
 
     return BattleWorld._(
@@ -149,6 +184,11 @@ class BattleWorld {
       // `EconomySystem._tryBuyAbility`'de). Esik karti secimi (adim 14,
       // hala TODO) de ileride buraya ekleyecek.
       takenUpgrades: List<UpgradeConfig>.of(initialUpgrades),
+      terrainX: terrainX,
+      terrainY: terrainY,
+      terrainRadius: terrainRadius,
+      terrainValue: terrainValue,
+      terrainType: terrainType,
     );
   }
 
@@ -220,6 +260,21 @@ class BattleWorld {
   /// yetenek dukkani). [rebuildUnitStats] her degisiklikte bu listeyle
   /// cagrilir. Esik karti secimi (adim 14) de ileride buraya ekleyecek.
   final List<UpgradeConfig> takenUpgrades;
+
+  /// Arazi alanlari (izotropik dunya, x zaten `kFieldAspect` ile carpilmis).
+  /// `level.terrain` icinden savas kurulumunda BIR KEZ doldurulur, savas
+  /// boyunca degismez. Dizinler birbirine karsilik gelir (`terrainX[i]` <->
+  /// `terrainType[i]`). [TerrainSystem] her adim bunlari sadece OKUR.
+  final Float64List terrainX;
+  final Float64List terrainY;
+  final Float64List terrainRadius;
+
+  /// `terrainType == kTerrainTypeSlow` ise hiz carpani, `kTerrainTypeCover`
+  /// ise alinan hasar carpani (bkz. `docs/CONTENT_SCHEMA.md > terrain`).
+  final Float64List terrainValue;
+
+  /// [kTerrainTypeSlow] veya [kTerrainTypeCover].
+  final Int32List terrainType;
 
   int aether;
 
