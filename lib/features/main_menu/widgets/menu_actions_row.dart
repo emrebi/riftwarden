@@ -7,9 +7,8 @@ import 'package:riftwarden/shared/widgets/rw_icon_button.dart';
 /// Ana menu ikincil eylemler satiri.
 ///
 /// Magaza, Kalici Gelistirmeler ve Ayarlar dugmelerini barindirir.
-/// 360 dp dar ekranda metinlerin tasmamasi icin Magaza ve Gelistirmeler
-/// esit genislikte RwButton, Ayarlar ise standart dokunma alanina sahip
-/// RwIconButton olarak konumlandirilmistir.
+/// Yatay duzende dar genislikte metinlerin tasmamasi icin Magaza ve
+/// Gelistirmeler butonlari FittedBox ile olceklenir.
 class MenuActionsRow extends StatelessWidget {
   const MenuActionsRow({
     required this.onStore,
@@ -29,20 +28,24 @@ class MenuActionsRow extends StatelessWidget {
     return Row(
       children: <Widget>[
         Expanded(
-          child: RwButton(
-            label: l10n.menuStore,
-            variant: RwButtonVariant.secondary,
-            isExpanded: true,
-            onPressed: onStore,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: RwButton(
+              label: l10n.menuStore,
+              variant: RwButtonVariant.secondary,
+              onPressed: onStore,
+            ),
           ),
         ),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
-          child: RwButton(
-            label: l10n.menuUpgrades,
-            variant: RwButtonVariant.secondary,
-            isExpanded: true,
-            onPressed: onUpgrades,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: RwButton(
+              label: l10n.menuUpgrades,
+              variant: RwButtonVariant.secondary,
+              onPressed: onUpgrades,
+            ),
           ),
         ),
         const SizedBox(width: AppSpacing.sm),

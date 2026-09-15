@@ -12,6 +12,10 @@ import 'package:riftwarden/shared/widgets/rw_section_header.dart';
 /// Ayarlar ekrani.
 ///
 /// Oyuncunun ses, titresim ve dil tercihlerini yonettigi ekran.
+/// Yatay duzende iki sutunlu yapi: sol sutunda ses ve titresim ayarlari,
+/// sag sutunda dil ve hesap/yasal baglantilari yer alir.
+/// 360 dp yukseklikte her sutun bagimsiz dikey kaydirilabilir.
+///
 /// Stateless ve veri bagimsizdir; tum durumlar ve degisiklikler
 /// disaridan parametrelerle iletilir.
 class SettingsScreen extends StatelessWidget {
@@ -51,108 +55,128 @@ class SettingsScreen extends StatelessWidget {
     return RwScreenScaffold(
       title: l10n.menuSettings,
       onBack: onBack,
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsetsDirectional.symmetric(
-          vertical: AppSpacing.md,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            // Ses ayarlari grubu
-            RwSectionHeader(
-              title: l10n.settingsSectionAudio,
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            RwPanel(
-              padding: EdgeInsetsDirectional.zero,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          // Sol sutun: Ses ayarlari paneli (bagimsiz kaydirilabilir)
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsetsDirectional.only(
+                bottom: AppSpacing.md,
+              ),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  SettingsSwitchRow(
-                    label: l10n.settingsSound,
-                    value: soundEnabled,
-                    onChanged: onSoundChanged,
+                  RwSectionHeader(
+                    title: l10n.settingsSectionAudio,
                   ),
-                  const Divider(
-                    height: 1.0,
-                    thickness: 1.0,
-                    color: AppColors.surfaceRaised,
-                  ),
-                  SettingsSwitchRow(
-                    label: l10n.settingsMusic,
-                    value: musicEnabled,
-                    onChanged: onMusicChanged,
-                  ),
-                  const Divider(
-                    height: 1.0,
-                    thickness: 1.0,
-                    color: AppColors.surfaceRaised,
-                  ),
-                  SettingsSwitchRow(
-                    label: l10n.settingsHaptics,
-                    value: hapticsEnabled,
-                    onChanged: onHapticsChanged,
+                  const SizedBox(height: AppSpacing.xs),
+                  RwPanel(
+                    padding: EdgeInsetsDirectional.zero,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        SettingsSwitchRow(
+                          label: l10n.settingsSound,
+                          value: soundEnabled,
+                          onChanged: onSoundChanged,
+                        ),
+                        const Divider(
+                          height: 1.0,
+                          thickness: 1.0,
+                          color: AppColors.surfaceRaised,
+                        ),
+                        SettingsSwitchRow(
+                          label: l10n.settingsMusic,
+                          value: musicEnabled,
+                          onChanged: onMusicChanged,
+                        ),
+                        const Divider(
+                          height: 1.0,
+                          thickness: 1.0,
+                          color: AppColors.surfaceRaised,
+                        ),
+                        SettingsSwitchRow(
+                          label: l10n.settingsHaptics,
+                          value: hapticsEnabled,
+                          onChanged: onHapticsChanged,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacing.lg),
+          ),
+          const SizedBox(width: AppSpacing.lg),
 
-            // Dil secimi grubu
-            RwSectionHeader(
-              title: l10n.settingsSectionLanguage,
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            RwPanel(
-              padding: EdgeInsetsDirectional.zero,
-              child: SettingsActionRow(
-                label: l10n.settingsLanguage,
-                value: currentLanguageLabel,
-                onTap: onLanguageTap,
+          // Sag sutun: Dil, Hesap ve Surum etiketi (bagimsiz kaydirilabilir)
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsetsDirectional.only(
+                bottom: AppSpacing.md,
               ),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-
-            // Hesap ve yasal islemler grubu
-            RwSectionHeader(
-              title: l10n.settingsSectionAccount,
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            RwPanel(
-              padding: EdgeInsetsDirectional.zero,
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  SettingsActionRow(
-                    label: l10n.settingsRestorePurchases,
-                    onTap: onRestorePurchases,
+                  // Dil secimi grubu
+                  RwSectionHeader(
+                    title: l10n.settingsSectionLanguage,
                   ),
-                  const Divider(
-                    height: 1.0,
-                    thickness: 1.0,
-                    color: AppColors.surfaceRaised,
+                  const SizedBox(height: AppSpacing.xs),
+                  RwPanel(
+                    padding: EdgeInsetsDirectional.zero,
+                    child: SettingsActionRow(
+                      label: l10n.settingsLanguage,
+                      value: currentLanguageLabel,
+                      onTap: onLanguageTap,
+                    ),
                   ),
-                  SettingsActionRow(
-                    label: l10n.settingsPrivacy,
-                    onTap: onPrivacyTap,
+                  const SizedBox(height: AppSpacing.md),
+
+                  // Hesap ve yasal islemler grubu
+                  RwSectionHeader(
+                    title: l10n.settingsSectionAccount,
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  RwPanel(
+                    padding: EdgeInsetsDirectional.zero,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        SettingsActionRow(
+                          label: l10n.settingsRestorePurchases,
+                          onTap: onRestorePurchases,
+                        ),
+                        const Divider(
+                          height: 1.0,
+                          thickness: 1.0,
+                          color: AppColors.surfaceRaised,
+                        ),
+                        SettingsActionRow(
+                          label: l10n.settingsPrivacy,
+                          onTap: onPrivacyTap,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+
+                  // Surum etiketi (sag sutunun en altinda)
+                  Text(
+                    versionLabel,
+                    textAlign: TextAlign.center,
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: AppColors.textDisabled,
+                    ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacing.xl),
-
-            // Surum gostergesi
-            Text(
-              versionLabel,
-              textAlign: TextAlign.center,
-              style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.textDisabled,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

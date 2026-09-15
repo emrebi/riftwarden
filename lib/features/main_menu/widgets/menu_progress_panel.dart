@@ -39,36 +39,39 @@ class MenuProgressPanel extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                l10n.sectorLabel(sectorNumber),
-                style: AppTypography.label.copyWith(
-                  color: AppColors.textSecondary,
-                  letterSpacing: 1.2,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  l10n.sectorLabel(sectorNumber),
+                  style: AppTypography.label.copyWith(
+                    color: AppColors.textSecondary,
+                    letterSpacing: 1.2,
+                  ),
                 ),
-              ),
-              Container(
-                margin: const EdgeInsetsDirectional.symmetric(
-                  horizontal: AppSpacing.sm,
+                Container(
+                  margin: const EdgeInsetsDirectional.symmetric(
+                    horizontal: AppSpacing.sm,
+                  ),
+                  width: AppSpacing.xs,
+                  height: AppSpacing.xs,
+                  decoration: const BoxDecoration(
+                    color: AppColors.textDisabled,
+                    shape: BoxShape.circle,
+                  ),
                 ),
-                width: AppSpacing.xs,
-                height: AppSpacing.xs,
-                decoration: const BoxDecoration(
-                  color: AppColors.textDisabled,
-                  shape: BoxShape.circle,
+                Text(
+                  l10n.levelLabel(levelNumber),
+                  style: AppTypography.label.copyWith(
+                    color: AppColors.aetherCyan,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.2,
+                  ),
                 ),
-              ),
-              Text(
-                l10n.levelLabel(levelNumber),
-                style: AppTypography.label.copyWith(
-                  color: AppColors.aetherCyan,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1.2,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
           const SizedBox(height: AppSpacing.sm),
           RwProgressBar(

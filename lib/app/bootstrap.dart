@@ -44,10 +44,11 @@ class BootstrapResult {
 Future<BootstrapResult> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Portrait kilidi. Oyun yalnizca dikey calisir; manifest/plist tarafinda
+  // Landscape kilidi. Oyun yalnizca yatay calisir; manifest/plist tarafinda
   // da kilitli ama uygulama ici gecisler icin burasi da gerekli.
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
-    DeviceOrientation.portraitUp,
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
   ]);
 
   // Tam ekran: sistem cubuklari gizli, kenardan cekilince geri gelir.

@@ -31,13 +31,18 @@ class ResultRewardRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(
-            label,
-            style: AppTypography.titleMedium.copyWith(
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.w600,
+          Expanded(
+            child: Text(
+              label,
+              style: AppTypography.titleMedium.copyWith(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w600,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
+          const SizedBox(width: AppSpacing.sm),
           RwCurrencyChip(
             currency: currency,
             amount: amount,

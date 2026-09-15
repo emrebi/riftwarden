@@ -11,9 +11,12 @@ import 'package:riftwarden/shared/widgets/rw_button.dart';
 import 'package:riftwarden/shared/widgets/rw_currency_chip.dart';
 import 'package:riftwarden/shared/widgets/rw_panel.dart';
 import 'package:riftwarden/shared/widgets/rw_progress_bar.dart';
-import 'package:riftwarden/shared/widgets/rw_screen_scaffold.dart';
 
 /// Seviye sonu ekrani (zafer ve yenilgi durumlari).
+///
+/// Yatay duzende iki sutunlu yapi:
+/// - Sol yarim: zafer/yenilgi basligi, seviye etiketi ve odul paneli / dalga ilerlemesi.
+/// - Sag yarim: dikey siralanmis reklam butonu (varsa), primary buton ve ana menu butonu.
 ///
 /// Hiz odakli tasarim: oyuncuyu gereksiz bekletmez. Zaferde kazanilan
 /// kaynaklari kisa bir sayacla gosterir (dokunarak aninda atlanabilir),
@@ -92,66 +95,99 @@ class _ResultScreenState extends State<ResultScreen>
     final adActionLabel =
         isVictory ? l10n.resultDoubleReward : l10n.resultWatchAdContinue;
 
-    return GestureDetector(
-      onTap: _skipAnimation,
-      behavior: HitTestBehavior.opaque,
-      child: RwScreenScaffold(
-        contentPadding: const EdgeInsetsDirectional.symmetric(
-          horizontal: AppSpacing.screenGutter,
-        ),
-        bottomBar: Padding(
-          padding: const EdgeInsetsDirectional.only(
-            start: AppSpacing.screenGutter,
-            end: AppSpacing.screenGutter,
-            bottom: AppSpacing.lg,
+    final viewPadding = MediaQuery.viewPaddingOf(context);
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+    final notchStart = isRtl ? viewPadding.right : viewPadding.left;
+    final notchEnd = isRtl ? viewPadding.left : viewPadding.right;
+
+    return Scaffold(
+      backgroundColor: AppColors.voidDeep,
+      body: GestureDetector(
+        onTap: _skipAnimation,
+        behavior: HitTestBehavior.opaque,
+        child: DecoratedBox(
+          decoration: const BoxDecoration(
+            gradient: AppGradients.screenBackground,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              // Reklam butonu yalnizca hak varsa cizilir; pasif gri buton birakilmaz.
-              if (widget.data.canWatchAd) ...<Widget>[
-                ResultAdButton(
-                  label: adActionLabel,
-                  onPressed: widget.onWatchAd,
-                ),
-                const SizedBox(height: AppSpacing.md),
-              ],
-              RwButton(
-                label: primaryActionLabel,
-                variant: RwButtonVariant.primary,
-                isExpanded: true,
-                onPressed: widget.onPrimary,
+          child: SafeArea(
+            left: false,
+            right: false,
+            child: Padding(
+              padding: EdgeInsetsDirectional.only(
+                start: AppSpacing.screenGutter + notchStart,
+                end: AppSpacing.screenGutter + notchEnd,
+                top: AppSpacing.md,
+                bottom: AppSpacing.md,
               ),
-              const SizedBox(height: AppSpacing.sm),
-              RwButton(
-                label: l10n.resultMainMenu,
-                variant: RwButtonVariant.ghost,
-                isExpanded: true,
-                onPressed: widget.onMainMenu,
+              child: Row(
+                children: <Widget>[
+                  // Sol yarim: zafer veya yenilgi basligi, level etiketi,
+                  // (yenilgide) dalga ilerlemesi, (zaferde) odul paneli.
+                  Expanded(
+                    child: Center(
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            _buildHeaderIcon(isVictory),
+                            const SizedBox(height: AppSpacing.xs),
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: _buildTitle(l10n, isVictory),
+                            ),
+                            const SizedBox(height: AppSpacing.xs),
+                            _buildLevelSubtitle(l10n),
+                            const SizedBox(height: AppSpacing.md),
+                            if (isVictory)
+                              _buildVictoryRewardsPanel(l10n)
+                            else
+                              _buildDefeatProgressPanel(l10n),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.lg),
+                  // Sag yarim: aksiyon butonlari dikey sirada:
+                  // varsa reklam butonu, primary buton (DEVAM / TEKRAR DENE), ana menu.
+                  Expanded(
+                    child: Center(
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            // Reklam butonu yalnizca hak varsa cizilir; pasif buton birakilmaz.
+                            if (widget.data.canWatchAd) ...<Widget>[
+                              ResultAdButton(
+                                label: adActionLabel,
+                                onPressed: widget.onWatchAd,
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                            ],
+                            RwButton(
+                              label: primaryActionLabel,
+                              variant: RwButtonVariant.primary,
+                              isExpanded: true,
+                              onPressed: widget.onPrimary,
+                            ),
+                            const SizedBox(height: AppSpacing.sm),
+                            RwButton(
+                              label: l10n.resultMainMenu,
+                              variant: RwButtonVariant.ghost,
+                              isExpanded: true,
+                              onPressed: widget.onMainMenu,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const SizedBox(height: AppSpacing.xl),
-                _buildHeaderIcon(isVictory),
-                const SizedBox(height: AppSpacing.md),
-                _buildTitle(l10n, isVictory),
-                const SizedBox(height: AppSpacing.xs),
-                _buildLevelSubtitle(l10n),
-                const SizedBox(height: AppSpacing.xl),
-                if (isVictory)
-                  _buildVictoryRewardsPanel(l10n)
-                else
-                  _buildDefeatProgressPanel(l10n),
-                const SizedBox(height: AppSpacing.xl),
-              ],
             ),
           ),
         ),
@@ -165,23 +201,25 @@ class _ResultScreenState extends State<ResultScreen>
         ? Icons.auto_awesome_rounded
         : Icons.shield_outlined;
 
-    return Container(
-      width: AppSpacing.xxxl,
-      height: AppSpacing.xxxl,
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: color.withValues(alpha: 0.35),
-          width: 1.5,
+    return Center(
+      child: Container(
+        width: AppSpacing.xxxl,
+        height: AppSpacing.xxxl,
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.12),
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: color.withValues(alpha: 0.35),
+            width: 1.5,
+          ),
+          boxShadow: AppShadows.glow(color, blurRadius: 16.0),
         ),
-        boxShadow: AppShadows.glow(color, blurRadius: 16.0),
-      ),
-      alignment: AlignmentDirectional.center,
-      child: Icon(
-        icon,
-        color: color,
-        size: 28.0,
+        alignment: AlignmentDirectional.center,
+        child: Icon(
+          icon,
+          color: color,
+          size: 24.0,
+        ),
       ),
     );
   }
@@ -224,6 +262,10 @@ class _ResultScreenState extends State<ResultScreen>
 
         return RwPanel(
           title: l10n.resultRewardsTitle,
+          padding: const EdgeInsetsDirectional.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -235,13 +277,13 @@ class _ResultScreenState extends State<ResultScreen>
               ),
               // Ilk gecis bonusu olan Cell yalnizca kazanildiysa gosterilir.
               if (widget.data.cellsEarned > 0) ...<Widget>[
-                const SizedBox(height: AppSpacing.sm),
+                const SizedBox(height: AppSpacing.xs),
                 const Divider(
                   height: 1.0,
                   thickness: 1.0,
                   color: AppColors.surfaceRaised,
                 ),
-                const SizedBox(height: AppSpacing.sm),
+                const SizedBox(height: AppSpacing.xs),
                 ResultRewardRow(
                   currency: RwCurrency.cell,
                   label: l10n.resultRewardCells,
@@ -261,6 +303,10 @@ class _ResultScreenState extends State<ResultScreen>
         : 0.0;
 
     return RwPanel(
+      padding: const EdgeInsetsDirectional.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -285,7 +331,7 @@ class _ResultScreenState extends State<ResultScreen>
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.sm),
           RwProgressBar(
             value: progress,
             color: AppColors.riftViolet,

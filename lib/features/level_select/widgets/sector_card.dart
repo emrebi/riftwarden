@@ -10,14 +10,18 @@ import 'package:riftwarden/l10n/gen/app_localizations.dart';
 
 /// Harita listesindeki tek bir sektor blogu.
 ///
-/// Kilitli sektorlerde kapali gorunum, acik sektorlerde ise sektor adi,
-/// tamamlanma sayaci ve 5 adet level dugumunu gosterir.
+/// Yatay haritada boyutlar arasi bir bolgeyi temsil eder.
+/// Kilitli sektorlerde karartilmis zemin ve kilitli dugumler,
+/// acik sektorlerde ise sektor adi, ilerleme ve 5 adet level dugumu gosterir.
 class SectorCard extends StatelessWidget {
   const SectorCard({
     required this.sector,
     required this.onLevelTap,
     super.key,
   });
+
+  /// Yatay duzende sektor kartinin sabit genisligi.
+  static const double cardWidth = 380.0;
 
   final SectorData sector;
   final void Function(int levelId) onLevelTap;
@@ -35,10 +39,8 @@ class SectorCard extends StatelessWidget {
 
   Widget _buildLockedCard(BuildContext context, AppLocalizations l10n) {
     return Container(
-      padding: const EdgeInsetsDirectional.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.md,
-      ),
+      width: cardWidth,
+      padding: const EdgeInsetsDirectional.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.surface.withValues(alpha: 0.5),
         borderRadius: AppBorderRadii.lg,
@@ -47,56 +49,78 @@ class SectorCard extends StatelessWidget {
           width: 1.0,
         ),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  l10n.sectorLabel(sector.sectorId),
-                  style: AppTypography.label.copyWith(
-                    color: AppColors.textDisabled,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  sector.name,
-                  style: AppTypography.titleMedium.copyWith(
-                    color: AppColors.textDisabled,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsetsDirectional.symmetric(
-              horizontal: AppSpacing.sm,
-              vertical: AppSpacing.xs,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.surfaceRaised.withValues(alpha: 0.5),
-              borderRadius: AppBorderRadii.sm,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                const Icon(
-                  Icons.lock_rounded,
-                  size: 14.0,
+          // Sektor basligi ve kilit rozeti
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                l10n.sectorLabel(sector.sectorId),
+                style: AppTypography.label.copyWith(
                   color: AppColors.textDisabled,
+                  letterSpacing: 1.2,
                 ),
-                const SizedBox(width: AppSpacing.xs),
-                Text(
-                  l10n.levelLocked,
-                  style: AppTypography.label.copyWith(
-                    color: AppColors.textDisabled,
-                  ),
+              ),
+              Container(
+                padding: const EdgeInsetsDirectional.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xs,
                 ),
-              ],
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceRaised.withValues(alpha: 0.5),
+                  borderRadius: AppBorderRadii.sm,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    const Icon(
+                      Icons.lock_rounded,
+                      size: 14.0,
+                      color: AppColors.textDisabled,
+                    ),
+                    const SizedBox(width: AppSpacing.xs),
+                    Text(
+                      l10n.levelLocked,
+                      style: AppTypography.label.copyWith(
+                        color: AppColors.textDisabled,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            sector.name,
+            style: AppTypography.titleMedium.copyWith(
+              color: AppColors.textDisabled,
+              fontWeight: FontWeight.w700,
             ),
           ),
+          const Spacer(),
+
+          // Dugumler ve baglanti hatti (kilitli)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              for (int i = 0; i < sector.levels.length; i++) ...<Widget>[
+                if (i > 0)
+                  const Expanded(
+                    child: NodeConnector(
+                      isActive: false,
+                    ),
+                  ),
+                LevelNode(
+                  node: sector.levels[i],
+                  onTap: null,
+                ),
+              ],
+            ],
+          ),
+          const Spacer(),
         ],
       ),
     );
@@ -104,7 +128,7 @@ class SectorCard extends StatelessWidget {
 
   Widget _buildActiveCard(BuildContext context, AppLocalizations l10n) {
     final hasCurrentLevel =
-        sector.levels.any((node) => node.state == LevelNodeState.current);
+        sector.levels.any((LevelNodeData node) => node.state == LevelNodeState.current);
     final isCompleted = sector.completedCount >= sector.levels.length;
     final progressText = '${sector.completedCount}/${sector.levels.length}';
 
@@ -138,6 +162,7 @@ class SectorCard extends StatelessWidget {
     }
 
     return Container(
+      width: cardWidth,
       padding: const EdgeInsetsDirectional.all(AppSpacing.md),
       decoration: BoxDecoration(
         gradient: AppGradients.panel,
@@ -147,7 +172,6 @@ class SectorCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           // Sektor basligi ve tamamlanma durumu
           Row(
@@ -194,7 +218,7 @@ class SectorCard extends StatelessWidget {
               fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          const Spacer(),
 
           // Dugumler ve baglanti hatti
           Row(
@@ -216,6 +240,7 @@ class SectorCard extends StatelessWidget {
               ],
             ],
           ),
+          const Spacer(),
         ],
       ),
     );

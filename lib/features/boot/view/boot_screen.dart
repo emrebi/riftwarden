@@ -26,6 +26,10 @@ class BootScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final viewPadding = MediaQuery.viewPaddingOf(context);
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+    final notchStart = isRtl ? viewPadding.right : viewPadding.left;
+    final notchEnd = isRtl ? viewPadding.left : viewPadding.right;
 
     return Scaffold(
       body: DecoratedBox(
@@ -42,179 +46,238 @@ class BootScreen extends StatelessWidget {
           ),
         ),
         child: SafeArea(
+          left: false,
+          right: false,
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.screenGutter,
+            padding: EdgeInsetsDirectional.only(
+              start: AppSpacing.screenGutter + notchStart,
+              end: AppSpacing.screenGutter + notchEnd,
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Row(
               children: <Widget>[
-                Text(
-                  l10n.appTitle,
-                  textAlign: TextAlign.center,
-                  style: AppTypography.displayLarge.copyWith(
-                    color: AppColors.aetherCyan,
-                    shadows: const <Shadow>[
-                      Shadow(color: AppColors.aetherCyanDim, blurRadius: 24),
+                // Sol yarim: baslik ve yukleniyor metni (dikeyde ortali).
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          l10n.appTitle,
+                          textAlign: TextAlign.center,
+                          style: AppTypography.displayLarge.copyWith(
+                            color: AppColors.aetherCyan,
+                            shadows: const <Shadow>[
+                              Shadow(
+                                color: AppColors.aetherCyanDim,
+                                blurRadius: 24,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        l10n.commonLoading,
+                        style: AppTypography.bodyMedium,
+                      ),
                     ],
                   ),
                 ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  l10n.commonLoading,
-                  style: AppTypography.bodyMedium,
-                ),
-                const SizedBox(height: AppSpacing.xxl),
-                Wrap(
-                  spacing: AppSpacing.md,
-                  runSpacing: AppSpacing.md,
-                  alignment: WrapAlignment.center,
-                  children: <Widget>[
-                    // Savas ekrani: ilk gercek oynanis dogrulamasi.
-                    // Digerleri ikincil; bu yuzden primary varyant.
-                    RwButton(
-                      label: 'BATTLE (Level 1)', // ui-lint: ignore gecici savas butonu
-                      icon: Icons.bolt_rounded,
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (BuildContext context) => BattleScreen(
-                              levelId: 1,
-                              onBack: () => Navigator.of(context).pop(),
-                            ),
+                const SizedBox(width: AppSpacing.lg),
+                // Sag yarim: 2 sutunlu dikey kaydirilabilir buton gridi.
+                Expanded(
+                  child: Center(
+                    child: GridView(
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(
+                        parent: AlwaysScrollableScrollPhysics(),
+                      ),
+                      padding: const EdgeInsetsDirectional.symmetric(
+                        vertical: AppSpacing.md,
+                      ),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: AppSpacing.sm,
+                        crossAxisSpacing: AppSpacing.sm,
+                        mainAxisExtent: AppSpacing.minTouchTarget,
+                      ),
+                      children: <Widget>[
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: RwButton(
+                            label: 'BATTLE (Level 1)', // ui-lint: ignore gecici savas butonu
+                            icon: Icons.bolt_rounded,
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (BuildContext context) =>
+                                      BattleScreen(
+                                    levelId: 1,
+                                    onBack: () => Navigator.of(context).pop(),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
-                    RwButton(
-                      label: 'UI Gallery', // ui-lint: ignore gecici galeri butonu
-                      icon: Icons.palette_rounded,
-                      variant: RwButtonVariant.secondary,
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (BuildContext context) =>
-                                const WidgetGallery(),
+                        ),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: RwButton(
+                            label: 'UI Gallery', // ui-lint: ignore gecici galeri butonu
+                            icon: Icons.palette_rounded,
+                            variant: RwButtonVariant.secondary,
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (BuildContext context) =>
+                                      const WidgetGallery(),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
-                    RwButton(
-                      label: 'Main Menu', // ui-lint: ignore gecici menu butonu
-                      icon: Icons.play_arrow_rounded,
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (BuildContext context) =>
-                                const MainMenuScreen(
-                              sectorNumber: 1,
-                              levelNumber: 3,
-                              sectorProgress: 0.45,
-                              shards: 120,
-                              cells: 5,
-                              onPlay: _noop,
-                              onStore: _noop,
-                              onUpgrades: _noop,
-                              onSettings: _noop,
-                            ),
+                        ),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: RwButton(
+                            label: 'Main Menu', // ui-lint: ignore gecici menu butonu
+                            icon: Icons.play_arrow_rounded,
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (BuildContext context) =>
+                                      const MainMenuScreen(
+                                    sectorNumber: 1,
+                                    levelNumber: 3,
+                                    sectorProgress: 0.45,
+                                    shards: 120,
+                                    cells: 5,
+                                    onPlay: _noop,
+                                    onStore: _noop,
+                                    onUpgrades: _noop,
+                                    onSettings: _noop,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
-                    RwButton(
-                      label: 'Settings', // ui-lint: ignore gecici ayarlar butonu
-                      icon: Icons.settings_rounded,
-                      variant: RwButtonVariant.secondary,
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (BuildContext context) => SettingsScreen(
-                              soundEnabled: true,
-                              musicEnabled: true,
-                              hapticsEnabled: false,
-                              currentLanguageLabel: 'Turkce',
-                              versionLabel: 'v1.0.0',
-                              onSoundChanged: (bool value) {},
-                              onMusicChanged: (bool value) {},
-                              onHapticsChanged: (bool value) {},
-                              onLanguageTap: _noop,
-                              onRestorePurchases: _noop,
-                              onPrivacyTap: _noop,
-                              onBack: () => Navigator.of(context).pop(),
-                            ),
+                        ),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: RwButton(
+                            label: 'Settings', // ui-lint: ignore gecici ayarlar butonu
+                            icon: Icons.settings_rounded,
+                            variant: RwButtonVariant.secondary,
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (BuildContext context) =>
+                                      SettingsScreen(
+                                    soundEnabled: true,
+                                    musicEnabled: true,
+                                    hapticsEnabled: false,
+                                    currentLanguageLabel: 'Turkce',
+                                    versionLabel: 'v1.0.0',
+                                    onSoundChanged: (bool value) {},
+                                    onMusicChanged: (bool value) {},
+                                    onHapticsChanged: (bool value) {},
+                                    onLanguageTap: _noop,
+                                    onRestorePurchases: _noop,
+                                    onPrivacyTap: _noop,
+                                    onBack: () => Navigator.of(context).pop(),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
-                    RwButton(
-                      label: 'Level Select', // ui-lint: ignore gecici level select butonu
-                      icon: Icons.map_rounded,
-                      variant: RwButtonVariant.secondary,
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (BuildContext context) =>
-                                LevelSelectScreen(
-                              sectors: _sampleSectors,
-                              shards: 120,
-                              onLevelTap: (int levelId) {},
-                              onBack: () => Navigator.of(context).pop(),
-                            ),
+                        ),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: RwButton(
+                            label: 'Level Select', // ui-lint: ignore gecici level select butonu
+                            icon: Icons.map_rounded,
+                            variant: RwButtonVariant.secondary,
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (BuildContext context) =>
+                                      LevelSelectScreen(
+                                    sectors: _sampleSectors,
+                                    shards: 120,
+                                    onLevelTap: (int levelId) {},
+                                    onBack: () => Navigator.of(context).pop(),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
-                    RwButton(
-                      label: 'Result (Victory)', // ui-lint: ignore gecici zafer butonu
-                      icon: Icons.emoji_events_rounded,
-                      variant: RwButtonVariant.secondary,
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (BuildContext context) => ResultScreen(
-                              data: const BattleResultData(
-                                kind: BattleResultKind.victory,
-                                levelNumber: 3,
-                                shardsEarned: 25,
-                                cellsEarned: 3,
-                                wavesCleared: 8,
-                                totalWaves: 8,
-                                canWatchAd: true,
-                              ),
-                              onPrimary: () => Navigator.of(context).pop(),
-                              onWatchAd: _noop,
-                              onMainMenu: () => Navigator.of(context).pop(),
-                            ),
+                        ),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: RwButton(
+                            label: 'Result (Victory)', // ui-lint: ignore gecici zafer butonu
+                            icon: Icons.emoji_events_rounded,
+                            variant: RwButtonVariant.secondary,
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (BuildContext context) =>
+                                      ResultScreen(
+                                    data: const BattleResultData(
+                                      kind: BattleResultKind.victory,
+                                      levelNumber: 3,
+                                      shardsEarned: 25,
+                                      cellsEarned: 3,
+                                      wavesCleared: 8,
+                                      totalWaves: 8,
+                                      canWatchAd: true,
+                                    ),
+                                    onPrimary: () =>
+                                        Navigator.of(context).pop(),
+                                    onWatchAd: _noop,
+                                    onMainMenu: () =>
+                                        Navigator.of(context).pop(),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
-                    RwButton(
-                      label: 'Result (Defeat)', // ui-lint: ignore gecici yenilgi butonu
-                      icon: Icons.cancel_rounded,
-                      variant: RwButtonVariant.secondary,
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (BuildContext context) => ResultScreen(
-                              data: const BattleResultData(
-                                kind: BattleResultKind.defeat,
-                                levelNumber: 3,
-                                shardsEarned: 0,
-                                cellsEarned: 0,
-                                wavesCleared: 6,
-                                totalWaves: 8,
-                                canWatchAd: true,
-                              ),
-                              onPrimary: () => Navigator.of(context).pop(),
-                              onWatchAd: _noop,
-                              onMainMenu: () => Navigator.of(context).pop(),
-                            ),
+                        ),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: RwButton(
+                            label: 'Result (Defeat)', // ui-lint: ignore gecici yenilgi butonu
+                            icon: Icons.cancel_rounded,
+                            variant: RwButtonVariant.secondary,
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (BuildContext context) =>
+                                      ResultScreen(
+                                    data: const BattleResultData(
+                                      kind: BattleResultKind.defeat,
+                                      levelNumber: 3,
+                                      shardsEarned: 0,
+                                      cellsEarned: 0,
+                                      wavesCleared: 6,
+                                      totalWaves: 8,
+                                      canWatchAd: true,
+                                    ),
+                                    onPrimary: () =>
+                                        Navigator.of(context).pop(),
+                                    onWatchAd: _noop,
+                                    onMainMenu: () =>
+                                        Navigator.of(context).pop(),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ],
             ),
