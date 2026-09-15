@@ -1,7 +1,5 @@
+import 'package:riftwarden/content/schema/unit_config.dart';
 import 'package:riftwarden/engine/simulation/pools/entity_pool.dart';
-
-/// Birlik rolu. Hedefleme ve davranis sistemleri role gore dallanir.
-enum UnitRole { swarm, ranged, tank, support }
 
 /// Havuzlanmis savunma birligi varligi.
 ///
@@ -13,6 +11,8 @@ class UnitEntity extends PooledEntity {
   double y = 0;
 
   /// Render'in `prev` -> guncel arasini lerp'lemesi icin (bkz. EnemyEntity).
+  /// Savasci yuvada sabit durdugu icin bu deger spawn'dan sonra x/y ile
+  /// hep esit kalir; render interpolasyonu bu yuzden pratikte no-op'tur.
   double prevX = 0;
   double prevY = 0;
 
@@ -22,7 +22,11 @@ class UnitEntity extends PooledEntity {
   /// Sprite atlas karesi.
   int spriteIndex = 0;
 
-  UnitRole role = UnitRole.swarm;
+  /// Bu birligin durdugu `BattleWorld.slotX/slotY/slotUnitId` yuva dizini.
+  /// -1 = havuzdan henuz alinmadi (reset degeri).
+  int slotIndex = -1;
+
+  TargetPriority targetPriority = TargetPriority.nearestWall;
 
   double hp = 0;
   double maxHp = 0;
@@ -64,7 +68,8 @@ class UnitEntity extends PooledEntity {
     prevY = 0;
     configId = '';
     spriteIndex = 0;
-    role = UnitRole.swarm;
+    slotIndex = -1;
+    targetPriority = TargetPriority.nearestWall;
     hp = 0;
     maxHp = 0;
     targetId = 0;

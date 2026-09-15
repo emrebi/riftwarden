@@ -53,6 +53,10 @@ class BattleWorld {
     required this.unitProducedCount,
     required this.effects,
     required this.screenShake,
+    required this.slotX,
+    required this.slotY,
+    required this.slotUnitId,
+    required this.takenUpgrades,
   });
 
   /// Level'i, icerigi ve baslangic upgrade'lerini kullanarak yeni bir
@@ -84,6 +88,19 @@ class BattleWorld {
       (i) => StatResolver.resolveUnit(content.unit(unitIds[i]), initialUpgrades),
       growable: false,
     );
+
+    // Yuva konumlari castles.json'dan gelir; sadece x izotropik dunyaya
+    // cevrilir (bkz. yukaridaki "Kale konumu" yorumu). Doluluk tablosu
+    // (`slotUnitId`) bastan bos (0) baslar; `EconomySystem` doldurur,
+    // `CompactionSystem` bosaltir.
+    final slotCount = castle.slots.length;
+    final slotX = Float64List(slotCount);
+    final slotY = Float64List(slotCount);
+    for (var i = 0; i < slotCount; i++) {
+      final slot = castle.slots[i];
+      slotX[i] = slot.$1 * kFieldAspect;
+      slotY[i] = slot.$2;
+    }
 
     return BattleWorld._(
       enemies: EntityPool<EnemyEntity>(level.maxEnemies, EnemyEntity.new),
@@ -124,6 +141,14 @@ class BattleWorld {
       unitProducedCount: <String, int>{},
       effects: EntityPool<EffectEntity>(kEffectPoolCapacity, EffectEntity.new),
       screenShake: ScreenShake(RngSource(seed + _kScreenShakeSeedOffset)),
+      slotX: slotX,
+      slotY: slotY,
+      slotUnitId: Int32List(slotCount),
+      // Baslangic upgrade'leri + savas ici Aether yetenek dukkanindan
+      // alinanlar burada birikir (bkz. [rebuildUnitStats] cagrisi
+      // `EconomySystem._tryBuyAbility`'de). Esik karti secimi (adim 14,
+      // hala TODO) de ileride buraya ekleyecek.
+      takenUpgrades: List<UpgradeConfig>.of(initialUpgrades),
     );
   }
 
@@ -171,6 +196,30 @@ class BattleWorld {
   /// Sag kenarda gorsel olarak cizilecek rift portali sayisi (bkz.
   /// `FieldBackground`; spawn burada DEGIL, rastgele Y'de olur).
   final int riftCount;
+
+  /// Kale yuvalarinin merkez konumlari (izotropik dunya, x zaten
+  /// `kFieldAspect` ile carpilmis). `castles.json > slots`, sirayla
+  /// [slotUnitId] ile eslenir.
+  final Float64List slotX;
+  final Float64List slotY;
+
+  /// `slotIndex` -> o yuvadaki birligin `PooledEntity.id`'si, 0 = bos.
+  /// [EconomySystem] doldurur, [CompactionSystem] birlik havuzdan
+  /// cikinca bosaltir (bkz. `UnitEntity.slotIndex`).
+  final Int32List slotUnitId;
+
+  /// Ilk bos yuvanin dizinini doner, yoksa -1.
+  int findFreeSlot() {
+    for (var i = 0; i < slotUnitId.length; i++) {
+      if (slotUnitId[i] == 0) return i;
+    }
+    return -1;
+  }
+
+  /// Su ana kadar alinan tum upgrade'ler (baslangic + savas ici Aether
+  /// yetenek dukkani). [rebuildUnitStats] her degisiklikte bu listeyle
+  /// cagrilir. Esik karti secimi (adim 14) de ileride buraya ekleyecek.
+  final List<UpgradeConfig> takenUpgrades;
 
   int aether;
 
@@ -397,6 +446,34 @@ class BattleWorld {
     final id = _productionQueue[_productionQueueHead];
     _productionQueueHead = (_productionQueueHead + 1) % _productionQueueCapacity;
     _productionQueueCount--;
+    return id;
+  }
+
+  /// Aether yetenek dukkani satin alma talebi kuyugu. `_productionQueue`
+  /// ile AYNI gerekce (bkz. yukaridaki dosya basi yorumu): UI herhangi bir
+  /// anda cagirabilir, gercek islem [EconomySystem] adiminda olur.
+  static const int _abilityQueueCapacity = 16;
+  final List<String> _abilityQueue =
+      List<String>.filled(_abilityQueueCapacity, '', growable: false);
+  int _abilityQueueHead = 0;
+  int _abilityQueueCount = 0;
+
+  /// UI'dan gelen Aether yetenek satin alma talebini kuyruga ekler.
+  /// Kuyruk doluysa sessizce dusurulur (bkz. [enqueueUnitRequest] yorumu).
+  void enqueueAbilityPurchase(String upgradeId) {
+    if (_abilityQueueCount >= _abilityQueueCapacity) return;
+    final tail = (_abilityQueueHead + _abilityQueueCount) % _abilityQueueCapacity;
+    _abilityQueue[tail] = upgradeId;
+    _abilityQueueCount++;
+  }
+
+  /// Kuyruktaki bir sonraki satin alma talebini cikarir, yoksa null doner.
+  /// Sadece [EconomySystem] tarafindan, adim icinde tuketilir.
+  String? dequeueAbilityPurchase() {
+    if (_abilityQueueCount == 0) return null;
+    final id = _abilityQueue[_abilityQueueHead];
+    _abilityQueueHead = (_abilityQueueHead + 1) % _abilityQueueCapacity;
+    _abilityQueueCount--;
     return id;
   }
 

@@ -7,6 +7,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:riftwarden/content/loader/content_loader.dart';
 import 'package:riftwarden/content/registry/content_registry.dart';
+import 'package:riftwarden/content/schema/schema.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -161,6 +162,43 @@ void main() {
       }
     }
   });
+
+  test('her unit.targetPriority gecerli bir TargetPriority degeridir', () {
+    for (final unit in registry.units.values) {
+      expect(
+        TargetPriority.values.contains(unit.targetPriority),
+        isTrue,
+        reason: 'unit "${unit.id}": targetPriority tanimsiz',
+      );
+    }
+  });
+
+  test(
+    'shop upgrade\'lerinde cost > 0 ve unit var olan bir birlik; '
+    'card upgrade\'lerinde cost yok',
+    () {
+      for (final upgrade in registry.upgrades.values) {
+        if (upgrade.source == UpgradeSource.shop) {
+          expect(
+            upgrade.cost != null && upgrade.cost! > 0,
+            isTrue,
+            reason: 'upgrade "${upgrade.id}": shop icin cost > 0 olmali',
+          );
+          expect(
+            upgrade.unit != null && registry.units.containsKey(upgrade.unit),
+            isTrue,
+            reason: 'upgrade "${upgrade.id}": shop icin gecerli bir "unit" olmali',
+          );
+        } else {
+          expect(
+            upgrade.cost,
+            isNull,
+            reason: 'upgrade "${upgrade.id}": card icin cost olmamali',
+          );
+        }
+      }
+    },
+  );
 
   test('her upgrade.requires[] var olan bir upgrade id\'sine isaret eder', () {
     for (final upgrade in registry.upgrades.values) {

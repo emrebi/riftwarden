@@ -13,6 +13,23 @@ enum StatOp {
       };
 }
 
+/// Bir upgrade'in nereden geldigi.
+///
+/// `card`: savas ici esik kartlari, ucretsiz secim (UpgradePool havuzunda).
+/// `shop`: Aether ile satin alinan savasci yetenegi; kart havuzuna GIRMEZ,
+/// dogrudan Aether yetenek dukkaninda gorunur (bkz. `docs/CONTENT_SCHEMA.md`
+/// > "upgrades.json").
+enum UpgradeSource {
+  card,
+  shop;
+
+  static UpgradeSource fromJson(String value) => switch (value) {
+        'card' => UpgradeSource.card,
+        'shop' => UpgradeSource.shop,
+        _ => throw FormatException('UpgradeSource: bilinmeyen deger: "$value"'),
+      };
+}
+
 /// Upgrade nadirligi. Havuzdaki agirlik hesaplarinda ve UI renginde kullanilir.
 enum UpgradeRarity {
   common,
@@ -86,6 +103,9 @@ class UpgradeConfig {
     required this.weight,
     required this.stats,
     required this.flags,
+    required this.source,
+    required this.cost,
+    required this.unit,
   });
 
   factory UpgradeConfig.fromJson(String id, Map<String, Object?> json) {
@@ -114,6 +134,13 @@ class UpgradeConfig {
           .map((e) => StatModifier.fromJson(id, e! as Map<String, Object?>))
           .toList(growable: false),
       flags: (json['flags'] as List<Object?>?)?.cast<String>() ?? const <String>[],
+      // Alan yoksa 'card': mevcut esik kartlari geriye donuk uyumlu kalir.
+      source: json['source'] == null
+          ? UpgradeSource.card
+          : UpgradeSource.fromJson(json['source'] as String),
+      // Sadece 'shop' icin anlamli; 'card' icin null kalir.
+      cost: (json['cost'] as num?)?.toInt(),
+      unit: json['unit'] as String?,
     );
   }
 
@@ -128,4 +155,7 @@ class UpgradeConfig {
   final double weight;
   final List<StatModifier> stats;
   final List<String> flags;
+  final UpgradeSource source;
+  final int? cost;
+  final String? unit;
 }

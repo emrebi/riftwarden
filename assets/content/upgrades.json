@@ -121,7 +121,7 @@
     "maxStacks": 3,
     "weight": 70,
     "stats": [
-      { "target": "pulse_guard", "stat": "moveSpeed", "op": "mul", "value": 1.1 }
+      { "target": "pulse_guard", "stat": "damage", "op": "add", "value": 1 }
     ],
     "flags": ["swarmFrenzy"]
   },
@@ -166,5 +166,111 @@
       { "target": "core", "stat": "maxHp", "op": "add", "value": 100 }
     ],
     "flags": ["regeneratingShield"]
+  },
+
+  "pulse_guard_dualshot": {
+    "name": "upgradePulseGuardDualshot",
+    "description": "upgradePulseGuardDualshotDesc",
+    "icon": "upgrade_pulse_dualshot",
+    "family": "pulse_shop",
+    "rarity": "epic",
+    "requires": [],
+    "maxStacks": 1,
+    "weight": 0,
+    "source": "shop",
+    "cost": 70,
+    "unit": "pulse_guard",
+    "stats": [
+      { "target": "pulse_guard", "stat": "attackSpeed", "op": "mul", "value": 1.4 }
+    ],
+    "flags": []
+  },
+  "pulse_guard_overcharge": {
+    "name": "upgradePulseGuardOvercharge",
+    "description": "upgradePulseGuardOverchargeDesc",
+    "icon": "upgrade_pulse_overcharge",
+    "family": "pulse_shop",
+    "rarity": "rare",
+    "requires": [],
+    "maxStacks": 1,
+    "weight": 0,
+    "source": "shop",
+    "cost": 50,
+    "unit": "pulse_guard",
+    "stats": [
+      { "target": "pulse_guard", "stat": "damage", "op": "add", "value": 4 }
+    ],
+    "flags": []
+  },
+
+  "arc_ranger_overcharge": {
+    "name": "upgradeArcRangerOvercharge",
+    "description": "upgradeArcRangerOverchargeDesc",
+    "icon": "upgrade_arc_overcharge",
+    "family": "arc_shop",
+    "rarity": "epic",
+    "requires": [],
+    "maxStacks": 1,
+    "weight": 0,
+    "source": "shop",
+    "cost": 80,
+    "unit": "arc_ranger",
+    "stats": [
+      { "target": "arc_ranger", "stat": "chainTargets", "op": "add", "value": 2 }
+    ],
+    "flags": ["chainLightning"]
+  },
+  "arc_ranger_focus": {
+    "name": "upgradeArcRangerFocus",
+    "description": "upgradeArcRangerFocusDesc",
+    "icon": "upgrade_arc_focus",
+    "family": "arc_shop",
+    "rarity": "rare",
+    "requires": [],
+    "maxStacks": 1,
+    "weight": 0,
+    "source": "shop",
+    "cost": 50,
+    "unit": "arc_ranger",
+    "stats": [
+      { "target": "arc_ranger", "stat": "critChance", "op": "add", "value": 0.15 }
+    ],
+    "flags": ["criticalHits"]
+  },
+
+  "titan_frame_shockwave": {
+    "name": "upgradeTitanFrameShockwave",
+    "description": "upgradeTitanFrameShockwaveDesc",
+    "icon": "upgrade_titan_shockwave",
+    "family": "titan_shop",
+    "rarity": "epic",
+    "requires": [],
+    "maxStacks": 1,
+    "weight": 0,
+    "source": "shop",
+    "cost": 90,
+    "unit": "titan_frame",
+    "stats": [
+      { "target": "titan_frame", "stat": "explosionRadius", "op": "add", "value": 0.08 }
+    ],
+    "flags": ["explosiveImpact", "knockback"]
+  },
+  "titan_frame_juggernaut": {
+    "name": "upgradeTitanFrameJuggernaut",
+    "description": "upgradeTitanFrameJuggernautDesc",
+    "icon": "upgrade_titan_juggernaut",
+    "family": "titan_shop",
+    "rarity": "rare",
+    "requires": [],
+    "maxStacks": 1,
+    "weight": 0,
+    "source": "shop",
+    "cost": 60,
+    "unit": "titan_frame",
+    "stats": [
+      { "target": "titan_frame", "stat": "damage", "op": "add", "value": 10 },
+      { "target": "titan_frame", "stat": "hp", "op": "add", "value": 50 }
+    ],
+    "flags": []
   }
 }

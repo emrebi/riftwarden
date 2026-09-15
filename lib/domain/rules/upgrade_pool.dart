@@ -71,6 +71,11 @@ class UpgradePool {
 
   List<UpgradeConfig> _eligibleCandidates() {
     return _all.where((upgrade) {
+      // Dukkan (Aether ile satin alinan savasci yetenegi) kart havuzuna
+      // GIRMEZ (bkz. `docs/CONTENT_SCHEMA.md` > "upgrades.json"); esik
+      // karti teklifi sadece `source: card` olanlardan secilir.
+      if (upgrade.source == UpgradeSource.shop) return false;
+
       final stacksSoFar = _stacksTaken[upgrade.id] ?? 0;
       if (stacksSoFar >= upgrade.maxStacks) return false;
 

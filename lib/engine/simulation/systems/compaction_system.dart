@@ -26,6 +26,7 @@ class CompactionSystem implements BattleSystem {
   // ihlal eder (bkz. CLAUDE.md kural 4).
   late final BattleWorld _world;
   late final void Function(EnemyEntity) _onEnemyRemoved;
+  late final void Function(UnitEntity) _onUnitRemoved;
 
   @override
   void onBattleStart(BattleSimulation sim) {
@@ -40,6 +41,17 @@ class CompactionSystem implements BattleSystem {
       _world.killsThisStep++;
       _world.aetherEarnedThisStep += enemy.aetherReward;
     };
+    // Bir birlik havuzdan cikinca (su an sadece teorik: dusmanlar Core'a
+    // hasar verir, birliklere degil — bkz. plan) yuvasi bosalmali, aksi
+    // halde EconomySystem o yuvayi hep dolu sanir. Slot bosaltma SADECE
+    // burada guvenlidir: varlik havuzdan cikmadan hemen once son
+    // `slotIndex` degerine erismenin tek yeri.
+    _onUnitRemoved = (unit) {
+      final slotIndex = unit.slotIndex;
+      if (slotIndex >= 0 && slotIndex < _world.slotUnitId.length) {
+        _world.slotUnitId[slotIndex] = 0;
+      }
+    };
   }
 
   @override
@@ -49,7 +61,7 @@ class CompactionSystem implements BattleSystem {
     world.aetherEarnedThisStep = 0;
 
     world.enemies.compact(_onEnemyRemoved);
-    world.units.compact();
+    world.units.compact(_onUnitRemoved);
     world.projectiles.compact();
     world.effects.compact();
 

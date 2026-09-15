@@ -68,6 +68,69 @@ class AbilityState {
       Object.hash(abilityId, cooldownRemaining, cooldownTotal, isAiming);
 }
 
+/// Bir kale yuvasinin HUD'a yansiyan durumu.
+///
+/// `unitId` burada `int` degil `String?`dir — HUD'un ilgilendigi savasci
+/// TIPI degil (motor ici `UnitEntity.id` HUD'a anlamsizdir), sadece
+/// "yuva dolu mu" ve doluysa gorsel amacli hangi ikon gosterilecegi. Bu
+/// yuzden motor bu sinyali ureten sistem (`EconomySystem`) icerik id'sini
+/// degil, doluluk bilgisini tasir; HUD sadece dolu/bos ayrimini kullanir.
+@immutable
+class SlotState {
+  const SlotState({required this.slotIndex, required this.unitId});
+
+  final int slotIndex;
+
+  /// null = yuva bos.
+  final int? unitId;
+
+  @override
+  bool operator ==(Object other) =>
+      other is SlotState && other.slotIndex == slotIndex && other.unitId == unitId;
+
+  @override
+  int get hashCode => Object.hash(slotIndex, unitId);
+}
+
+/// Aether yetenek dukkanindaki tek bir teklifin HUD'a yansiyan durumu.
+@immutable
+class ShopOffer {
+  const ShopOffer({
+    required this.upgradeId,
+    required this.unitId,
+    required this.cost,
+    required this.canBuy,
+    required this.owned,
+  });
+
+  final String upgradeId;
+
+  /// Bu yetenegin ait oldugu savasci tipi (`upgrades.json > unit`).
+  final String unitId;
+
+  final int cost;
+
+  /// Sartlar (requires, maxStacks) karsilanmis VE Aether yeterli.
+  final bool canBuy;
+
+  /// En az bir kez alinmis mi (maxStacks 1'i asan yeteneklerde bile
+  /// "sahipsin" gostergesi icin kullanilir; tam doluluk icin `canBuy` de
+  /// kontrol edilmeli).
+  final bool owned;
+
+  @override
+  bool operator ==(Object other) =>
+      other is ShopOffer &&
+      other.upgradeId == upgradeId &&
+      other.unitId == unitId &&
+      other.cost == cost &&
+      other.canBuy == canBuy &&
+      other.owned == owned;
+
+  @override
+  int get hashCode => Object.hash(upgradeId, unitId, cost, canBuy, owned);
+}
+
 /// Savasin nasil bittigi.
 enum BattleOutcome { running, victory, defeat }
 
@@ -148,6 +211,18 @@ class BattleSignals {
   final ValueNotifier<Map<String, int>> unitCosts =
       ValueNotifier<Map<String, int>>(const <String, int>{});
 
+  /// Kale yuvalarinin doluluk durumu, sirayla `castles.json > slots` ile
+  /// eslesir. SADECE doluluk gercekten degisince yeni liste push edilir
+  /// (bkz. `EconomySystem._maybePushSlots`).
+  final ValueNotifier<List<SlotState>> slots =
+      ValueNotifier<List<SlotState>>(const <SlotState>[]);
+
+  /// Aether yetenek dukkanindaki tum teklifler, `upgradeId` ile anahtarli.
+  /// Aether veya sahiplik degistiginde, throttle edilerek push edilir
+  /// (bkz. `EconomySystem._maybePushShopOffers`).
+  final ValueNotifier<Map<String, ShopOffer>> abilityShop =
+      ValueNotifier<Map<String, ShopOffer>>(const <String, ShopOffer>{});
+
   /// Doluysa oyun pause'dadir ve upgrade karti gosterilir.
   /// Oyuncu sectiginde UI `BattleCommands.chooseUpgrade` cagirir ve
   /// motor bunu tekrar null yapar.
@@ -182,6 +257,8 @@ class BattleSignals {
     ability.value = AbilityState.empty;
     enemyCount.value = 0;
     unitCosts.value = const <String, int>{};
+    slots.value = const <SlotState>[];
+    abilityShop.value = const <String, ShopOffer>{};
     upgradeOffer.value = null;
     bossIntro.value = null;
     outcome.value = BattleOutcome.running;
@@ -197,6 +274,8 @@ class BattleSignals {
     ability.dispose();
     enemyCount.dispose();
     unitCosts.dispose();
+    slots.dispose();
+    abilityShop.dispose();
     upgradeOffer.dispose();
     bossIntro.dispose();
     outcome.dispose();
@@ -210,8 +289,13 @@ class BattleSignals {
 /// Arayuz olmasinin sebebi: `features/battle` katmani `engine` sinifina
 /// dogrudan bagimli olmasin, test edilebilir kalsin.
 abstract interface class BattleCommands {
-  /// Takviye uret. Yetersiz Aether'da sessizce yok sayilir.
+  /// Takviye uret. Yetersiz Aether'da veya bos yuva yoksa sessizce yok sayilir.
   void requestUnit(String unitId);
+
+  /// Aether yetenek dukkanindan bir yetenek satin al. Sartlar
+  /// karsilanmiyorsa (Aether yetersiz, requires/maxStacks) sessizce yok
+  /// sayilir.
+  void buyAbility(String upgradeId);
 
   /// Yetenek nisan alma moduna gec / cik.
   void toggleAbilityAiming();

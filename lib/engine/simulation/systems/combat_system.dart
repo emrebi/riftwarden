@@ -24,6 +24,15 @@ const double kProjectileRadius = 0.015;
 /// alanda kalip havuzu tuketebilirdi.
 const double kProjectileLifetime = 3.0;
 
+/// `BehaviorFlag.knockback` vurusunda dusmanin sagra (sinira dogru degil,
+/// spawn yonune, yani +x) itilme mesafesi (izotropik dunya birimi).
+///
+/// Sabit ve kucuk tutulur: amac dusmani gorunur sekilde geriletmek, sinirin
+/// disina firlatip TargetingSystem'in onu tekrar gecersiz saymasini
+/// saglamak (bkz. `TargetingSystem` "knockback ile sinirin disina itilen"
+/// yorumu) — devasa bir sicrama degil.
+const double kKnockbackDistance = 0.05;
+
 /// Saldiri (birlik ates/vurus), mermi carpismasi ve dusman olumu.
 ///
 /// [SystemPhase.combat]: hareketten SONRA calisir ki menzil/carpisma
@@ -32,7 +41,8 @@ const double kProjectileLifetime = 3.0;
 /// Kapsam disi (bkz. TASK 10B brief'i): zincirleme, delme, olumde patlama,
 /// yakma/dondurma gibi davranis bayraklari. Sadece kritik vurus (bkz.
 /// `BehaviorFlag.criticalHits`) burada islenir, cunku `DamageCalculator`
-/// zaten destekliyor.
+/// zaten destekliyor. P10 (A2) ile knockback eklendi (bkz. asagida
+/// `_applyKnockback`) — titan_frame'in agir alan hasarina eslik eder.
 class CombatSystem implements BattleSystem {
   @override
   SystemPhase get phase => SystemPhase.combat;
@@ -69,6 +79,16 @@ class CombatSystem implements BattleSystem {
   void _emitDeathFeedback(BattleWorld world, EnemyEntity enemy) {
     world.emitEffect(EffectKind.deathPuff, enemy.x, enemy.y);
     world.emitEffect(EffectKind.aetherMote, enemy.x, enemy.y);
+  }
+
+  /// `BehaviorFlag.knockback` acikken vurulan dusmani sagra iter.
+  /// Sur'da duran (`atWall`) bir dusman itilince tekrar ilerlemeye baslar
+  /// (bkz. `MovementSystem` — bir sonraki adimda `atWall` false oldugu
+  /// icin normal hareket mantigi devreye girer).
+  void _applyKnockback(EnemyEntity enemy, int behaviorMask) {
+    if (!BehaviorFlag.has(behaviorMask, BehaviorFlag.knockback)) return;
+    enemy.x += kKnockbackDistance;
+    if (enemy.atWall) enemy.atWall = false;
   }
 
   /// Birlik saldirisi: cooldown dolunca ve hedef menzildeyse ates eder.
@@ -116,6 +136,7 @@ class CombatSystem implements BattleSystem {
         );
         enemy.hp -= result.amount;
         _emitHitFeedback(sim, enemy.x, enemy.y, result);
+        _applyKnockback(enemy, stats.behaviorMask);
         if (enemy.hp <= 0) {
           enemy.pendingRemove = true;
           _emitDeathFeedback(world, enemy);
@@ -191,6 +212,7 @@ class CombatSystem implements BattleSystem {
       );
       enemy.hp -= result.amount;
       _emitHitFeedback(sim, enemy.x, enemy.y, result);
+      _applyKnockback(enemy, projectile.behaviorMask);
       if (enemy.hp <= 0) {
         enemy.pendingRemove = true;
         _emitDeathFeedback(world, enemy);

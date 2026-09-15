@@ -20,6 +20,13 @@ class BattleController implements BattleCommands {
     _sim.world.enqueueUnitRequest(unitId);
   }
 
+  // Yetenek dukkani satin alma: `requestUnit` ile AYNI kuyruk deseni —
+  // gercek islem `EconomySystem.step()` icinde olur.
+  @override
+  void buyAbility(String upgradeId) {
+    _sim.world.enqueueAbilityPurchase(upgradeId);
+  }
+
   @override
   void pause() => _sim.pause();
 

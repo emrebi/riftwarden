@@ -238,6 +238,9 @@ class _ProjectionAwareCommands implements BattleCommands {
   void requestUnit(String unitId) => _inner.requestUnit(unitId);
 
   @override
+  void buyAbility(String upgradeId) => _inner.buyAbility(upgradeId);
+
+  @override
   void toggleAbilityAiming() => _inner.toggleAbilityAiming();
 
   @override

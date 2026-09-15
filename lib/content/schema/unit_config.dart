@@ -1,3 +1,25 @@
+/// Bir birligin hedef secerken izledigi oncelik.
+///
+/// Savasci yuvada sabit durur; sinira giren dusmanlardan hangisini
+/// hedefleyecegini bu deger belirler (bkz. `TargetingSystem`).
+enum TargetPriority {
+  /// Sinira (`defenseLineX`) en yakin dusman — sur'u ilk vurani onceler.
+  nearestWall,
+
+  /// Savascinin kendisine en yakin dusman.
+  nearest,
+
+  /// En yuksek can'a sahip dusman.
+  strongest;
+
+  static TargetPriority fromJson(String value) => switch (value) {
+        'nearestWall' => TargetPriority.nearestWall,
+        'nearest' => TargetPriority.nearest,
+        'strongest' => TargetPriority.strongest,
+        _ => throw FormatException('TargetPriority: bilinmeyen deger: "$value"'),
+      };
+}
+
 /// Bir birlik (yerlestirilebilir savunma unitesi) tanimi.
 ///
 /// `units.json` icindeki her girdi bu sinifa parse edilir. Alan adlari
@@ -13,10 +35,9 @@ class UnitConfig {
     required this.damage,
     required this.range,
     required this.attackSpeed,
-    required this.moveSpeed,
     required this.radius,
     required this.projectile,
-    required this.role,
+    required this.targetPriority,
   });
 
   factory UnitConfig.fromJson(String id, Map<String, Object?> json) {
@@ -39,11 +60,10 @@ class UnitConfig {
       damage: (require('damage') as num).toDouble(),
       range: (require('range') as num).toDouble(),
       attackSpeed: (require('attackSpeed') as num).toDouble(),
-      moveSpeed: (require('moveSpeed') as num).toDouble(),
       radius: (require('radius') as num).toDouble(),
       // null = yakin dovus; projectile atlas/id bilgisi tasimaz, sadece id.
       projectile: json['projectile'] as String?,
-      role: require('role') as String,
+      targetPriority: TargetPriority.fromJson(require('targetPriority') as String),
     );
   }
 
@@ -56,8 +76,7 @@ class UnitConfig {
   final double damage;
   final double range;
   final double attackSpeed;
-  final double moveSpeed;
   final double radius;
   final String? projectile;
-  final String role;
+  final TargetPriority targetPriority;
 }

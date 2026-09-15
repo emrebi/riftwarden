@@ -34,7 +34,6 @@ abstract final class StatResolver {
     stats[StatId.attackSpeed] = base.attackSpeed;
     stats[StatId.range] = base.range;
     stats[StatId.hp] = base.hp;
-    stats[StatId.moveSpeed] = base.moveSpeed;
     stats[StatId.cost] = base.cost;
     stats[StatId.costGrowth] = base.costGrowth;
 
