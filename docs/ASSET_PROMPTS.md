@@ -4,6 +4,10 @@ Bu dosya, web Gemini'ye yapıştırılacak hazır prompt'ları tutar.
 Üretilen görseller `tools/assetkit` ile işlenir — bu yüzden **teknik kurallar
 pazarlık konusu değildir**, onlar olmadan kesme/arka plan kaldırma bozulur.
 
+**İşleme notu:** Gemini her zaman PNG verir; `assetkit` bunu WebP'e çevirir
+(sprite/atlas lossless, arka plan lossy q85 — bkz. `tools/assetkit/README.md`).
+Prompt'lara PNG/WebP farkı yansıtılmaz, bu tamamen işleme adımının işidir.
+
 ---
 
 ## STYLE BIBLE — her prompt'un başına aynen yapıştır

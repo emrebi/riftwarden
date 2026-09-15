@@ -10,12 +10,20 @@ ek paket yok).
 Gemini (magenta zeminli N x M sheet)
    │  zip indir
    ▼
-ingest  ── chroma key ─▶ dilimle ─▶ kirp ─▶ olcekle ─▶ assets/images/sprites/<grup>/
+ingest  ── chroma key ─▶ dilimle ─▶ kirp ─▶ olcekle ─▶ assets/images/sprites/<grup>/*.webp
    ▼
-pack    ── shelf paketleme ─▶ assets/images/atlas/<grup>.png + .json
+pack    ── shelf paketleme ─▶ assets/images/atlas/<grup>.webp + .json
    ▼
 verify  ── icerik JSON'larindaki sprite atiflari atlas'ta var mi
 ```
+
+Pipeline'in son ciktisi her zaman **WebP**'dir (PNG degil). Kalite karari:
+
+- **Sprite ve atlas: WebP LOSSLESS.** Lossy WebP alfa kenarlarinda hale
+  birakir ve atlas icinde komsu sprite'a renk sizdirir; oyunda gorunur
+  bozulma olur. Lossless yine PNG'den kucuktur.
+- **Arka plan (alfa yok, buyuk resim): WebP LOSSY, quality 85.** Asil boyut
+  kazanci burada saglanir.
 
 ## Komutlar
 
@@ -44,6 +52,12 @@ python tools/assetkit/assetkit.py verify
 | `padding` | `2` | Sprite cevresine birakilan seffaf pay (texture bleeding onler) |
 | `atlas_max` | `2048` | Atlas doku ust siniri |
 | `names` | `[]` | Sirayla atanacak sprite adlari. Bos birakilirsa `grup_000` seklinde numaralanir. |
+| `format` | `"webp_lossless"` | `webp_lossless` veya `webp_lossy`. Yukaridaki kalite kararina bak. |
+| `quality` | `85` | `webp_lossy` icin kalite (0-100). `webp_lossless` icin yok sayilir. |
+
+`slice` alani `"none"` de olabilir: goruntu dilimlenmeden tek parca olarak
+alinir (chroma da genelde `false` olur) — arka plan gibi butun goruntunun
+kendisi tek obje oldugu durumlar icin.
 
 ## Gemini'ye ne sorulacagi
 

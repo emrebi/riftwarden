@@ -82,11 +82,17 @@ def _compose(items, positions, size: int):
     return atlas, meta
 
 
-def write_atlas(atlas: Image.Image, meta: dict, out_png: Path) -> None:
-    out_png.parent.mkdir(parents=True, exist_ok=True)
-    atlas.save(out_png, optimize=True)
-    meta = {**meta, "image": out_png.name}
-    out_json = out_png.with_suffix(".json")
+def write_atlas(atlas: Image.Image, meta: dict, out_path: Path, recipe: dict) -> None:
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fmt = recipe["format"]
+    if fmt == "webp_lossy":
+        atlas.save(out_path, "WEBP", lossless=False, quality=recipe["quality"], method=6)
+    elif fmt == "webp_lossless":
+        atlas.save(out_path, "WEBP", lossless=True, method=6)
+    else:
+        raise SystemExit(f"bilinmeyen format: {fmt} (webp_lossless veya webp_lossy olmali)")
+    meta = {**meta, "image": out_path.name}
+    out_json = out_path.with_suffix(".json")
     out_json.write_text(
         json.dumps(meta, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )

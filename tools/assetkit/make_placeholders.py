@@ -166,7 +166,10 @@ def main() -> int:
         d = OUT / group
         d.mkdir(parents=True, exist_ok=True)
         for name, (kind, color, sc) in items.items():
-            shape(kind, color, scale=sc, core=(group != "world")).save(d / f"{name}.png")
+            # Lossless WebP: geciciler de atlas'a giriyor, format tutarli olmali.
+            shape(kind, color, scale=sc, core=(group != "world")).save(
+                d / f"{name}.webp", "WEBP", lossless=True, method=6
+            )
             total += 1
         print(f"{group:8} {len(items):2} sprite -> {d.relative_to(ROOT)}")
     print(f"\ntoplam {total} gecici sprite")

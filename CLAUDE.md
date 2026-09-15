@@ -114,6 +114,8 @@ python tools/assetkit/assetkit.py verify
   yap ve sessizce atla; exception firlatma.
 - **Fonts henuz bundle degil.** `AppFonts.bodyFamilyFor` null doner (sistem fontu).
   CJK/Tayca/Arapca fontlari M5'te eklenecek.
+- **Gorseller WebP.** Sprite/atlas lossless (lossy alfa kenarinda hale ve atlas
+  sizmasi yapar); arka plan lossy q85. `ios/Runner/Assets.xcassets` PNG kalir.
 - **`agy mcp disable` ISE YARAMIYOR.** Devre disi birakilan MCP sunucusuna yine de
   baglanmaya calisir ve her cagriyi **3 dakika** bloklar. Gercekten engellemek icin
   `agy mcp remove <ad>` gerekir. Bu projede `unity-mcp` kaldirildi; cagri suresi

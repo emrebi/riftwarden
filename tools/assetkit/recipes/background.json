@@ -1,0 +1,11 @@
+{
+  "_comment": "Sektor arka plani. Duz boyali zemin, chroma yok, tek parca alinir.",
+  "chroma": false,
+  "slice": "none",
+  "padding": 0,
+  "max_size": 2048,
+  "atlas_max": 2048,
+  "names": [],
+  "format": "webp_lossy",
+  "quality": 85
+}

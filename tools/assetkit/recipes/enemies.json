@@ -14,5 +14,6 @@
     "phaseborn",
     "leech",
     "spawner"
-  ]
+  ],
+  "format": "webp_lossless"
 }

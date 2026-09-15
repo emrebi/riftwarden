@@ -10,5 +10,6 @@
     "pulse_guard",
     "arc_ranger",
     "titan_frame"
-  ]
+  ],
+  "format": "webp_lossless"
 }

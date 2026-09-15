@@ -6,5 +6,6 @@
   "max_size": 256,
   "padding": 2,
   "atlas_max": 1024,
-  "names": []
+  "names": [],
+  "format": "webp_lossless"
 }

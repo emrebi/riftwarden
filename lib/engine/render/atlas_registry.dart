@@ -6,9 +6,10 @@ import 'package:flutter/services.dart' show rootBundle;
 
 /// `assets/images/atlas/` altindaki bilinen atlas gruplari.
 ///
-/// Dosya adlari `<grup>.png` ve `<grup>.json` seklindedir (bkz.
-/// `tools/assetkit`). Yeni bir grup eklendiginde sadece bu listeye
-/// eklenir; yukleme ve cozumleme kodu degismez.
+/// Dosya adlari `<grup>.webp` ve `<grup>.json` seklindedir (bkz.
+/// `tools/assetkit`). WebP lossless: PNG'den kucuk, sprite/atlas'ta lossy
+/// kenar halesi ve renk sizmasi olmaz. Yeni bir grup eklendiginde sadece
+/// bu listeye eklenir; yukleme ve cozumleme kodu degismez.
 const List<String> kAtlasGroups = <String>[
   'enemies',
   'units',
@@ -32,7 +33,7 @@ class _AtlasGroup {
   final Map<String, int> indexByName;
 }
 
-/// `assets/images/atlas/*.json` + `.png` ciftlerini yukler ve sprite
+/// `assets/images/atlas/*.json` + `.webp` ciftlerini yukler ve sprite
 /// adlarindan KARARLI SAYISAL INDEKS uretir.
 ///
 /// ## Neden indeks, string degil
@@ -51,16 +52,16 @@ class AtlasRegistry {
   final Map<String, _AtlasGroup> _groups = <String, _AtlasGroup>{};
 
   /// Flame'in resim onbellegi. Prefix atlas klasorune sabitlenir; boylece
-  /// cagiran taraf sadece dosya adini verir (`enemies.png`).
+  /// cagiran taraf sadece dosya adini verir (`enemies.webp`).
   final Images _images = Images(prefix: 'assets/images/atlas/');
 
   /// [kAtlasGroups] icindeki tum atlaslari yukler.
   ///
-  /// PNG'ler Flame'in `Images` onbellegi uzerinden (bellek paylasimi ve
+  /// WebP'ler Flame'in `Images` onbellegi uzerinden (bellek paylasimi ve
   /// tekrar yuklemeyi onlemek icin), JSON'lar `rootBundle` ile okunur.
   Future<void> load() async {
     for (final group in kAtlasGroups) {
-      final image = await _images.load('$group.png');
+      final image = await _images.load('$group.webp');
       final jsonString = await rootBundle.loadString('assets/images/atlas/$group.json');
       final decoded = jsonDecode(jsonString) as Map<String, Object?>;
       final framesJson = decoded['frames']! as Map<String, Object?>;

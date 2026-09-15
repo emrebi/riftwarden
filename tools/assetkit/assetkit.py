@@ -51,7 +51,25 @@ DEFAULTS = {
     "max_size": 256,
     "atlas_max": 2048,
     "names": [],
+    # Sprite/atlas: lossless. Lossy WebP alfa kenarlarinda hale birakir ve
+    # atlas icinde komsu sprite'a renk sizdirir; oyunda gorunur bozulma
+    # olur. Lossless yine PNG'den kucuktur. Arka plan gibi alfasiz buyuk
+    # resimlerde "webp_lossy" ile asil boyut kazanci saglanir.
+    "format": "webp_lossless",
+    "quality": 85,
 }
+
+
+def save_image(img: Image.Image, path: Path, recipe: dict) -> None:
+    """Recipe'nin 'format' alanina gore WebP olarak yazar."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fmt = recipe["format"]
+    if fmt == "webp_lossy":
+        img.save(path, "WEBP", lossless=False, quality=recipe["quality"], method=6)
+    elif fmt == "webp_lossless":
+        img.save(path, "WEBP", lossless=True, method=6)
+    else:
+        raise SystemExit(f"bilinmeyen format: {fmt} (webp_lossless veya webp_lossy olmali)")
 
 
 def load_recipe(name: str) -> dict:
@@ -115,7 +133,11 @@ def cmd_ingest(args: argparse.Namespace) -> int:
                     soft_edge=recipe["soft_edge"],
                 )
 
-            if recipe["slice"] == "grid" and recipe["cols"] and recipe["rows"]:
+            if recipe["slice"] == "none":
+                # Tek parca: arka plan gibi butun goruntunun kendisi obje
+                # olan durumlarda dilimleme/chroma anlamsizdir.
+                boxes = [(0, 0, img.width, img.height)]
+            elif recipe["slice"] == "grid" and recipe["cols"] and recipe["rows"]:
                 boxes = slicer.grid_slice(img, recipe["cols"], recipe["rows"])
             else:
                 boxes = slicer.auto_slice(
@@ -137,7 +159,7 @@ def cmd_ingest(args: argparse.Namespace) -> int:
                     name = names[produced]
                 else:
                     name = f"{args.recipe}_{produced:03d}"
-                piece.save(out_dir / f"{name}.png")
+                save_image(piece, out_dir / f"{name}.webp", recipe)
                 produced += 1
 
     print(f"\n{produced} sprite -> {out_dir.relative_to(ROOT)}")
@@ -155,20 +177,23 @@ def cmd_pack(args: argparse.Namespace) -> int:
     if not src_dir.exists():
         raise SystemExit(f"once ingest calistir: {src_dir} yok")
 
-    sprites = {
-        p.stem: Image.open(p).convert("RGBA")
-        for p in sorted(src_dir.glob("*.png"))
-    }
+    # .webp asil format; .png sadece gecis donemi icin (henuz donusturulmemis
+    # eski sprite klasorleri varsa) okunur.
+    sprites: dict[str, Image.Image] = {}
+    for p in sorted(src_dir.glob("*.webp")):
+        sprites[p.stem] = Image.open(p).convert("RGBA")
+    for p in sorted(src_dir.glob("*.png")):
+        sprites.setdefault(p.stem, Image.open(p).convert("RGBA"))
     if not sprites:
-        raise SystemExit(f"{src_dir} icinde png yok")
+        raise SystemExit(f"{src_dir} icinde webp/png yok")
 
     atlas, meta = packer.pack(
         sprites,
         max_size=recipe["atlas_max"],
         padding=recipe["padding"],
     )
-    out = ATLAS_DIR / f"{args.group}.png"
-    packer.write_atlas(atlas, meta, out)
+    out = ATLAS_DIR / f"{args.group}.webp"
+    packer.write_atlas(atlas, meta, out, recipe)
     width, height = meta["size"]
     print(
         f"{len(sprites)} sprite -> {out.relative_to(ROOT)} ({width}x{height})"
