@@ -4,6 +4,8 @@ Landscape-only (yatay) iOS/Android oyunu. Tur: auto-battle + swarm defense + rog
 Flutter + Flame. Paket adi `riftwarden`, bundle id `com.riftwarden.game`.
 
 Mimari planin tamami: `docs/ARCHITECTURE.md`
+Gorsel otorite: `docs/DESIGN.md`
+UI gecis plani ve ilerleme: `docs/UI_MIGRATION_PLAN.md`
 Bilerek ertelenmis isler: `docs/KNOWN_GAPS.md`
 "Hangi is icin hangi dosya" indeksi: `docs/CONTENT_MAP.md`
 
@@ -13,10 +15,9 @@ Bilerek ertelenmis isler: `docs/KNOWN_GAPS.md`
 
 | Rol | Model | Gorev |
 |---|---|---|
-| Planner / reviewer | Opus medium | Task brief yazar, raporu okur, commit mesajini verir |
-| Worker | Sonnet 5 | Implementasyon yapar, rapor birakir |
-| UI tasarim | Gemini | Ekran tasarimlari uretir |
-| Asset | Gemini web | Sprite/ikon uretir, `tools/assetkit` ile islenir |
+| Planner / reviewer | Opus | Task brief yazar, raporu okur, commit mesajini verir |
+| Worker | Sonnet 5 | Implementasyon yapar (UI dahil), rapor birakir |
+| Asset | Codex gorsel-uretim agent | Sprite/ikon uretir, `tools/assetkit` ile islenir |
 
 ### Worker kurallari (BAGLAYICI)
 1. **Test yazma. `flutter run` deneme. Emulator acma.** Manuel dogrulamayi kullanici yapar.
@@ -40,6 +41,13 @@ content: PASS/FAIL/-
 ### Sapmalar
 - <brief disina cikilan yer veya "yok">
 ```
+
+### Token ekonomisi (BAGLAYICI)
+1. Her tur tek gorev. Worker her yeni gorevde temiz sohbetle baslar (`/clear`); duzeltme turunda ayni sohbette kalir.
+2. Worker prompt'u kendi icinde yeterlidir: sadece gereken dosyalari okutur, plani bastan anlatmaz.
+3. Planner tum dosyalari degil `git diff`'i ve hedefli kontrolleri okur; worker'in PASS iddiasini kapilari yeniden kosarak dogrular.
+4. Kozmetik dokuman eksikleri ayri tur acmaz; bir sonraki dokuman gorevine eklenir.
+5. "Bu is hangi dosyada" icin repo taranmaz; once `docs/CONTENT_MAP.md` okunur.
 
 ### Commit protokolu (BAGLAYICI)
 Her adim bittiginde **dur**. Sira:

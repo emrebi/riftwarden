@@ -1,9 +1,11 @@
 # RIFTWARDEN
 
-Portrait-only iOS/Android oyunu.
+Landscape-only (yatay) iOS/Android oyunu.
 **Auto-battle + swarm defense + roguelite upgrade.**
 
-Boyut yarıklarından gelen Riftborn sürülerini, savaş sırasında giderek büyüttüğün
+Sıcak, elle çizilmiş 2D cizgi film dünyasında küçük, dile gelmiş savunucular
+doğaçlama kurulmuş kadim bir kaleyi tuhaf boyutsal yaratıklardan korur. Boyut
+yarıklarından gelen Riftborn sürülerini, savaş sırasında giderek büyüttüğün
 otomatik savaşan bir orduyla durdur. Düşmanları öldürerek Aether kazan, yeni birlik
 üret, güçlü upgrade kombinasyonları kur.
 
@@ -17,9 +19,11 @@ Flutter + Flame. Paket `riftwarden`, bundle id `com.riftwarden.game`.
 |---|---|
 | `CLAUDE.md` | Çalışma protokolü + değişmez mimari kuralları |
 | `docs/ARCHITECTURE.md` | Tam mimari plan ve yol haritası |
+| `docs/DESIGN.md` | Görsel otorite: RIFTWARDEN görsel tasarım spesifikasyonu |
+| `docs/UI_MIGRATION_PLAN.md` | UI gecis gorevleri ve ilerleme durumu |
 | `docs/CONTENT_MAP.md` | "Hangi iş için hangi dosya" indeksi |
 | `docs/CONTENT_SCHEMA.md` | İçerik JSON şemaları |
-| `docs/ASSET_PROMPTS.md` | Gemini asset prompt şablonları |
+| `docs/ASSET_PROMPTS.md` | Asset prompt şablonları |
 | `tools/assetkit/README.md` | Asset pipeline kullanımı |
 
 ## Geliştirme
@@ -34,8 +38,9 @@ flutter run --release     # gerçek cihazda
 ## Platform
 
 Sadece **iOS ve Android telefon**. Masaüstü ve web platform klasörleri bilerek
-kaldırılmıştır, geri eklenmez. Portrait kilidi hem uygulama içinde hem
-`AndroidManifest.xml` / `Info.plist` tarafında.
+kaldırılmıştır, geri eklenmez. Landscape-only (iki yatay yön de desteklenir);
+açılıştaki yön kapisi kısa süreliğine dikeyi de gösterir, kilit `OrientationService`
+tarafından uygulanır.
 
 ## Diller
 

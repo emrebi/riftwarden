@@ -3,13 +3,31 @@
 Status: APPROVED (2026-09-16) · Visual authority: `docs/DESIGN.md` · Architecture authority: `CLAUDE.md`, `docs/ARCHITECTURE.md`
 Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 
-## 0. Canonical execution order (approved 2026-09-16)
+## 0. Execution workflow and progress
 
-1. Docs-only commit: `docs/DESIGN.md`, `design/references/01..05.png`, `docs/UI_MIGRATION_PLAN.md`. No WIP file is staged; `RIFTWARDEN_APPROVED_REFERENCES.zip` stays untracked.
-2. SAFE-01 is applied on top of the uncommitted upgrade-card engine WIP.
-3. Validation: `flutter analyze` 0, full `flutter test`, `python tools/ui_lint.py`, `python tools/l10n_sync.py --check`, `git status` scope, empty stash, user plays level 1 to the end on device.
-4. One safe commit: upgrade-card engine WIP + SAFE-01 together. The engine is never committed in an unplayable state.
-5. DOC-01 -> DOC-02 -> Phase 1 (section 6). The Codex asset workstream starts after DOC-02 is approved.
+### Workflow (canonical from 2026-09-16)
+- Opus = permanent planner/reviewer. Each turn: verify HEAD + `git status`, pick the next READY task from §6, confirm its dependencies are committed, emit ONE self-contained worker prompt.
+- Worker executes exactly one task; never runs `git add/commit/reset/stash/checkout`; reports in the CLAUDE.md report format.
+- Opus reviews the real `git diff`, re-runs validations itself (worker PASS is not trusted), answers APPROVE or FIX REQUIRED.
+  APPROVE includes: manual device check if relevant, exact commit paths, commit title, next READY task.
+- User commits; Opus verifies HEAD before starting the next task.
+- Model routing: default Sonnet 5 Medium; Sonnet 5 High only for UI-04 and ARTINT-07 (any other escalation must be justified first).
+- Asset stream: Codex image-generation agent; starts after DOC-02 is committed; follows §5 order. Coding never waits for art unless a task is ART-BLOCKED.
+- Design/architecture decisions are not reopened; genuine blockers are raised as ARCHITECTURE QUESTION.
+
+### Actual history (supersedes the originally planned commit split)
+- `316e2b7` — DESIGN.md, references, this plan AND the upgrade-card engine (P15) in one commit; also tracks `RIFTWARDEN_APPROVED_REFERENCES.zip` (18 MB duplicate of `design/references/`). Removal is a user decision, not a migration task.
+- `b0de6b1` — SAFE-01 (`kUpgradeCardsEnabled = false`). HEAD is playable; card offers disabled until BATTLE-01.
+
+### Progress
+| Task | Status | Commit |
+|---|---|---|
+| SAFE-01 | DONE | `b0de6b1` |
+| DOC-01 | DONE (planner completed remaining doc fixes) | pending user commit |
+| DOC-02 | READY | — |
+| all others | PENDING (see §6 order) | — |
+
+The planner updates this table in the commit of each approved task. This file is the single source of truth for task status; the planner's private plan file (P1–P17 era) is archive only.
 
 Architecture decisions AQ-1..AQ-4 are APPROVED (see "ARCHITECTURE DECISIONS" at the end).
 
@@ -24,11 +42,10 @@ Architecture decisions AQ-1..AQ-4 are APPROVED (see "ARCHITECTURE DECISIONS" at 
 - No Flutter widget displays raster art today (`Image.asset` absent). Sprite atlases are Flame-only (`engine/render/atlas_registry.dart`).
 - Screens (all landscape, 640x360 smoke-tested): orientation_gate, boot (dev, temporary), main_menu, level_select, settings, result, battle HUD.
   Menus use sample data from boot; routes not connected (out of scope here).
-- Uncommitted work: kill-threshold upgrade-card ENGINE (P15) — no card UI yet; as-is, battle pauses forever at the first threshold.
-  It is NEVER committed alone: SAFE-01 is applied on top of the uncommitted WIP, validated, and committed together with it (one playable commit).
+- Upgrade-card ENGINE (P15) committed (`316e2b7`), no card UI yet; offers disabled by SAFE-01 (`b0de6b1`) until BATTLE-01.
 - Art: all sprites are generated geometric placeholders; no logo, fonts, backgrounds, audio.
-- Stale docs for the new direction: README (portrait), AGENTS.md visual identity (neon), docs/ASSET_PROMPTS.md (superseded style),
-  docs/ui_briefs/* (all neon-era briefs incl. battle-upgrade-cards.md), ARCHITECTURE M5 step 21 ("Gemini UI integration").
+- Stale docs for the new direction: README (portrait), AGENTS.md (agy/Gemini-specific contract + neon visual identity), CLAUDE.md role table (Gemini UI / Gemini web asset),
+  docs/ASSET_PROMPTS.md (superseded style), docs/ui_briefs/* (all neon-era briefs incl. battle-upgrade-cards.md), ARCHITECTURE M5 step 21 ("Gemini UI integration").
 
 ## 2. Migration principles
 
@@ -41,6 +58,8 @@ Architecture decisions AQ-1..AQ-4 are APPROVED (see "ARCHITECTURE DECISIONS" at 
 7. Gameplay architecture untouched. Battle UI reads `BattleSignals` via `ValueListenableBuilder`; no Riverpod in battle; no signal/command changes in UI tasks.
 8. Each task updates the dev widget gallery (`lib/features/boot/view/widget_gallery.dart`) for the components it changes — the gallery is the visual QA surface.
 9. One task = one conceptual change, reviewable in one diff, gated by analyze/ui_lint/tests.
+10. Extensible without re-analysis: every task that adds a shared component, token group, art path or asset recipe adds/updates its row in `docs/CONTENT_MAP.md` in the same task.
+11. Token economy follows CLAUDE.md "Token ekonomisi"; cosmetic doc gaps are folded into the next doc task, not a separate round.
 
 ## 3. Dependency graph
 
@@ -98,8 +117,8 @@ Worker contract: CLAUDE.md worker rules; tests only where the task says so; no g
 **DOC-01 — Align agent/docs with DESIGN.md**
 - Goal: workers must not read neon-era instructions.
 - Why now: every UI task reads CLAUDE.md/AGENTS.md first.
-- Files likely: `README.md` (landscape + handmade identity, link DESIGN.md), `AGENTS.md` (replace visual identity paragraph with pointer to DESIGN.md; UI rules unchanged), `CLAUDE.md` (index links to DESIGN.md + UI_MIGRATION_PLAN.md only), `docs/ARCHITECTURE.md` (M5 step 21 → "UI migration per UI_MIGRATION_PLAN.md"), `docs/ui_briefs/README.md` NEW (all existing briefs = LEGACY/superseded, do not implement).
-- Must not change: code, CLAUDE.md architecture rules, DESIGN.md, existing brief files' contents.
+- Files likely: `README.md` (landscape + handmade identity, link DESIGN.md), `AGENTS.md` (becomes the generic UI/asset agent contract for the Sonnet UI worker and the Codex image agent: replace neon visual identity with a pointer to DESIGN.md, remove agy/Gemini-specific instructions, keep the UI rules and screen-layout constraints), `CLAUDE.md` (doc index links to DESIGN.md + UI_MIGRATION_PLAN.md; role table: UI implementation = Sonnet worker, assets = Codex image agent + `tools/assetkit`; workflow rules unchanged), `docs/ARCHITECTURE.md` (M5 step 21 → "UI migration per UI_MIGRATION_PLAN.md"; neon visual-identity wording → DESIGN.md pointer), `docs/ui_briefs/README.md` NEW (all existing briefs = LEGACY/superseded, do not implement), `.claude/skills/rw-ui-integrate/SKILL.md` (LEGACY header pointing to DESIGN.md + UI_MIGRATION_PLAN.md; body unchanged).
+- Must not change: code, CLAUDE.md architecture rules/worker rules/commit protocol/pitfalls, DESIGN.md, UI_MIGRATION_PLAN.md, existing brief files' contents, `tools/agy-task.ps1`.
 - Dependencies: none. · Art: ART-INDEPENDENT
 - Non-goals: rewriting ASSET_PROMPTS (DOC-02). · Acceptance: no doc still instructs neon/portrait/sci-fi-dashboard visuals.
 - Validation: analyze (no code). · Risk: low. · Worker: Sonnet Medium.
@@ -107,7 +126,7 @@ Worker contract: CLAUDE.md worker rules; tests only where the task says so; no g
 **DOC-02 — Rewrite docs/ASSET_PROMPTS.md for handmade direction**
 - Goal: prompt templates + technical rules for the Codex image agent (DESIGN §17–19, §25, §29).
 - Why now: DESIGN §25 forbids commissioning art before this; unblocks the whole asset stream in parallel with coding.
-- Files likely: `docs/ASSET_PROMPTS.md`, `tools/assetkit/README.md` (target sizes per asset class).
+- Files likely: `docs/ASSET_PROMPTS.md`, `tools/assetkit/README.md` (target sizes per asset class), `.claude/skills/rw-assets/SKILL.md` (Codex image-agent workflow instead of Gemini web).
 - Must not change: assetkit code, recipes (ART-PREP does that). · Dependencies: none. · Art: ART-INDEPENDENT
 - Acceptance: one section per ART task (§5) with subject list from repository ids, style bible, forbidden motifs, size/format/chroma rules, deliverable naming.
 - Validation: none beyond analyze. · Risk: low. · Worker: Sonnet Medium.
@@ -345,7 +364,7 @@ FUTURE (not planned): loadout portraits/skins, extra defenders, Gold/XP/profile/
 | `test/ui_smoke_test.dart` (not WIP) | QA-01, BATTLE-02, BATTLE-09, QA-FINAL | sequential |
 | `lib/features/boot/view/widget_gallery.dart` | every UI-xx task | sequential by construction |
 
-Rule: the engine WIP is committed only together with SAFE-01 (Commit 2). Until Commit 2 exists, only SAFE-01 may touch WIP files; DOC-01/DOC-02 and Phase 1–2 tasks start after Commit 2 so every later diff is reviewed against a clean tree.
+Status: engine (`316e2b7`) and SAFE-01 (`b0de6b1`) are committed; the "WIP files" above are now regular files. The table remains the overlap map: tasks touching the same file run strictly sequentially, each starting from a clean tree.
 
 ## 9. Validation strategy
 

@@ -6,7 +6,7 @@
 
 Bu planın asıl amacı kod yazmak değil; **ileride içerik eklerken yapay zekanın repoyu baştan okumak zorunda kalmadığı** bir yapı kurmak. "Level 51 ekle" dendiğinde tek bir JSON dosyasına, "yeni düşman ekle" dendiğinde tek bir config + tek bir behavior dosyasına dokunulmalı. Mimarinin her kararı bu kısıt altında alındı.
 
-**Çalışma modeli:** Bu plan Opus xhigh tarafından bir kez kuruluyor. Sonrasında Opus medium planner/reviewer, Sonnet 5 worker (implementasyon, test yok, rapor var), Gemini 3 Flash UI tasarımcısı, Gemini web asset üreticisi olarak devam edecek.
+**Çalışma modeli:** Bu plan başlangıçta Opus xhigh tarafından bir kez kuruldu. Güncel model: Opus planner/reviewer, Sonnet 5 worker (UI dahil implementasyon, rapor), Codex görsel üretim agent'ı (çıktılar `tools/assetkit` ile işlenir). Görsel otorite `docs/DESIGN.md`, UI iş sırası ve ilerleme `docs/UI_MIGRATION_PLAN.md`.
 
 ### Onaylanan kararlar
 | Konu | Karar |
@@ -86,7 +86,7 @@ lib/
 │   ├── bootstrap.dart            # storage, ads, iap, content, locale init sırası
 │   ├── app.dart                  # MaterialApp.router + locale + theme
 │   ├── router/app_router.dart
-│   └── theme/                    # ★ design tokens — Gemini UI buraya bağlanır
+│   └── theme/                    # ★ design tokens — kurallar docs/DESIGN.md
 │       ├── app_colors.dart  app_typography.dart  app_spacing.dart  app_theme.dart
 ├── core/
 │   ├── services/                 # StorageService AudioService HapticService
@@ -122,7 +122,7 @@ lib/
 ├── features/                     # ★ MVVM ekranlar (her biri: view/ viewmodel/ widgets/)
 │   ├── boot/  main_menu/  level_select/  battle/  result/
 │   ├── settings/  store/  meta_upgrades/
-├── shared/widgets/               # ortak buton/panel/dialog — Gemini tasarımları
+├── shared/widgets/               # ortak buton/panel/dialog — DESIGN.md bileşen dili
 └── l10n/
 ```
 
@@ -275,7 +275,7 @@ python tools/assetkit/assetkit.py pack --group enemies      # → assets/images/
 python tools/assetkit/assetkit.py verify                    # content JSON ↔ atlas tutarlılığı
 ```
 
-**Gemini prompt kuralları** (`docs/ASSET_PROMPTS.md` içine şablon olarak yazılacak) — kesme/bg kaldırma işini baştan kolaylaştıran kısım:
+**Görsel üretim prompt kuralları** (`docs/ASSET_PROMPTS.md` içine şablon olarak yazılacak) — kesme/bg kaldırma işini baştan kolaylaştıran kısım:
 - Arka plan **düz saf magenta `#FF00FF`**, gradient yok, arka plana düşen gölge yok → chroma key %100 güvenilir olur, `rembg` gibi ağır araca gerek kalmaz.
 - Her obje arasında en az 40 px magenta boşluk, **sıkı N×M grid**, eşit hücre.
 - Ortografik top-down 3/4 görünüm, ışık sol üstten, sabit.
@@ -297,8 +297,8 @@ Transparan PNG gelirse chroma adımı atlanır, doğrudan trim+pack çalışır 
 | `rw-add-unit` | Yeni savunma birliği |
 | `rw-add-upgrade` | Upgrade + family/weight/synergy kuralları |
 | `rw-add-boss` | Boss + phase state machine şablonu |
-| `rw-assets` | assetkit kullanımı + Gemini prompt şablonu |
-| `rw-ui-integrate` | Gemini'nin ürettiği tasarımı `app/theme` + `features/*/view`'a bağlama kuralları |
+| `rw-assets` | assetkit kullanımı + görsel üretim prompt şablonu (Codex) |
+| `rw-ui-integrate` | LEGACY — UI işleri `docs/UI_MIGRATION_PLAN.md` üzerinden yürür |
 | `rw-worker-task` | Sonnet worker sözleşmesi + rapor formatı |
 
 Ek olarak kök `CLAUDE.md` (sert kurallar + komutlar) ve `docs/CONTENT_MAP.md` (tek sayfa "hangi iş → hangi dosya" indeksi).
@@ -369,11 +369,11 @@ Durum: 1, 2, 3, 5, 6, 8, 9, 10, 11, 12, 13 bitti. 4 (l10n dil doldurma) ve 7
 ### M5 — Cila (3 adım)
 | # | İş | Commit |
 |---|---|---|
-| 21 | **Gemini UI entegrasyonu**: design token'ları `app/theme`'e, tasarımlar `features/*/view` ve `shared/widgets`'a | `oyun arayüzü tasarımı entegre edildi` |
+| 21 | **UI geçişi**: `docs/UI_MIGRATION_PLAN.md` sırasınca, `docs/DESIGN.md`'ye göre `app/theme`, `shared/widgets` ve `features/*/view` güncellenir | `oyun arayüzü tasarımı entegre edildi` |
 | 22 | Gerçek asset'lerin pipeline'dan geçirilip bağlanması, ses/müzik | `oyun görselleri ve sesleri eklendi` |
 | 23 | Performans geçişi (pool boyutları, atlas birleştirme, profil), store hazırlığı (ikon, splash, imzalama, privacy) | `performans iyileştirmeleri ve store hazırlığı yapıldı` |
 
-**Paralellik:** Adım 5 bitince Gemini asset üretimi, adım 16 bitince Gemini UI tasarımı paralel yürüyebilir — Sonnet motor üzerinde çalışmaya devam ederken.
+**Paralellik:** Codex görsel üretimi DOC-02 commit'inden sonra UI geçişiyle paralel yürür; kodlama görevleri görsel beklemeden fallback'lerle ilerler (bkz. `docs/UI_MIGRATION_PLAN.md` §0).
 
 ---
 
@@ -397,5 +397,5 @@ Manuel kontrolleri sen yapacaksın; worker sadece analyze kapısını geçirip r
 1. **İsim:** RIFTWARDEN çalışma adı. Store'a çıkmadan önce isim taraması (App Store/Play'de çakışma + trademark) yapılmalı. Bundle ID `com.riftwarden.game` ismi değişirse yeniden ayarlanmalı.
 2. **Prod reklam/IAP ID'leri:** Şimdilik sadece Google'ın test ID'leri gömülü. AdMob hesabı ve Play/App Store Connect ürünleri açıldığında `AdConfig` ve `store.json`'a gerçek ID'ler girilecek.
 3. **Sunucu yok:** Tüm progression cihazda. IAP doğrulaması client-side; hile riski kabul edildi (single-player, leaderboard yok). Cloud save/leaderboard istenirse sonradan `data/repositories` arkasına eklenebilir.
-4. **Ses assetleri:** Bu planda üretim yöntemi belirlenmedi (Gemini görsel üretiyor, ses üretmiyor). M5'te ayrıca karar verilecek.
+4. **Ses assetleri:** Bu planda üretim yöntemi belirlenmedi (görseller Codex görsel üretim agent'ıyla üretiliyor; ses üretim yöntemi yok). M5'te ayrıca karar verilecek.
 5. **Rift Pass / sezon sistemi:** Mimari destekliyor ama ilk sürüme dahil değil; launch sonrası retention verisiyle karar verilecek.

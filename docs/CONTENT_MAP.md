@@ -22,6 +22,9 @@ Aşağıdaki tablodan işini bul, **sadece** listelenen dosyaları aç.
 | **Harita render'ını değiştir** | `lib/engine/render/map_renderer.dart` | — |
 | **Mağaza ürünü ekle/değiştir** | `assets/content/store.json`, `lib/core/services/iap_service.dart` | — |
 | **Meta upgrade ekle** | `assets/content/meta_upgrades.json` | — |
+| **Görsel kural / renk-tipografi-dekorasyon token'ı** | `docs/DESIGN.md` (kural), `lib/app/theme/*` (uygulama) | — |
+| **UI geçiş görevi / ilerleme** | `docs/UI_MIGRATION_PLAN.md` (§0 ilerleme, §4 görev tanımı) | — |
+| **Ortak UI bileşeni kullan/değiştir** | `lib/shared/widgets/*` (yeni bileşen eklenince buraya satır eklenir) | — |
 | **Yeni dil metni ekle** | `lib/l10n/arb/app_en.arb` (şablon) + diğer 15 ARB, sonra `flutter gen-l10n` | — |
 | **Renk / yazı tipi / ölçü değiştir** | `lib/app/theme/` (4 dosya) | `/rw-ui-integrate` |
 | **Gemini tasarımını bağla** | `lib/app/theme/`, `lib/features/<ekran>/view/`, `lib/shared/widgets/` | `/rw-ui-integrate` |

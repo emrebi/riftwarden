@@ -1,7 +1,11 @@
 ---
 name: rw-ui-integrate
-description: Gemini'nin ürettiği RIFTWARDEN arayüz tasarımını koda bağlar. "Şu ana menü tasarımını uygula", "ayarlar ekranını yeni tasarımla değiştir" gibi isteklerde kullan.
+description: LEGACY — kullanma. RIFTWARDEN UI işleri docs/DESIGN.md ve docs/UI_MIGRATION_PLAN.md üzerinden yürür.
 ---
+
+> **LEGACY:** Gemini tasarim entegrasyonu emekliye ayrildi. UI isleri artik
+> `docs/DESIGN.md` (gorsel otorite) ve `docs/UI_MIGRATION_PLAN.md` (is sirasi)
+> uzerinden yurur.
 
 # UI tasarımını koda bağlama
 

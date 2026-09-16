@@ -1,13 +1,13 @@
-# RIFTWARDEN — Arayuz worker sozlesmesi
+# RIFTWARDEN — Arayuz/asset agent sozlesmesi
 
-Sen bu projede **arayuz (UI/UX) worker'isin**. Landscape-only (yatay) iOS/Android oyunu.
-Flutter + Flame. Paket adi `riftwarden`.
+Bu dosya Sonnet UI worker'ina ve Codex gorsel-uretim agent'ina uygulanir.
+Landscape-only (yatay) iOS/Android oyunu. Flutter + Flame. Paket adi `riftwarden`.
 
 Oyun: boyut yariklarindan gelen dusman surulerini, otomatik savasan bir orduyla
-durduran auto-battle / swarm defense oyunu. Gorsel kimlik: **stylized sci-fi
-dimensional fantasy** — derin mor-lacivert bosluk, cyan/teal muttefik enerjisi,
-menekse/macenta dusman enerjisi, kehribar kaynak. Gercek dunya savas temasi YOK
-(asker, tank, silah, zombie yok).
+durduran auto-battle / swarm defense oyunu. Sicak, elle cizilmis 2D cizgi film
+dunyasi; kucuk savunucular dogaclama kurulmus kadim bir kaleyi tuhaf boyutsal
+yaratiklardan korur. Tek gorsel otorite: `docs/DESIGN.md`; is sirasi:
+`docs/UI_MIGRATION_PLAN.md`.
 
 ---
 
@@ -31,12 +31,11 @@ pubspec.yaml   analysis_options.yaml   l10n.yaml   android/   ios/
 Paket EKLEME. Gereken her sey zaten kurulu.
 Test YAZMA.
 
-**HICBIR TERMINAL KOMUTU CALISTIRMA.** `flutter`, `git`, `python`, `dart` —
-hicbiri. Sadece dosya okuma/yazma araclarini kullan. Derleme ve lint
-dogrulamasini planner senin isin bittikten sonra kendisi kosturur; sen
-sadece kodu yaz ve raporu ver.
+**git komutu calistirma** (add/commit/reset/stash/checkout); kalite kapilari
+CLAUDE.md'deki gibi calistirilir.
 
 Brief'te adi gecmeyen dosyaya dokunma. Gerekiyorsa raporunda "sapma" olarak bildir.
+Task prompt'undaki dosya listesi bu listeden onceliklidir.
 
 ---
 
@@ -54,13 +53,11 @@ Bunlari ihlal eden kod, calissa bile reddedilir. Otomatik denetleniyor:
 4. **Metin literali yasak.** Kullaniciya gorunen her metin
    `AppLocalizations.of(context)` uzerinden gelir.
 
-   Yeni metin gerekiyorsa **sadece `lib/l10n/arb/app_en.arb`** dosyasina ekle:
+   Yeni metin gerekiyorsa **`lib/l10n/arb/app_en.arb`** dosyasina ekle:
    anahtar + Ingilizce deger + `"@anahtar": {"description": "..."}` aciklamasi.
-   Diger 15 ARB dosyasina DOKUNMA -- planner cevirileri oraya yayar ve
-   `flutter gen-l10n` calistirir.
+   Turkce metin `tools/l10n_sync.py` icindeki `TR_OVERRIDES` tablosuna eklenir.
+   Ayni gorev icinde `python tools/l10n_sync.py` ve `flutter gen-l10n` calistir.
 
-   Kodda anahtari **eklemis gibi kullan** (`l10n.yeniAnahtar`); uretilmemis
-   oldugu icin `flutter analyze` o satirda hata verecek, bu BEKLENEN durumdur.
    Raporunda eklediğin anahtarlari listele.
 5. **RTL.** `EdgeInsets.only(left:/right:)` yerine
    `EdgeInsetsDirectional.only(start:/end:)`. `Alignment.centerLeft` yerine
@@ -102,20 +99,10 @@ Bunlari ihlal eden kod, calissa bile reddedilir. Otomatik denetleniyor:
 3. Kodu yaz.
 4. Raporunu ver.
 
-## Rapor formati (degistirilemez)
+## Rapor formati
 
-```
-## <GOREV> RAPOR
-### Yapilanlar
-- <madde>
-### Dosyalar
-eklendi:      <path>
-degistirildi: <path>
-### Gereken l10n anahtarlari
-- <anahtar> = "<Ingilizce metin>"  (<nerede kullanildigi>)
-### Sapmalar
-- <brief disina cikilan yer veya "yok">
-```
+Rapor formati icin `CLAUDE.md` -> "Rapor formati (degistirilemez)" bolumune bak.
+Ayrica "### Gereken l10n anahtarlari" basligi altinda eklenen anahtarlari listele.
 
 Ozet paragrafi, "iste yaptiklarim" anlatimi, secenek tartismasi yazma.
 
