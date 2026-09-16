@@ -57,6 +57,8 @@ cihazda 200+ düşmanla FPS ölçülecek (bkz. `docs/ARCHITECTURE.md` doğrulama
 ham interpolasyon bunu atlar.
 **Çözüm:** `intl` paketinin `NumberFormat`'ı ile locale'e duyarlı biçimlendirme.
 **Ne zaman:** Adım 21 (çeviri + font).
+**Not (UI-07):** Yardımcı `lib/shared/format/rw_number_format.dart` eklendi; henüz hiçbir çağrı yeri kullanmıyor.
+Gap, UI-15/UI-16/BATTLE-* bu yardımcıyı benimseyince kapanır.
 
 ### Sektör arka plan resmi
 **Durum:** Şu an `MapRenderer` prosedürel bir zemin gradyanı çiziyor, gerçek
