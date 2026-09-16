@@ -29,6 +29,7 @@ Aşağıdaki tablodan işini bul, **sadece** listelenen dosyaları aç.
 | **Renk / yazı tipi / ölçü değiştir** | `lib/app/theme/` (4 dosya) | `/rw-ui-integrate` |
 | **Gemini tasarımını bağla** | `lib/app/theme/`, `lib/features/<ekran>/view/`, `lib/shared/widgets/` | `/rw-ui-integrate` |
 | **Sprite/ikon işle** | `tools/assetkit/`, `docs/ASSET_PROMPTS.md` | `/rw-assets` |
+| **Görsel üret / işle** | `docs/ASSET_PROMPTS.md`, `tools/assetkit/`, `design/art_intake/` | `/rw-assets` |
 | **Reklam yerleşimi değiştir** | `lib/core/services/ad_service.dart`, ilgili `features/*/viewmodel` | — |
 | **Performans sorunu (FPS)** | `lib/engine/simulation/`, `lib/engine/render/`, level JSON'undaki `maxEnemies` | — |
 | **Açılış yön kapısı** | `lib/features/orientation_gate/`, `lib/core/services/orientation_service.dart`, `lib/app/router/app_router.dart` | — |

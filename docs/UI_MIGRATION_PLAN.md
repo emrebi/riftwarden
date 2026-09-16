@@ -23,8 +23,9 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | Task | Status | Commit |
 |---|---|---|
 | SAFE-01 | DONE | `b0de6b1` |
-| DOC-01 | DONE (planner completed remaining doc fixes) | pending user commit |
-| DOC-02 | READY | — |
+| DOC-01 | DONE | `970b904` |
+| DOC-02 | DONE (asset workstream may start after this commit) | pending user commit |
+| UI-01 | READY | — |
 | all others | PENDING (see §6 order) | — |
 
 The planner updates this table in the commit of each approved task. This file is the single source of truth for task status; the planner's private plan file (P1–P17 era) is archive only.

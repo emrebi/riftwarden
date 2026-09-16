@@ -52,3 +52,6 @@ app.*.map.json
 
 # Kisisel Claude Code izinleri (makineye ozel)
 .claude/settings.local.json
+
+# Codex gorsel-uretim agent ham ciktilari (islenmemis PNG sheet'ler)
+design/art_intake/
