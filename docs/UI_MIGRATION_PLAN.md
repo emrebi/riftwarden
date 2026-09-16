@@ -24,8 +24,9 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 |---|---|---|
 | SAFE-01 | DONE | `b0de6b1` |
 | DOC-01 | DONE | `970b904` |
-| DOC-02 | DONE (asset workstream may start after this commit) | pending user commit |
-| UI-01 | READY | — |
+| DOC-02 | DONE | `2ea1ea4` |
+| UI-01 | DONE | pending user commit |
+| UI-02 | READY | — |
 | all others | PENDING (see §6 order) | — |
 
 The planner updates this table in the commit of each approved task. This file is the single source of truth for task status; the planner's private plan file (P1–P17 era) is archive only.
@@ -143,10 +144,11 @@ Worker contract: CLAUDE.md worker rules; tests only where the task says so; no g
 - Validation: analyze, ui_lint. · Risk: low. · Worker: Sonnet Medium.
 
 **UI-02 — Aether semantic swap (amber → cyan)**
-- Goal: `AppColors.aether` = battle Aether (blue/cyan); amber meanings move to `cta`/`reward`/`warning`.
-- Files: `app_colors.dart` (aether value), `lib/features/result/widgets/result_ad_button.dart` (amber → cta/reward). Battle files keep `AppColors.aether` (they mean battle Aether → become cyan correctly). `rw_currency_chip.dart` unchanged (aether chip becomes cyan).
-- Deps: UI-01. · Art: ART-INDEPENDENT · Acceptance: grep shows no non-Aether meaning under `AppColors.aether`; `aetherCyan` kept as alias.
-- Risk: low (visible color shift in battle cost labels — intended). · Worker: Sonnet Medium.
+- Goal: `AppColors.aether` = battle Aether resource only (blue/cyan); amber action/affordability/reward emphasis moves to `AppColors.cta`.
+- Rule: resource identity (Aether counter, cost icon/value) keeps `AppColors.aether`; emphasis (buy border/glow, "abilities available" highlight/dot, ad/reward CTA) uses `AppColors.cta`. Required so the abilities toggle "open" (cyan) and "affordable" (amber) states stay distinguishable.
+- Files: `app_colors.dart` (aether value → reference intent 0xFF48C8F2), `lib/features/battle/widgets/unit_spawn_bar.dart` (abilities toggle affordable border/icon/glow/dot → cta; unit cost stays aether), `lib/features/battle/widgets/ability_shop_panel.dart` (buy border/glow → cta; cost icon/text stays aether), `lib/features/result/widgets/result_ad_button.dart` (all amber → cta). `battle_top_bar.dart` and `rw_currency_chip.dart` unchanged (they mean the resource).
+- Deps: UI-01. · Art: ART-INDEPENDENT · Acceptance: no emphasis meaning left under `AppColors.aether`; `aetherCyan` kept; only color token references change (no layout/behavior change).
+- Risk: low (intended visible color shift). · Worker: Sonnet Medium.
 
 **UI-03 — Decorations rebuild (materials, depth, restrained energy)**
 - Goal: DESIGN §21 depth + material recipes behind existing file.
