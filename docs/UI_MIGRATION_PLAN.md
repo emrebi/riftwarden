@@ -45,9 +45,11 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | DOC-02 | DONE | `2ea1ea4` |
 | UI-01 | DONE | `fd0acf1` |
 | UI-02 | DONE | `1afb171` |
-| DOC-03 | DONE | pending user commit |
-| UI-03 | READY | — |
-| ART-03 (asset) | REVISION REQUESTED (cells 1,2,3,4,5,9) | not committed (intake) |
+| DOC-03 | DONE | `21c9347` |
+| UI-03 | DONE | pending user commit |
+| UI-05 | READY | — |
+| ART-03 (asset) | APPROVED (intake sheet, 19 icons) | not committed (intake) |
+| ART-02 (asset) | READY | — |
 | all others | PENDING (see §6 order) | — |
 
 The planner updates this table in the commit of each approved task. This file is the single source of truth for task status; the planner's private plan file (P1–P17 era) is archive only.
@@ -279,7 +281,7 @@ Worker contract: CLAUDE.md worker rules; tests only where the task says so; no g
 
 ### PHASE 6 — PRODUCTION ART INTEGRATION (coding side)
 
-**ART-PREP — assetkit for UI art** · Files: `tools/assetkit/assetkit.py`, new recipes `portraits.json`, `ui_art.json`, `illustrations.json` (non-atlas per-file WebP output into `assets/images/ui_art/<group>/`), `verify` extended to check RwArt ids referenced by content (unit ids, upgrade icon ids, ability icon) · Deps: UI-09, DOC-02 · Art: ART-INDEPENDENT · Validation: assetkit verify · Worker: Sonnet Medium. (Can run any time after UI-09.)
+**ART-PREP — assetkit for UI art** · Acceptance addition: sheet slicing must ignore/merge tiny detached pieces (e.g. sparkle marks, < 5% of median piece area) so row-major naming order stays correct (ART-03 has one such piece near `level`) · Files: `tools/assetkit/assetkit.py`, new recipes `portraits.json`, `ui_art.json`, `illustrations.json` (non-atlas per-file WebP output into `assets/images/ui_art/<group>/`), `verify` extended to check RwArt ids referenced by content (unit ids, upgrade icon ids, ability icon) · Deps: UI-09, DOC-02 · Art: ART-INDEPENDENT · Validation: assetkit verify · Worker: Sonnet Medium. (Can run any time after UI-09.)
 
 **ARTINT-01 — UI ornament kit into RwMaterialSurface decoration slots** · ART-BLOCKED (ART-02) · Files: `rw_material_surface.dart`, recipes · Worker: Sonnet Medium.
 **ARTINT-02 — Icon family into RwIcon** · ART-BLOCKED (ART-03) · Files: `rw_icon.dart` · Worker: Sonnet Medium.
