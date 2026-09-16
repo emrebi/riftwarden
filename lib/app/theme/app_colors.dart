@@ -37,7 +37,9 @@ abstract final class AppColors {
   static const Color riftGlow = Color(0xFFC77DFF);
 
   // --- Kaynak ---
-  static const Color aether = Color(0xFFFFC44D);
+  /// Savas Aether kaynak kimligi (sayac, maliyet ikonu/degeri). Mavi/camgobegi;
+  /// kehribar vurgu icin `cta` kullanilir.
+  static const Color aether = Color(0xFF48C8F2);
   static const Color shard = Color(0xFF7FE3FF);
   static const Color cell = Color(0xFFFF8A3D);
 

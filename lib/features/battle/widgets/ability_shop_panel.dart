@@ -245,11 +245,11 @@ class _OfferCard extends StatelessWidget {
                       Radius.circular(AppRadius.sm),
                     ),
                     border: Border.all(
-                      color: canBuy ? AppColors.aether : AppColors.surfaceRaised,
+                      color: canBuy ? AppColors.cta : AppColors.surfaceRaised,
                       width: 1.0,
                     ),
                     boxShadow: canBuy
-                        ? AppShadows.glow(AppColors.aether, blurRadius: 4.0)
+                        ? AppShadows.glow(AppColors.cta, blurRadius: 4.0)
                         : null,
                   ),
                   child: Row(

@@ -52,9 +52,9 @@ class _ResultAdButtonState extends State<ResultAdButton> {
 
   @override
   Widget build(BuildContext context) {
-    final textColor = _isEnabled ? AppColors.aether : AppColors.textDisabled;
+    final textColor = _isEnabled ? AppColors.cta : AppColors.textDisabled;
     final borderColor = _isEnabled
-        ? AppColors.aether.withValues(alpha: 0.6)
+        ? AppColors.cta.withValues(alpha: 0.6)
         : AppColors.surfaceRaised;
 
     final content = Row(
@@ -109,7 +109,7 @@ class _ResultAdButtonState extends State<ResultAdButton> {
             ),
             boxShadow: _isEnabled
                 ? AppShadows.glow(
-                    AppColors.aether,
+                    AppColors.cta,
                     blurRadius: 8.0,
                   )
                 : null,

@@ -12,7 +12,13 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
   APPROVE includes: manual device check if relevant, exact commit paths, commit title, next READY task.
 - User commits; Opus verifies HEAD before starting the next task.
 - Model routing: default Sonnet 5 Medium; Sonnet 5 High only for UI-04 and ARTINT-07 (any other escalation must be justified first).
-- Asset stream: Codex image-generation agent; starts after DOC-02 is committed; follows §5 order. Coding never waits for art unless a task is ART-BLOCKED.
+- Asset stream: starts after DOC-02; follows §5 order. Coding never waits for art unless a task is ART-BLOCKED.
+  Generator (2026-09-17): web ChatGPT image generation (Codex drafts failed flat-fill/consistency). Per ART task:
+  user uploads the reference pack (`design/references/05_UI_DESIGN_SYSTEM.png` + the surface-specific reference) and pastes
+  the STYLE BIBLE + ART section from `docs/ASSET_PROMPTS.md`; ChatGPT returns ONE zip; user saves it as
+  `design/art_intake/<ART-ID>.zip` (gitignored, never repo root) and extracts to `design/art_intake/<ART-ID>/`; planner reviews.
+  Icon/ornament families are requested as ONE grid sheet on flat #FF00FF (one generation = consistent style), sliced by assetkit;
+  ART-PREP recipes must accept both magenta sheets and alpha PNGs for ui_art groups.
 - Design/architecture decisions are not reopened; genuine blockers are raised as ARCHITECTURE QUESTION.
 
 ### Actual history (supersedes the originally planned commit split)
@@ -25,8 +31,9 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | SAFE-01 | DONE | `b0de6b1` |
 | DOC-01 | DONE | `970b904` |
 | DOC-02 | DONE | `2ea1ea4` |
-| UI-01 | DONE | pending user commit |
-| UI-02 | READY | — |
+| UI-01 | DONE | `fd0acf1` |
+| UI-02 | DONE | pending user commit |
+| UI-03 | READY | — |
 | all others | PENDING (see §6 order) | — |
 
 The planner updates this table in the commit of each approved task. This file is the single source of truth for task status; the planner's private plan file (P1–P17 era) is archive only.

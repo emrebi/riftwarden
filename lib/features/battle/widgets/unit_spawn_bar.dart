@@ -397,11 +397,11 @@ class _UnitAbilitiesButton extends StatelessWidget {
 
         final Color borderColor = isOpen
             ? AppColors.aetherCyan
-            : (hasAffordable ? AppColors.aether : AppColors.surfaceRaised);
+            : (hasAffordable ? AppColors.cta : AppColors.surfaceRaised);
 
         final Color iconColor = isOpen
             ? AppColors.aetherCyan
-            : (hasAffordable ? AppColors.aether : AppColors.textSecondary);
+            : (hasAffordable ? AppColors.cta : AppColors.textSecondary);
 
         return ConstrainedBox(
           constraints: const BoxConstraints(
@@ -431,7 +431,7 @@ class _UnitAbilitiesButton extends StatelessWidget {
                   boxShadow: isOpen
                       ? AppShadows.glow(AppColors.aetherCyan, blurRadius: 6.0)
                       : (hasAffordable
-                          ? AppShadows.glow(AppColors.aether, blurRadius: 4.0)
+                          ? AppShadows.glow(AppColors.cta, blurRadius: 4.0)
                           : null),
                 ),
                 child: Center(
@@ -451,7 +451,7 @@ class _UnitAbilitiesButton extends StatelessWidget {
                             width: 6.0,
                             height: 6.0,
                             decoration: const BoxDecoration(
-                              color: AppColors.aether,
+                              color: AppColors.cta,
                               shape: BoxShape.circle,
                             ),
                           ),
