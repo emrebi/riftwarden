@@ -58,7 +58,8 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | UI-08 | DONE (1 fix: RTL double mirror) | batch C2 |
 | UI-09 | DONE | batch C2 |
 | UI-04 | DONE (1 fix: bounded path cache) | batch C3 |
-| UI-06 | READY | — |
+| UI-06 | DONE | batch C4 |
+| UI-10 | READY | — |
 | ART-03 (asset) | APPROVED (intake sheet, 19 icons) | not committed (intake) |
 | ART-02 (asset) | APPROVED (intake sheet 4x2, 7 pieces) | not committed (intake) |
 | ART-10 (asset) | APPROVED after 1 revision (watch on device: arc_overcharge horned dummy, titan_juggernaut enemy-like golem) | intake: ART-10_1.png (4x2, 8), ART-10_2.png (4x2, 5) |
