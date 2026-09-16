@@ -3,12 +3,16 @@ import 'package:riftwarden/app/theme/app_colors.dart';
 import 'package:riftwarden/app/theme/app_decorations.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
+import 'package:riftwarden/shared/widgets/rw_icon.dart';
 import 'package:riftwarden/shared/widgets/rw_icon_button.dart';
+import 'package:riftwarden/shared/widgets/rw_material_surface.dart';
 
 /// Tum sayfalarin ortak tabani.
 ///
-/// Arka plan gradyani SafeArea disinda (ekranin tumune) yayilir.
-/// Icerik, baslik ve butonlar ise guvenli alanda (SafeArea) tutulur.
+/// Arka plan zemin rengi (`AppColors.background`) SafeArea disinda
+/// (ekranin tumune) yayilir. [background] verilirse zemin renginin ustune
+/// tam ekran yerlesir (ileride `RwArt(group: scenes, ...)`). Icerik, baslik
+/// ve butonlar guvenli alanda (SafeArea) tutulur.
 class RwScreenScaffold extends StatelessWidget {
   const RwScreenScaffold({
     required this.child,
@@ -18,6 +22,7 @@ class RwScreenScaffold extends StatelessWidget {
     this.trailing,
     this.contentPadding,
     this.bottomBar,
+    this.background,
   });
 
   final Widget child;
@@ -27,54 +32,61 @@ class RwScreenScaffold extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
   final Widget? bottomBar;
 
+  /// Tam ekran arka plan katmani (SafeArea disinda), zemin renginin
+  /// ustune yerlesir. `null` ise sadece zemin rengi gorunur.
+  final Widget? background;
+
   @override
   Widget build(BuildContext context) {
     final hasHeader = title != null || onBack != null || trailing != null;
-    final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return Scaffold(
-      backgroundColor: AppColors.voidDeep,
-      body: DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: AppGradients.screenBackground,
-        ),
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              if (hasHeader) _buildHeader(context, isRtl),
-              Expanded(
-                child: Padding(
-                  padding: contentPadding ??
-                      const EdgeInsetsDirectional.symmetric(
-                        horizontal: AppSpacing.screenGutter,
-                      ),
-                  child: child,
+      backgroundColor: AppColors.background,
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          const ColoredBox(color: AppColors.background),
+          if (background != null) Positioned.fill(child: background!),
+          SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                if (hasHeader) _buildHeader(context),
+                Expanded(
+                  child: Padding(
+                    padding: contentPadding ??
+                        const EdgeInsetsDirectional.symmetric(
+                          horizontal: AppSpacing.screenGutter,
+                        ),
+                    child: child,
+                  ),
                 ),
-              ),
-              ?bottomBar,
-            ],
+                ?bottomBar,
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context, bool isRtl) {
+  Widget _buildHeader(BuildContext context) {
     return Padding(
       padding: const EdgeInsetsDirectional.symmetric(
         horizontal: AppSpacing.screenGutter,
-        vertical: AppSpacing.sm,
+        vertical: AppSpacing.xs,
       ),
-      child: SizedBox(
-        height: AppSpacing.minTouchTarget,
+      child: RwMaterialSurface(
+        material: AppMaterial.wood,
+        padding: const EdgeInsetsDirectional.symmetric(
+          horizontal: AppSpacing.sm,
+        ),
         child: Row(
           children: <Widget>[
             if (onBack != null)
               RwIconButton(
-                icon: isRtl
-                    ? Icons.arrow_forward_rounded
-                    : Icons.arrow_back_rounded,
+                rwIcon: RwIconId.back,
+                material: AppMaterial.stone,
                 onPressed: onBack,
               )
             else
@@ -83,9 +95,9 @@ class RwScreenScaffold extends StatelessWidget {
               child: title != null
                   ? Text(
                       title!,
-                      style: AppTypography.titleLarge.copyWith(
-                        color: AppColors.textPrimary,
-                        letterSpacing: 1.2,
+                      style: AppTypography.onMaterial(
+                        AppTypography.screenTitle,
+                        AppMaterial.wood,
                       ),
                       textAlign: TextAlign.center,
                       maxLines: 1,

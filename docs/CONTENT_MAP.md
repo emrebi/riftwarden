@@ -30,9 +30,15 @@ Aşağıdaki tablodan işini bul, **sadece** listelenen dosyaları aç.
 | **Ikon buton kullan/değiştir (RwIconButton)** | `lib/shared/widgets/rw_icon_button.dart` (`RwMaterialSurface(shape: circle)` uzerine kurulu) | — |
 | **Panel kullan/değiştir (RwPanel)** | `lib/shared/widgets/rw_panel.dart` (`RwMaterialSurface` uzerine kurulu; `RwPanelVariant`: standard/large/modal/smallInfo) | — |
 | **Modal iletisim penceresi kullan/değiştir (RwDialog)** | `lib/shared/widgets/rw_dialog.dart` (`RwPanel(variant: modal)` + `RwVeil` uzerine kurulu) | — |
+| **Kart kullan/değiştir (RwCard)** | `lib/shared/widgets/rw_card.dart` (`RwMaterialSurface` uzerine kurulu; `RwCardKind`: standard/defender/upgrade, `RwCardState`: standard/selected/locked/disabled) | — |
+| **Ilerleme/can cubugu kullan/değiştir (RwProgressBar)** | `lib/shared/widgets/rw_progress_bar.dart` (el yapimi malzeme izi; `RwProgressVariant`: neutral/health/cooldown) | — |
+| **Segmentli (dalga) ilerleme kullan/değiştir (RwSegmentedProgress)** | `lib/shared/widgets/rw_segmented_progress.dart` | — |
+| **Para birimi gostergesi kullan/değiştir (RwCurrencyChip)** | `lib/shared/widgets/rw_currency_chip.dart` (`RwMaterialSurface(shape: pill)` uzerine kurulu; `RwCurrency`: aether/shard/cell) | — |
 | **Sahne ustu karartma/veil kullan (RwVeil)** | `lib/shared/widgets/rw_veil.dart` (upgrade overlay BATTLE-01, pause BATTLE-08 kullanir) | — |
 | **Ikon kullan/ekle (RwIcon)** | `lib/shared/widgets/rw_icon.dart`, `assets/images/ui_art/icons/` (gelecek, ARTINT-02) | — |
 | **UI gorseli goster (RwArt)** | `lib/shared/widgets/rw_art.dart`, `assets/images/ui_art/<grup>/<id>.webp` | — |
+| **Ekran iskeleti kullan/değiştir (RwScreenScaffold)** | `lib/shared/widgets/rw_screen_scaffold.dart` (baslik seridi `RwMaterialSurface(material: wood)` uzerine kurulu; `background` katmani ileride `RwArt(group: scenes)`) | — |
+| **Bolum basligi kullan/değiştir (RwSectionHeader)** | `lib/shared/widgets/rw_section_header.dart` (`onDark` ile HUD/koyu zemin varyanti) | — |
 | **Sayı/para/süre biçimlendir (locale)** | `lib/shared/format/rw_number_format.dart` | — |
 | **Yeni dil metni ekle** | `lib/l10n/arb/app_en.arb` (şablon) + diğer 15 ARB, sonra `flutter gen-l10n` | — |
 | **Renk / yazı tipi / ölçü değiştir** | `lib/app/theme/` (4 dosya) | `/rw-ui-integrate` |

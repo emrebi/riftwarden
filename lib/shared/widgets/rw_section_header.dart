@@ -12,16 +12,35 @@ class RwSectionHeader extends StatelessWidget {
     this.subtitle,
     this.trailing,
     this.accentColor,
+    this.onDark = false,
   });
 
   final String title;
   final String? subtitle;
   final Widget? trailing;
+
+  /// Vurgu isaretinin rengi. `null` ise `AppColors.cta` kullanilir.
   final Color? accentColor;
+
+  /// True ise baslik/altyazi rengi koyu zeminde (orn. `AppMaterial.hud`
+  /// panel) okunur kalsin diye `textOnDark*` tonlarina gecer. Varsayilan
+  /// acik zemin (`textOnLight*`).
+  final bool onDark;
+
+  // Vurgu isareti (kucuk murekkep/banner cizgisi) olculeri, DESIGN §3
+  // "repeated outlines share a small set of weights" kuraliyla tutarli tek
+  // bir yerde sabitlenir.
+  static const double _markWidth = 5.0;
+  static const double _markHeight = 18.0;
+  static const double _markBorderWidth = 1.5;
 
   @override
   Widget build(BuildContext context) {
-    final effectiveAccent = accentColor ?? AppColors.aetherCyan;
+    final Color effectiveAccent = accentColor ?? AppColors.cta;
+    final Color titleColor =
+        onDark ? AppColors.textOnDark : AppColors.textOnLight;
+    final Color subtitleColor =
+        onDark ? AppColors.textOnDarkSecondary : AppColors.textOnLightSecondary;
 
     return Padding(
       padding: const EdgeInsetsDirectional.symmetric(
@@ -33,27 +52,24 @@ class RwSectionHeader extends StatelessWidget {
         children: <Widget>[
           Row(
             children: <Widget>[
-              // Sol dikey vurgu cubugu
-              Container(
-                width: 3.0,
-                height: 16.0,
+              // Start tarafinda kucuk murekkep/banner vurgu isareti.
+              DecoratedBox(
                 decoration: BoxDecoration(
                   color: effectiveAccent,
-                  borderRadius: AppBorderRadii.sm,
-                  boxShadow: AppShadows.glow(
-                    effectiveAccent,
-                    blurRadius: 4.0,
+                  border: Border.all(
+                    color: AppColors.outlineInk,
+                    width: _markBorderWidth,
                   ),
+                  borderRadius: AppBorderRadii.sm,
                 ),
+                child: const SizedBox(width: _markWidth, height: _markHeight),
               ),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
-                  title.toUpperCase(),
-                  style: AppTypography.titleMedium.copyWith(
-                    color: AppColors.textPrimary,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 1.2,
+                  title,
+                  style: AppTypography.sectionTitle.copyWith(
+                    color: titleColor,
                   ),
                 ),
               ),
@@ -68,7 +84,9 @@ class RwSectionHeader extends StatelessWidget {
               ),
               child: Text(
                 subtitle!,
-                style: AppTypography.bodyMedium,
+                style: AppTypography.smallLabel.copyWith(
+                  color: subtitleColor,
+                ),
               ),
             ),
           ],

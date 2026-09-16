@@ -17,6 +17,7 @@ import 'package:riftwarden/shared/widgets/rw_panel.dart';
 import 'package:riftwarden/shared/widgets/rw_progress_bar.dart';
 import 'package:riftwarden/shared/widgets/rw_screen_scaffold.dart';
 import 'package:riftwarden/shared/widgets/rw_section_header.dart';
+import 'package:riftwarden/shared/widgets/rw_segmented_progress.dart';
 import 'package:riftwarden/shared/widgets/rw_veil.dart';
 
 /// Tasarim sistemi bilesenlerini gorsel olarak test etmek icin galeri ekrani.
@@ -89,6 +90,25 @@ class _WidgetGalleryState extends State<WidgetGallery> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            // --- SECTION: SECTION HEADER (onDark) ---
+            const RwSectionHeader(
+              title: 'Section Header (RwSectionHeader)',
+              subtitle: 'onDark: true ornegi bir HUD panelde',
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            const SizedBox(
+              width: 260.0,
+              child: RwPanel(
+                material: AppMaterial.hud,
+                child: RwSectionHeader(
+                  title: 'HUD ICINDE BASLIK',
+                  subtitle: 'Koyu zeminde okunur kalir',
+                  onDark: true,
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
             // --- SECTION: BUTTONS ---
             const RwSectionHeader(
               title: 'Buttons (RwButton)',
@@ -358,21 +378,40 @@ class _WidgetGalleryState extends State<WidgetGallery> {
               subtitle: 'Aether, Shard ve Cell gostergeleri',
             ),
             const SizedBox(height: AppSpacing.sm),
-            const Wrap(
+            Wrap(
               spacing: AppSpacing.md,
               runSpacing: AppSpacing.md,
               children: <Widget>[
-                RwCurrencyChip(
+                const RwCurrencyChip(
                   currency: RwCurrency.aether,
                   amount: 1450,
                 ),
-                RwCurrencyChip(
+                const RwCurrencyChip(
                   currency: RwCurrency.shard,
                   amount: 85,
+                ),
+                const RwCurrencyChip(
+                  currency: RwCurrency.cell,
+                  amount: 12,
+                ),
+                const RwCurrencyChip(
+                  currency: RwCurrency.aether,
+                  amount: 340,
+                  material: AppMaterial.parchment,
+                ),
+                const RwCurrencyChip(
+                  currency: RwCurrency.shard,
+                  amount: 1234567,
+                ),
+                const RwCurrencyChip(
+                  currency: RwCurrency.shard,
+                  amount: 1234567,
+                  compact: true,
                 ),
                 RwCurrencyChip(
                   currency: RwCurrency.cell,
                   amount: 12,
+                  onTap: () {},
                 ),
               ],
             ),
@@ -381,35 +420,64 @@ class _WidgetGalleryState extends State<WidgetGallery> {
             // --- SECTION: PROGRESS BARS ---
             const RwSectionHeader(
               title: 'Progress Bars (RwProgressBar)',
-              subtitle: 'Can, dalga ve hasar izi animasyonlari',
+              subtitle: 'El yapimi iz, health/cooldown varyantlari ve hasar izi',
             ),
             const SizedBox(height: AppSpacing.sm),
-            _buildGalleryText('Core HP (Full - 100%)'),
-            const SizedBox(height: AppSpacing.xs),
-            const RwProgressBar(
-              value: 1.0,
-              color: AppColors.coreTeal,
-            ),
-            const SizedBox(height: AppSpacing.md),
-            _buildGalleryText('Wave Progress (Half - 50%)'),
+            _buildGalleryText('Neutral, hud track (%50)'),
             const SizedBox(height: AppSpacing.xs),
             const RwProgressBar(
               value: 0.5,
               color: AppColors.aetherCyan,
             ),
             const SizedBox(height: AppSpacing.md),
-            _buildGalleryText('Boss HP (Low Danger - 20%)'),
+            _buildGalleryText('Neutral, parchment track (%50)'),
+            const SizedBox(height: AppSpacing.xs),
+            const RwProgressBar(
+              value: 0.5,
+              color: AppColors.riftViolet,
+              trackMaterial: AppMaterial.parchment,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            _buildGalleryText('Health, hud track (%80)'),
+            const SizedBox(height: AppSpacing.xs),
+            const RwProgressBar(
+              value: 0.8,
+              color: AppColors.health,
+              variant: RwProgressVariant.health,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            _buildGalleryText('Health, parchment track (%20 - danger otomatik)'),
             const SizedBox(height: AppSpacing.xs),
             const RwProgressBar(
               value: 0.2,
-              color: AppColors.danger,
+              color: AppColors.health,
+              variant: RwProgressVariant.health,
+              trackMaterial: AppMaterial.parchment,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            _buildGalleryText('Cooldown, hud track (%50 - sakin doygunluk)'),
+            const SizedBox(height: AppSpacing.xs),
+            const RwProgressBar(
+              value: 0.5,
+              color: AppColors.rift,
+              variant: RwProgressVariant.cooldown,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            _buildGalleryText('Kompakt can barı (4 dp, Core HP olcegi)'),
+            const SizedBox(height: AppSpacing.xs),
+            const RwProgressBar(
+              value: 0.8,
+              color: AppColors.health,
+              variant: RwProgressVariant.health,
+              height: 4.0,
             ),
             const SizedBox(height: AppSpacing.md),
             _buildGalleryText('Damage Trail Test (Tiklayarak dene)'),
             const SizedBox(height: AppSpacing.xs),
             RwProgressBar(
               value: _animatedHp,
-              color: AppColors.coreTeal,
+              color: AppColors.health,
+              variant: RwProgressVariant.health,
               showDamageTrail: true,
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -417,6 +485,21 @@ class _WidgetGalleryState extends State<WidgetGallery> {
               label: 'Simulate Damage',
               variant: RwButtonVariant.secondary,
               onPressed: _damageTest,
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // --- SECTION: SEGMENTED PROGRESS ---
+            const RwSectionHeader(
+              title: 'Segmented Progress (RwSegmentedProgress)',
+              subtitle: 'Dalga/asama gostergesi, esit parcalar',
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            _buildGalleryText('5 segment, %50 ilerleme, mevcut segment 2'),
+            const SizedBox(height: AppSpacing.xs),
+            const RwSegmentedProgress(
+              segments: 5,
+              value: 0.5,
+              currentSegment: 2,
             ),
             const SizedBox(height: AppSpacing.xl),
 
@@ -517,41 +600,116 @@ class _WidgetGalleryState extends State<WidgetGallery> {
 
             // --- SECTION: CARDS ---
             const RwSectionHeader(
-              title: 'Upgrade Cards (RwCard)',
-              subtitle: '4 rarity duzeyi ve legendary parlamasi',
+              title: 'Cards (RwCard)',
+              subtitle: 'Anatomi + durumlar (DESIGN §9, §13)',
             ),
             const SizedBox(height: AppSpacing.sm),
-            RwCard(
-              title: 'Plasma Overcharge',
-              rarity: 'common',
-              badge: 'LVL 1',
-              description: 'Attacks pierce through 1 additional enemy.',
-              onTap: () {},
+            _buildGalleryText(
+              'Upgrade choice satiri — 640x360 genislikte tek satirda sigar.',
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  child: RwCard(
+                    kind: RwCardKind.upgrade,
+                    title: 'Plasma Overcharge',
+                    rarity: 'common',
+                    badge: 'LVL 1',
+                    description: 'Attacks pierce through 1 additional enemy.',
+                    icon: const RwIcon(RwIconId.attack, size: 32.0),
+                    onTap: () {},
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: RwCard(
+                    kind: RwCardKind.upgrade,
+                    title: 'Aether Siphon',
+                    rarity: 'rare',
+                    badge: 'LVL 2',
+                    description:
+                        'Defeated swarm units yield 25% more Aether.',
+                    icon: const RwIcon(RwIconId.aether, size: 32.0),
+                    isSelected: true,
+                    onTap: () {},
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: RwCard(
+                    kind: RwCardKind.upgrade,
+                    title: 'Dimensional Surge',
+                    rarity: 'epic',
+                    badge: 'LVL 3',
+                    description:
+                        'Discharge an electric nova every 12 seconds.',
+                    icon: const RwIcon(RwIconId.magic, size: 32.0),
+                    onTap: () {},
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: AppSpacing.md),
-            RwCard(
-              title: 'Aether Siphon',
-              rarity: 'rare',
-              badge: 'LVL 2',
-              description: 'Defeated swarm units yield 25% more Aether.',
-              onTap: () {},
-            ),
-            const SizedBox(height: AppSpacing.md),
-            RwCard(
-              title: 'Dimensional Surge',
-              rarity: 'epic',
-              badge: 'LVL 3',
-              description: 'Discharge an electric nova every 12 seconds.',
-              onTap: () {},
-            ),
-            const SizedBox(height: AppSpacing.md),
-            RwCard(
-              title: 'Void Singularity',
-              rarity: 'legendary',
-              badge: 'MAX',
-              description:
-                  'Collapses the nearest rift portal, stunning all enemies.',
-              onTap: () {},
+            _buildGalleryText('Standard / locked / disabled / defender'),
+            const SizedBox(height: AppSpacing.xs),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    width: 180.0,
+                    child: RwCard(
+                      title: 'Rift Shard',
+                      rarity: 'common',
+                      description: 'Genel amacli secim karti ornegi.',
+                      icon: const RwIcon(RwIconId.shard, size: 28.0),
+                      onTap: () {},
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  const SizedBox(
+                    width: 180.0,
+                    child: RwCard(
+                      title: 'Titan Frame',
+                      rarity: 'epic',
+                      state: RwCardState.locked,
+                      lockReason: 'Level 8 gerekir',
+                      icon: RwIcon(RwIconId.utility, size: 28.0),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  const SizedBox(
+                    width: 180.0,
+                    child: RwCard(
+                      title: 'Void Singularity',
+                      rarity: 'legendary',
+                      state: RwCardState.disabled,
+                      description: 'Yetersiz kaynak.',
+                      icon: RwIcon(RwIconId.rift, size: 28.0),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  SizedBox(
+                    width: 160.0,
+                    child: RwCard(
+                      kind: RwCardKind.defender,
+                      title: 'Arc Ranger',
+                      rarity: 'rare',
+                      description: 'Uzun menzilli destek',
+                      art: const ColoredBox(
+                        color: AppColors.woodFace,
+                        child: Center(
+                          child: RwIcon(RwIconId.attack, size: 36.0),
+                        ),
+                      ),
+                      onTap: () {},
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: AppSpacing.xl),
 
