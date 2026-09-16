@@ -15,6 +15,7 @@ import 'package:riftwarden/features/battle/widgets/battle_top_bar.dart';
 import 'package:riftwarden/features/battle/widgets/core_health_bar.dart';
 import 'package:riftwarden/features/battle/widgets/unit_spawn_bar.dart';
 import 'package:riftwarden/features/boot/view/boot_screen.dart';
+import 'package:riftwarden/features/boot/view/widget_gallery.dart';
 import 'package:riftwarden/features/level_select/view/level_select_data.dart';
 import 'package:riftwarden/features/level_select/view/level_select_screen.dart';
 import 'package:riftwarden/features/main_menu/view/main_menu_screen.dart';
@@ -23,6 +24,7 @@ import 'package:riftwarden/features/result/view/result_data.dart';
 import 'package:riftwarden/features/result/view/result_screen.dart';
 import 'package:riftwarden/features/settings/view/settings_screen.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
+import 'package:riftwarden/shared/widgets/rw_art.dart';
 
 class _FakeOrientationService extends OrientationService {
   int lockLandscapeCallCount = 0;
@@ -340,5 +342,99 @@ void main() {
         expect(tester.takeException(), isNull);
       });
     }
+  });
+
+  group('WidgetGallery', () {
+    const gallerySurfaces = <(String, Size)>[
+      ('640x360', Size(1920, 1080)),
+      ('800x360', Size(2400, 1080)),
+    ];
+    const galleryLocales = <Locale>[Locale('en'), Locale('ar')];
+
+    Future<void> setSurface(WidgetTester tester, Size physicalSize) async {
+      final view = tester.view;
+      view.physicalSize = physicalSize;
+      view.devicePixelRatio = 3.0;
+      addTearDown(view.resetPhysicalSize);
+      addTearDown(view.resetDevicePixelRatio);
+    }
+
+    Widget wrapGallery(Locale locale) {
+      return ProviderScope(
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          theme: AppTheme.build(locale),
+          locale: locale,
+          home: const WidgetGallery(),
+        ),
+      );
+    }
+
+    for (final (label, physicalSize) in gallerySurfaces) {
+      for (final locale in galleryLocales) {
+        testWidgets(
+          '$label yuzeyinde (${locale.languageCode}) tasma/exception yok',
+          (WidgetTester tester) async {
+            await setSurface(tester, physicalSize);
+            await tester.pumpWidget(wrapGallery(locale));
+            await tester.pump(const Duration(milliseconds: 300));
+
+            expect(tester.takeException(), isNull);
+
+            if (locale.languageCode == 'ar') {
+              final directionality = tester.widget<Directionality>(
+                find
+                    .ancestor(
+                      of: find.byType(WidgetGallery),
+                      matching: find.byType(Directionality),
+                    )
+                    .first,
+              );
+              expect(directionality.textDirection, TextDirection.rtl);
+            }
+
+            final scrollableFinder = find.byType(Scrollable).first;
+
+            // Galerinin tum bolumlerinin build edildigini garanti etmek
+            // icin asagi dogru tekrar tekrar surukle; her adimda exception
+            // ve overflow kontrolu yapilir.
+            for (var i = 0; i < 12; i++) {
+              await tester.drag(scrollableFinder, const Offset(0, -400));
+              await tester.pump(const Duration(milliseconds: 100));
+              expect(tester.takeException(), isNull);
+            }
+
+            await tester.pump(const Duration(milliseconds: 300));
+            expect(tester.takeException(), isNull);
+          },
+        );
+      }
+    }
+
+    testWidgets('RwArt eksik id icin fallback gosterir', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          const Center(
+            child: RwArt(
+              group: RwArtGroup.icons,
+              id: 'definitely_missing',
+              fallback: SizedBox(key: ValueKey('rwart-fallback')),
+            ),
+          ),
+        ),
+      );
+
+      // Image.asset hata callback'i asenkron cozulur; bir kac pump ile
+      // microtask/timer kuyrugunun bosalmasini bekle.
+      for (var i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+
+      expect(tester.takeException(), isNull);
+      expect(find.byKey(const ValueKey('rwart-fallback')), findsOneWidget);
+    });
   });
 }

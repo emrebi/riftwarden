@@ -35,6 +35,9 @@ Aşağıdaki tablodan işini bul, **sadece** listelenen dosyaları aç.
 | **Segmentli (dalga) ilerleme kullan/değiştir (RwSegmentedProgress)** | `lib/shared/widgets/rw_segmented_progress.dart` | — |
 | **Para birimi gostergesi kullan/değiştir (RwCurrencyChip)** | `lib/shared/widgets/rw_currency_chip.dart` (`RwMaterialSurface(shape: pill)` uzerine kurulu; `RwCurrency`: aether/shard/cell) | — |
 | **Sahne ustu karartma/veil kullan (RwVeil)** | `lib/shared/widgets/rw_veil.dart` (upgrade overlay BATTLE-01, pause BATTLE-08 kullanir) | — |
+| **Savunmaci yuvasi kullan/değiştir (RwDefenderSlot)** | `lib/shared/widgets/rw_defender_slot.dart` (`RwMaterialSurface(material: stone)` uzerine kurulu; `RwDefenderSlotState`: empty/available/selected/locked/purchaseable/unaffordable/occupied) | — |
+| **Yetenek cercevesi/cooldown ring kullan/değiştir (RwAbilityFrame)** | `lib/shared/widgets/rw_ability_frame.dart` (`RwMaterialSurface(shape: circle, material: stone)` uzerine kurulu; `RwAbilityState`: ready/cooldown/targeting/unavailable) | — |
+| **Acma/kapama anahtari kullan/değiştir (RwToggle)** | `lib/shared/widgets/rw_toggle.dart` (`RwMaterialSurface(shape: pill)` track + `circle` knob; SEC-02'de `SettingsSwitchRow` icindeki Material `Switch`'in yerine gecer) | — |
 | **Ikon kullan/ekle (RwIcon)** | `lib/shared/widgets/rw_icon.dart`, `assets/images/ui_art/icons/` (gelecek, ARTINT-02) | — |
 | **UI gorseli goster (RwArt)** | `lib/shared/widgets/rw_art.dart`, `assets/images/ui_art/<grup>/<id>.webp` | — |
 | **Ekran iskeleti kullan/değiştir (RwScreenScaffold)** | `lib/shared/widgets/rw_screen_scaffold.dart` (baslik seridi `RwMaterialSurface(material: wood)` uzerine kurulu; `background` katmani ileride `RwArt(group: scenes)`) | — |

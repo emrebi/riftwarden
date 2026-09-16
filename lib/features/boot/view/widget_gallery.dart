@@ -5,10 +5,12 @@ import 'package:riftwarden/app/theme/app_colors.dart';
 import 'package:riftwarden/app/theme/app_decorations.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
+import 'package:riftwarden/shared/widgets/rw_ability_frame.dart';
 import 'package:riftwarden/shared/widgets/rw_art.dart';
 import 'package:riftwarden/shared/widgets/rw_button.dart';
 import 'package:riftwarden/shared/widgets/rw_card.dart';
 import 'package:riftwarden/shared/widgets/rw_currency_chip.dart';
+import 'package:riftwarden/shared/widgets/rw_defender_slot.dart';
 import 'package:riftwarden/shared/widgets/rw_dialog.dart';
 import 'package:riftwarden/shared/widgets/rw_icon.dart';
 import 'package:riftwarden/shared/widgets/rw_icon_button.dart';
@@ -18,6 +20,7 @@ import 'package:riftwarden/shared/widgets/rw_progress_bar.dart';
 import 'package:riftwarden/shared/widgets/rw_screen_scaffold.dart';
 import 'package:riftwarden/shared/widgets/rw_section_header.dart';
 import 'package:riftwarden/shared/widgets/rw_segmented_progress.dart';
+import 'package:riftwarden/shared/widgets/rw_toggle.dart';
 import 'package:riftwarden/shared/widgets/rw_veil.dart';
 
 /// Tasarim sistemi bilesenlerini gorsel olarak test etmek icin galeri ekrani.
@@ -30,6 +33,14 @@ class WidgetGallery extends StatefulWidget {
 
 class _WidgetGalleryState extends State<WidgetGallery> {
   double _animatedHp = 0.85;
+  bool _abilityReady = false;
+  bool _toggleInteractive = true;
+
+  void _toggleAbilityReady() {
+    setState(() {
+      _abilityReady = !_abilityReady;
+    });
+  }
 
   void _damageTest() {
     setState(() {
@@ -710,6 +721,228 @@ class _WidgetGalleryState extends State<WidgetGallery> {
                   ),
                 ],
               ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // --- SECTION: DEFENDER SLOTS ---
+            const RwSectionHeader(
+              title: 'Defender Slots (RwDefenderSlot)',
+              subtitle: '7 durum (DESIGN §11), size 64; ayrica size 48 ornegi',
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Wrap(
+              spacing: AppSpacing.md,
+              runSpacing: AppSpacing.md,
+              crossAxisAlignment: WrapCrossAlignment.start,
+              children: <Widget>[
+                RwDefenderSlot(
+                  state: RwDefenderSlotState.empty,
+                  onTap: () {},
+                ),
+                RwDefenderSlot(
+                  state: RwDefenderSlotState.available,
+                  unitId: 'pulse_guard',
+                  name: 'Pulse Guard',
+                  onTap: () {},
+                ),
+                RwDefenderSlot(
+                  state: RwDefenderSlotState.selected,
+                  unitId: 'arc_ranger',
+                  name: 'Arc Ranger',
+                  onTap: () {},
+                ),
+                const RwDefenderSlot(
+                  state: RwDefenderSlotState.locked,
+                  name: 'Titan Frame',
+                ),
+                RwDefenderSlot(
+                  state: RwDefenderSlotState.purchaseable,
+                  unitId: 'pulse_guard',
+                  name: 'Pulse Guard',
+                  cost: 25,
+                  onTap: () {},
+                ),
+                const RwDefenderSlot(
+                  state: RwDefenderSlotState.unaffordable,
+                  unitId: 'titan_frame',
+                  name: 'Titan Frame',
+                  cost: 90,
+                  onTap: null,
+                ),
+                RwDefenderSlot(
+                  state: RwDefenderSlotState.occupied,
+                  unitId: 'arc_ranger',
+                  name: 'Arc Ranger',
+                  count: 3,
+                  onTap: () {},
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            _buildGalleryText(
+              'size: 48, unitId olmayan bir asset (fallback yolu):',
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            RwDefenderSlot(
+              state: RwDefenderSlotState.purchaseable,
+              unitId: 'unknown_scout_unit',
+              name: 'Void Scout',
+              cost: 60,
+              size: 48.0,
+              onTap: () {},
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // --- SECTION: ABILITY FRAME ---
+            const RwSectionHeader(
+              title: 'Ability Frame (RwAbilityFrame)',
+              subtitle: '4 durum (DESIGN §12), cooldown %30/%75 ve toggle ile pulse',
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Wrap(
+              spacing: AppSpacing.md,
+              runSpacing: AppSpacing.md,
+              crossAxisAlignment: WrapCrossAlignment.start,
+              children: <Widget>[
+                RwAbilityFrame(
+                  state: RwAbilityState.ready,
+                  semanticLabel: 'Rift Collapse hazir',
+                  onTap: () {},
+                ),
+                const RwAbilityFrame(
+                  state: RwAbilityState.cooldown,
+                  cooldownProgress: 0.75,
+                  remainingSeconds: 7.9,
+                  semanticLabel: 'Rift Collapse beklemede',
+                ),
+                const RwAbilityFrame(
+                  state: RwAbilityState.cooldown,
+                  cooldownProgress: 0.30,
+                  remainingSeconds: 2.4,
+                  semanticLabel: 'Rift Collapse beklemede',
+                ),
+                RwAbilityFrame(
+                  state: RwAbilityState.targeting,
+                  semanticLabel: 'Rift Collapse hedefleniyor',
+                  onTap: () {},
+                ),
+                const RwAbilityFrame(
+                  state: RwAbilityState.unavailable,
+                  semanticLabel: 'Rift Collapse kullanilamaz',
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            _buildGalleryText('Pulse tetikleyici (cooldown -> ready gecisi):'),
+            const SizedBox(height: AppSpacing.xs),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                RwAbilityFrame(
+                  state: _abilityReady
+                      ? RwAbilityState.ready
+                      : RwAbilityState.cooldown,
+                  cooldownProgress: 0.5,
+                  remainingSeconds: 4.0,
+                  semanticLabel: 'Rift Collapse toggle ornegi',
+                  onTap: () {},
+                ),
+                const SizedBox(width: AppSpacing.md),
+                RwButton(
+                  label: _abilityReady ? 'Set Cooldown' : 'Set Ready',
+                  variant: RwButtonVariant.secondary,
+                  onPressed: _toggleAbilityReady,
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // --- SECTION: TOGGLE ---
+            const RwSectionHeader(
+              title: 'Toggle (RwToggle)',
+              subtitle: 'Etkilesimli ornek, sabit acik/kapali, pasif ve hud malzeme',
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Wrap(
+              spacing: AppSpacing.lg,
+              runSpacing: AppSpacing.lg,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: <Widget>[
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    RwToggle(
+                      value: _toggleInteractive,
+                      onChanged: (value) =>
+                          setState(() => _toggleInteractive = value),
+                      semanticLabel: 'Etkilesimli ornek',
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    _buildGalleryText('interactive', style: AppTypography.smallLabel),
+                  ],
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    RwToggle(
+                      value: true,
+                      onChanged: (_) {},
+                      semanticLabel: 'Sabit acik',
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    _buildGalleryText('acik', style: AppTypography.smallLabel),
+                  ],
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    RwToggle(
+                      value: false,
+                      onChanged: (_) {},
+                      semanticLabel: 'Sabit kapali',
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    _buildGalleryText('kapali', style: AppTypography.smallLabel),
+                  ],
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    const RwToggle(
+                      value: true,
+                      onChanged: null,
+                      semanticLabel: 'Pasif acik',
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    _buildGalleryText('disabled acik', style: AppTypography.smallLabel),
+                  ],
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    const RwToggle(
+                      value: false,
+                      onChanged: null,
+                      semanticLabel: 'Pasif kapali',
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    _buildGalleryText('disabled kapali', style: AppTypography.smallLabel),
+                  ],
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    RwToggle(
+                      value: true,
+                      onChanged: (_) {},
+                      material: AppMaterial.hud,
+                      semanticLabel: 'Hud malzeme',
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    _buildGalleryText('hud', style: AppTypography.smallLabel),
+                  ],
+                ),
+              ],
             ),
             const SizedBox(height: AppSpacing.xl),
 

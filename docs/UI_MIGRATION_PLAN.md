@@ -67,7 +67,11 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | UI-15 | DONE (1 fix: damage trail color restored, raw white) | batch C6 |
 | UI-16 | DONE | batch C6 |
 | UI-17 | DONE | batch C6 |
-| UI-18 | READY | — |
+| UI-18 | DONE | batch C7 |
+| UI-19 | DONE | batch C7 |
+| UI-20 | DONE | batch C7 |
+| QA-01 | DONE | batch C7 |
+| BATTLE-01 | READY | — |
 | ART-03 (asset) | APPROVED (intake sheet, 19 icons) | not committed (intake) |
 | ART-02 (asset) | APPROVED (intake sheet 4x2, 7 pieces) | not committed (intake) |
 | ART-10 (asset) | APPROVED after 1 revision (watch on device: arc_overcharge horned dummy, titan_juggernaut enemy-like golem) | intake: ART-10_1.png (4x2, 8), ART-10_2.png (4x2, 5) |
