@@ -53,6 +53,12 @@ flutter:
     - assets/content/levels/
     - assets/images/
     - assets/images/atlas/
+    - assets/images/ui_art/portraits/
+    - assets/images/ui_art/illustrations/
+    - assets/images/ui_art/icons/
+    - assets/images/ui_art/ornaments/
+    - assets/images/ui_art/logo/
+    - assets/images/ui_art/scenes/
     - assets/audio/
 
   # TODO(m5): Fontlar eklendiginde burasi doldurulacak.

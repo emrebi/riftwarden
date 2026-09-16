@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:riftwarden/app/theme/app_colors.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
+import 'package:riftwarden/shared/widgets/rw_art.dart';
 import 'package:riftwarden/shared/widgets/rw_button.dart';
 import 'package:riftwarden/shared/widgets/rw_card.dart';
 import 'package:riftwarden/shared/widgets/rw_currency_chip.dart';
 import 'package:riftwarden/shared/widgets/rw_dialog.dart';
+import 'package:riftwarden/shared/widgets/rw_icon.dart';
 import 'package:riftwarden/shared/widgets/rw_icon_button.dart';
 import 'package:riftwarden/shared/widgets/rw_panel.dart';
 import 'package:riftwarden/shared/widgets/rw_progress_bar.dart';
@@ -133,6 +135,87 @@ class _WidgetGalleryState extends State<WidgetGallery> {
                   onPressed: null,
                 ),
               ],
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // --- SECTION: SEMANTIC ICONS ---
+            const RwSectionHeader(
+              title: 'Icons (RwIcon)',
+              subtitle: '19 semantik id, 24/48 dp ve RTL back ornegi',
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Wrap(
+              spacing: AppSpacing.lg,
+              runSpacing: AppSpacing.lg,
+              children: RwIconId.values
+                  .map(
+                    (id) => Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        RwIcon(id, size: 24.0),
+                        const SizedBox(height: AppSpacing.xs),
+                        RwIcon(id, size: 48.0),
+                        const SizedBox(height: AppSpacing.xs),
+                        _buildGalleryText(
+                          id.name,
+                          style: AppTypography.smallLabel,
+                        ),
+                      ],
+                    ),
+                  )
+                  .toList(),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            _buildGalleryText('RTL back ornegi (yon aynalanir):'),
+            const SizedBox(height: AppSpacing.xs),
+            const Directionality(
+              textDirection: TextDirection.rtl,
+              child: RwIcon(RwIconId.back, size: 32.0),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // --- SECTION: RASTER ART SLOTS ---
+            const RwSectionHeader(
+              title: 'Art Slots (RwArt)',
+              subtitle: 'Dosya henuz yok; her grup fallback gosteriyor',
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Wrap(
+              spacing: AppSpacing.lg,
+              runSpacing: AppSpacing.lg,
+              children: RwArtGroup.values
+                  .map(
+                    (group) => Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        RwArt(
+                          group: group,
+                          id: 'gallery_preview',
+                          width: 64.0,
+                          height: 64.0,
+                          fallback: Container(
+                            width: 64.0,
+                            height: 64.0,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: AppColors.textOnDark),
+                            ),
+                            child: _buildGalleryText(
+                              'fallback',
+                              style: AppTypography.smallLabel,
+                              align: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        _buildGalleryText(
+                          group.name,
+                          style: AppTypography.smallLabel,
+                        ),
+                      ],
+                    ),
+                  )
+                  .toList(),
             ),
             const SizedBox(height: AppSpacing.xl),
 

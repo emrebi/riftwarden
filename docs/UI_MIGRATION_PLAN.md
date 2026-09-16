@@ -11,6 +11,7 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 - Opus reviews the real `git diff`, re-runs validations itself (worker PASS is not trusted), answers APPROVE or FIX REQUIRED.
   APPROVE includes: manual device check if relevant, exact commit paths, commit title, next READY task.
 - User commits; Opus verifies HEAD before starting the next task.
+- Execution mode (user decision 2026-09-17): planner runs worker tasks as Sonnet subagents, reviews and commits batches itself up to Phase 6 (art integration), then stops for the user. User produces art in parallel.
 - Commit cadence (user decision 2026-09-17): every task is still reviewed individually, but commits are BATCHED per group:
   C1 UI-05+UI-07 · C2 UI-08+UI-09 · C3 UI-04 (High, alone) · C4 UI-06 · C5 UI-10..UI-13 · C6 UI-14..UI-17 · C7 UI-18..UI-20+QA-01 ·
   C8 BATTLE-01+02 · C9 BATTLE-03+04 · C10 BATTLE-05 (alone) · C11 BATTLE-06..09 · C12 MENU-01 · C13 SEC-01..04 ·
@@ -54,10 +55,13 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | UI-03 | DONE | `b06259a` |
 | UI-05 | DONE | batch C1 |
 | UI-07 | DONE | batch C1 |
-| UI-08 | READY | — |
+| UI-08 | DONE (1 fix: RTL double mirror) | batch C2 |
+| UI-09 | DONE | batch C2 |
+| UI-04 | READY (run by planner as Sonnet subagent) | — |
 | ART-03 (asset) | APPROVED (intake sheet, 19 icons) | not committed (intake) |
 | ART-02 (asset) | APPROVED (intake sheet 4x2, 7 pieces) | not committed (intake) |
-| ART-10 (asset) | READY | — |
+| ART-10 (asset) | APPROVED after 1 revision (watch on device: arc_overcharge horned dummy, titan_juggernaut enemy-like golem) | intake: ART-10_1.png (4x2, 8), ART-10_2.png (4x2, 5) |
+| ART-09 (asset) | READY | — |
 | all others | PENDING (see §6 order) | — |
 
 The planner updates this table in the commit of each approved task. This file is the single source of truth for task status; the planner's private plan file (P1–P17 era) is archive only.
@@ -289,7 +293,7 @@ Worker contract: CLAUDE.md worker rules; tests only where the task says so; no g
 
 ### PHASE 6 — PRODUCTION ART INTEGRATION (coding side)
 
-**ART-PREP — assetkit for UI art** · Acceptance addition: family sheets (ART-02 4x2, ART-03 5x4, ART-12) are sliced by their DECLARED grid (cols x rows, row-major names, empty cells skipped), not by auto blob detection — detached parts of one subject (ART-02 selection_marker spikes, ART-03 level sparkles) must stay with their subject; then chroma + trim per cell · Files: `tools/assetkit/assetkit.py`, new recipes `portraits.json`, `ui_art.json`, `illustrations.json` (non-atlas per-file WebP output into `assets/images/ui_art/<group>/`), `verify` extended to check RwArt ids referenced by content (unit ids, upgrade icon ids, ability icon) · Deps: UI-09, DOC-02 · Art: ART-INDEPENDENT · Validation: assetkit verify · Worker: Sonnet Medium. (Can run any time after UI-09.)
+**ART-PREP — assetkit for UI art** · Acceptance addition: family sheets (ART-02 4x2, ART-03 5x4, ART-12) and multi-sheet single-subject deliveries on alpha (ART-10: two 4x2 transparent sheets, 13 ids row-major across sheets) are sliced by their DECLARED grid (cols x rows, row-major names, empty cells skipped), not by auto blob detection — detached parts of one subject (ART-02 selection_marker spikes, ART-03 level sparkles) must stay with their subject; then chroma + trim per cell · Files: `tools/assetkit/assetkit.py`, new recipes `portraits.json`, `ui_art.json`, `illustrations.json` (non-atlas per-file WebP output into `assets/images/ui_art/<group>/`), `verify` extended to check RwArt ids referenced by content (unit ids, upgrade icon ids, ability icon) · Deps: UI-09, DOC-02 · Art: ART-INDEPENDENT · Validation: assetkit verify · Worker: Sonnet Medium. (Can run any time after UI-09.)
 
 **ARTINT-01 — UI ornament kit into RwMaterialSurface decoration slots** · ART-BLOCKED (ART-02) · Files: `rw_material_surface.dart`, recipes · Worker: Sonnet Medium.
 **ARTINT-02 — Icon family into RwIcon** · ART-BLOCKED (ART-03) · Files: `rw_icon.dart` · Worker: Sonnet Medium.
