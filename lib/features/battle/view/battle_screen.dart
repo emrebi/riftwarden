@@ -43,6 +43,7 @@ class BattleScreen extends ConsumerStatefulWidget {
 
 class _BattleScreenState extends ConsumerState<BattleScreen> {
   late final RiftwardenGame _game;
+  late final ContentRegistry _content;
   bool _isPaused = false;
   String? _selectedShopUnitId;
 
@@ -52,10 +53,10 @@ class _BattleScreenState extends ConsumerState<BattleScreen> {
   void initState() {
     super.initState();
     // ContentRegistry tek seferlik okunur; savas dongusunde Riverpod kullanilmaz
-    final content = ref.read(contentRegistryProvider);
+    _content = ref.read(contentRegistryProvider);
     _game = RiftwardenGame(
-      level: content.level(widget.levelId),
-      content: content,
+      level: _content.level(widget.levelId),
+      content: _content,
       seed: DateTime.now().millisecondsSinceEpoch,
       initialUpgrades: const [],
     );
@@ -261,6 +262,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen> {
                   unitId: _selectedShopUnitId!,
                   unitName: _unitName(l10n, _selectedShopUnitId!),
                   abilityShop: _game.signals.abilityShop,
+                  upgrades: _content.upgrades,
                   onBuyAbility: _game.commands.buyAbility,
                   onClose: () => setState(() => _selectedShopUnitId = null),
                 ),

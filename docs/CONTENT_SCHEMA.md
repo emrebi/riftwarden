@@ -76,7 +76,11 @@ Bir sektörün 5 level'ı. Dosya adı sektör numarasını verir (`sector_03.jso
       ],
 
       "boss": null,                          // veya bosses.json'dan bir id
-      "rewards": { "shards": 20, "firstClearCells": 3 }
+      "rewards": { "shards": 20, "firstClearCells": 3 },
+
+      // Toplam oldurme sayisi bunlardan birine ulasinca esik karti teklifi
+      // acilir (bkz. "upgrades.json" ve `UpgradeSystem`). Kesin artan olmali.
+      "upgradeKillThresholds": [18, 55, 95]
     }
   ]
 }
@@ -92,6 +96,8 @@ Bir sektörün 5 level'ı. Dosya adı sektör numarasını verir (`sector_03.jso
 - `boss` dolu ise o level'ın son dalgasından sonra boss gelir. Boss level'ları: 5, 10, 15, … 50.
 - `maxEnemies` gerçekçi tut: aynı anda ekranda olabilecek en yüksek sayı + %20 pay.
   Çok yüksek vermek boşuna bellek, çok düşük vermek spawn'ların sessizce atlanması demek.
+- `upgradeKillThresholds` boş olamaz, kesin artan olmalı; ilk değer toplam düşman sayısının
+  (dalga gruplarındaki `count` toplamı) ~%10-15'i, son değer bu toplamın %75'ini geçmemeli.
 
 ---
 

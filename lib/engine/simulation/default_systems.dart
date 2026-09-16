@@ -20,6 +20,7 @@ void registerDefaultSystems(BattleSimulation sim) {
     CombatSystem(),
     AbilitySystem(),
     EconomySystem(),
+    UpgradeSystem(),
     EffectSystem(),
     CompactionSystem(),
   ]);

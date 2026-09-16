@@ -55,6 +55,95 @@ class AppLocalizationsTr extends AppLocalizations {
   String get upgradeReroll => 'Yenile';
 
   @override
+  String upgradeRerollsLeft(int count) {
+    return '$count kaldı';
+  }
+
+  @override
+  String get rarityCommon => 'Sıradan';
+
+  @override
+  String get rarityRare => 'Nadir';
+
+  @override
+  String get rarityEpic => 'Epik';
+
+  @override
+  String get rarityLegendary => 'Efsanevi';
+
+  @override
+  String get upgradeArcChain1 => 'Zincir Şimşek';
+
+  @override
+  String get upgradeArcChain1Desc => '+1 zincir hedefi';
+
+  @override
+  String get upgradeArcChain2 => 'Zincir Aşırı Yük';
+
+  @override
+  String get upgradeArcChain2Desc => '+1 zincir hedefi';
+
+  @override
+  String get upgradePulsePierce1 => 'Delici Mermiler';
+
+  @override
+  String get upgradePulsePierce1Desc => '+2 hasar. Mermiler 1 düşmanı deler';
+
+  @override
+  String get upgradePulsePierce2 => 'Derin Delme';
+
+  @override
+  String get upgradePulsePierce2Desc => '+1 delme sayısı';
+
+  @override
+  String get upgradeArcCrit1 => 'Kritik Odak';
+
+  @override
+  String get upgradeArcCrit1Desc => '+%10 kritik şans';
+
+  @override
+  String get upgradeArcCrit2 => 'Kritik Yükseliş';
+
+  @override
+  String get upgradeArcCrit2Desc => '+%50 kritik hasar';
+
+  @override
+  String get upgradeTitanExplosion1 => 'Patlama Yarıçapı';
+
+  @override
+  String get upgradeTitanExplosion1Desc => 'Patlama yarıçapı artar';
+
+  @override
+  String get upgradeTitanExplosion2 => 'Aşırı Basınç';
+
+  @override
+  String get upgradeTitanExplosion2Desc => '+%15 hasar';
+
+  @override
+  String get upgradePulseSwarm1 => 'Hızlı Mermiler';
+
+  @override
+  String get upgradePulseSwarm1Desc => '+1 hasar';
+
+  @override
+  String get upgradePulseSwarm2 => 'Sürü Çılgınlığı';
+
+  @override
+  String get upgradePulseSwarm2Desc => '+%10 atış hızı';
+
+  @override
+  String get upgradeAetherEconomy1 => 'Taşma Deposu';
+
+  @override
+  String get upgradeAetherEconomy1Desc => '+5 Aether geliri';
+
+  @override
+  String get upgradeCoreShield1 => 'Yenilenen Kalkan';
+
+  @override
+  String get upgradeCoreShield1Desc => '+100 azami can';
+
+  @override
   String get resultVictoryTitle => 'YARIK MÜHÜRLENDİ';
 
   @override

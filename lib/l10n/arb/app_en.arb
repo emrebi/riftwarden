@@ -70,6 +70,127 @@
   "@upgradeReroll": {
     "description": "Button that replaces the offered upgrade cards"
   },
+  "upgradeRerollsLeft": "{count} left",
+  "@upgradeRerollsLeft": {
+    "description": "Remaining free reroll count shown under the reroll button",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rarityCommon": "Common",
+  "@rarityCommon": {
+    "description": "Upgrade rarity label: common"
+  },
+  "rarityRare": "Rare",
+  "@rarityRare": {
+    "description": "Upgrade rarity label: rare"
+  },
+  "rarityEpic": "Epic",
+  "@rarityEpic": {
+    "description": "Upgrade rarity label: epic"
+  },
+  "rarityLegendary": "Legendary",
+  "@rarityLegendary": {
+    "description": "Upgrade rarity label: legendary"
+  },
+  "upgradeArcChain1": "Chain Lightning",
+  "@upgradeArcChain1": {
+    "description": "Card upgrade: Chain Lightning"
+  },
+  "upgradeArcChain1Desc": "+1 chain target",
+  "@upgradeArcChain1Desc": {
+    "description": "Card upgrade description: Chain Lightning"
+  },
+  "upgradeArcChain2": "Chain Overload",
+  "@upgradeArcChain2": {
+    "description": "Card upgrade: Chain Overload"
+  },
+  "upgradeArcChain2Desc": "+1 chain target",
+  "@upgradeArcChain2Desc": {
+    "description": "Card upgrade description: Chain Overload"
+  },
+  "upgradePulsePierce1": "Piercing Rounds",
+  "@upgradePulsePierce1": {
+    "description": "Card upgrade: Piercing Rounds"
+  },
+  "upgradePulsePierce1Desc": "+2 damage. Shots pierce 1 enemy",
+  "@upgradePulsePierce1Desc": {
+    "description": "Card upgrade description: Piercing Rounds"
+  },
+  "upgradePulsePierce2": "Deep Pierce",
+  "@upgradePulsePierce2": {
+    "description": "Card upgrade: Deep Pierce"
+  },
+  "upgradePulsePierce2Desc": "+1 pierce count",
+  "@upgradePulsePierce2Desc": {
+    "description": "Card upgrade description: Deep Pierce"
+  },
+  "upgradeArcCrit1": "Critical Focus",
+  "@upgradeArcCrit1": {
+    "description": "Card upgrade: Critical Focus"
+  },
+  "upgradeArcCrit1Desc": "+10% critical chance",
+  "@upgradeArcCrit1Desc": {
+    "description": "Card upgrade description: Critical Focus"
+  },
+  "upgradeArcCrit2": "Critical Surge",
+  "@upgradeArcCrit2": {
+    "description": "Card upgrade: Critical Surge"
+  },
+  "upgradeArcCrit2Desc": "+50% critical damage",
+  "@upgradeArcCrit2Desc": {
+    "description": "Card upgrade description: Critical Surge"
+  },
+  "upgradeTitanExplosion1": "Blast Radius",
+  "@upgradeTitanExplosion1": {
+    "description": "Card upgrade: Blast Radius"
+  },
+  "upgradeTitanExplosion1Desc": "Larger explosion radius",
+  "@upgradeTitanExplosion1Desc": {
+    "description": "Card upgrade description: Blast Radius"
+  },
+  "upgradeTitanExplosion2": "Overpressure",
+  "@upgradeTitanExplosion2": {
+    "description": "Card upgrade: Overpressure"
+  },
+  "upgradeTitanExplosion2Desc": "+15% damage",
+  "@upgradeTitanExplosion2Desc": {
+    "description": "Card upgrade description: Overpressure"
+  },
+  "upgradePulseSwarm1": "Rapid Rounds",
+  "@upgradePulseSwarm1": {
+    "description": "Card upgrade: Rapid Rounds"
+  },
+  "upgradePulseSwarm1Desc": "+1 damage",
+  "@upgradePulseSwarm1Desc": {
+    "description": "Card upgrade description: Rapid Rounds"
+  },
+  "upgradePulseSwarm2": "Swarm Frenzy",
+  "@upgradePulseSwarm2": {
+    "description": "Card upgrade: Swarm Frenzy"
+  },
+  "upgradePulseSwarm2Desc": "+10% attack speed",
+  "@upgradePulseSwarm2Desc": {
+    "description": "Card upgrade description: Swarm Frenzy"
+  },
+  "upgradeAetherEconomy1": "Overflow Storage",
+  "@upgradeAetherEconomy1": {
+    "description": "Card upgrade: Overflow Storage"
+  },
+  "upgradeAetherEconomy1Desc": "+5 Aether income",
+  "@upgradeAetherEconomy1Desc": {
+    "description": "Card upgrade description: Overflow Storage"
+  },
+  "upgradeCoreShield1": "Regenerating Shield",
+  "@upgradeCoreShield1": {
+    "description": "Card upgrade: Regenerating Shield"
+  },
+  "upgradeCoreShield1Desc": "+100 max HP",
+  "@upgradeCoreShield1Desc": {
+    "description": "Card upgrade description: Regenerating Shield"
+  },
   "resultVictoryTitle": "RIFT SEALED",
   "@resultVictoryTitle": {
     "description": "Shown when the player clears a level"

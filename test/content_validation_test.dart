@@ -258,6 +258,50 @@ void main() {
     }
   });
 
+  test(
+    'upgradeKillThresholds bos degil, pozitif, kesin artan, son esik '
+    'toplam dusmanin %75\'ini gecmez',
+    () {
+      for (final level in registry.levels.values) {
+        final thresholds = level.upgradeKillThresholds;
+        expect(
+          thresholds, isNotEmpty,
+          reason: 'level ${level.levelId}: upgradeKillThresholds bos olamaz',
+        );
+
+        var totalEnemies = 0;
+        for (final wave in level.waves) {
+          for (final group in wave.groups) {
+            totalEnemies += group.count;
+          }
+        }
+
+        var previous = 0;
+        for (final threshold in thresholds) {
+          expect(
+            threshold > 0,
+            isTrue,
+            reason: 'level ${level.levelId}: esik pozitif olmali ($threshold)',
+          );
+          expect(
+            threshold > previous,
+            isTrue,
+            reason: 'level ${level.levelId}: esikler kesin artan olmali '
+                '($thresholds)',
+          );
+          previous = threshold;
+        }
+
+        expect(
+          thresholds.last <= totalEnemies * 0.75,
+          isTrue,
+          reason: 'level ${level.levelId}: son esik (${thresholds.last}) '
+              'toplam dusmanin ($totalEnemies) %75\'ini gecmemeli',
+        );
+      }
+    },
+  );
+
   test('level.modifiers referanslari modifiers.json icinde cozulur', () {
     for (final level in registry.levels.values) {
       for (final modifierId in level.modifiers) {

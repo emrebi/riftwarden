@@ -29,6 +29,7 @@
         { "id": 6, "delay": 5.0, "groups": [
             { "enemy": "drifter", "count": 20, "interval": 0.45 } ] }
       ],
+      "upgradeKillThresholds": [12, 35, 60],
       "boss": null,
       "rewards": { "shards": 10, "firstClearCells": 1 }
     },
@@ -64,6 +65,7 @@
             { "enemy": "drifter", "count": 20, "interval": 0.4 },
             { "enemy": "skitter", "count": 12, "interval": 0.3, "delay": 1.5 } ] }
       ],
+      "upgradeKillThresholds": [15, 45, 80],
       "boss": null,
       "rewards": { "shards": 12, "firstClearCells": 1 }
     },
@@ -99,6 +101,7 @@
             { "enemy": "drifter", "count": 22, "interval": 0.35 },
             { "enemy": "skitter", "count": 16, "interval": 0.25, "delay": 1.5 } ] }
       ],
+      "upgradeKillThresholds": [18, 55, 95],
       "boss": null,
       "rewards": { "shards": 14, "firstClearCells": 2 }
     },
@@ -135,6 +138,7 @@
             { "enemy": "drifter", "count": 22, "interval": 0.3 },
             { "enemy": "bulwark", "count": 6, "interval": 0.9, "delay": 2.0 } ] }
       ],
+      "upgradeKillThresholds": [17, 50, 90],
       "boss": null,
       "rewards": { "shards": 16, "firstClearCells": 2 }
     },
@@ -174,6 +178,7 @@
             { "enemy": "skitter", "count": 20, "interval": 0.18, "delay": 1.5 },
             { "enemy": "drifter", "count": 24, "interval": 0.28, "delay": 2.5 } ] }
       ],
+      "upgradeKillThresholds": [25, 80, 140],
       "boss": null,
       "rewards": { "shards": 20, "firstClearCells": 3 }
     }

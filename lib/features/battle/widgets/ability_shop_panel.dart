@@ -4,7 +4,9 @@ import 'package:riftwarden/app/theme/app_colors.dart';
 import 'package:riftwarden/app/theme/app_decorations.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
+import 'package:riftwarden/content/schema/schema.dart';
 import 'package:riftwarden/engine/bridge/battle_signals.dart';
+import 'package:riftwarden/features/battle/viewmodel/upgrade_text.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
 import 'package:riftwarden/shared/widgets/rw_icon_button.dart';
 
@@ -18,6 +20,7 @@ class AbilityShopPanel extends StatelessWidget {
     required this.unitId,
     required this.unitName,
     required this.abilityShop,
+    required this.upgrades,
     required this.onBuyAbility,
     required this.onClose,
     super.key,
@@ -32,33 +35,16 @@ class AbilityShopPanel extends StatelessWidget {
   /// Dukkan teklifleri sinyali.
   final ValueListenable<Map<String, ShopOffer>> abilityShop;
 
+  /// Baslik/aciklama metnini cozmek icin `upgradeId` -> [UpgradeConfig].
+  /// `ContentRegistry.upgrades` savas basinda bir kez okunur (bkz.
+  /// `battle_screen.dart`); bu widget Riverpod'a dogrudan erismez.
+  final Map<String, UpgradeConfig> upgrades;
+
   /// Yetenek satin alma komutunu tetikleyen gericagirim.
   final void Function(String upgradeId) onBuyAbility;
 
   /// Paneli kapatma eylemi.
   final VoidCallback onClose;
-
-  String _upgradeTitle(AppLocalizations l10n, String upgradeId) =>
-      switch (upgradeId) {
-        'pulse_guard_dualshot' => l10n.upgradePulseGuardDualshot,
-        'pulse_guard_overcharge' => l10n.upgradePulseGuardOvercharge,
-        'arc_ranger_overcharge' => l10n.upgradeArcRangerOvercharge,
-        'arc_ranger_focus' => l10n.upgradeArcRangerFocus,
-        'titan_frame_shockwave' => l10n.upgradeTitanFrameShockwave,
-        'titan_frame_juggernaut' => l10n.upgradeTitanFrameJuggernaut,
-        _ => upgradeId,
-      };
-
-  String _upgradeDesc(AppLocalizations l10n, String upgradeId) =>
-      switch (upgradeId) {
-        'pulse_guard_dualshot' => l10n.upgradePulseGuardDualshotDesc,
-        'pulse_guard_overcharge' => l10n.upgradePulseGuardOverchargeDesc,
-        'arc_ranger_overcharge' => l10n.upgradeArcRangerOverchargeDesc,
-        'arc_ranger_focus' => l10n.upgradeArcRangerFocusDesc,
-        'titan_frame_shockwave' => l10n.upgradeTitanFrameShockwaveDesc,
-        'titan_frame_juggernaut' => l10n.upgradeTitanFrameJuggernautDesc,
-        _ => '',
-      };
 
   @override
   Widget build(BuildContext context) {
@@ -133,11 +119,14 @@ class AbilityShopPanel extends StatelessWidget {
                     Expanded(
                       child: _OfferCard(
                         offer: unitOffers[i],
-                        title: _upgradeTitle(l10n, unitOffers[i].upgradeId),
-                        description: _upgradeDesc(
-                          l10n,
-                          unitOffers[i].upgradeId,
-                        ),
+                        title: switch (upgrades[unitOffers[i].upgradeId]) {
+                          final UpgradeConfig u => upgradeTitle(l10n, u),
+                          null => unitOffers[i].upgradeId,
+                        },
+                        description: switch (upgrades[unitOffers[i].upgradeId]) {
+                          final UpgradeConfig u => upgradeDescription(l10n, u),
+                          null => '',
+                        },
                         onBuy: onBuyAbility,
                       ),
                     ),

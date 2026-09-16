@@ -14,6 +14,7 @@ Aşağıdaki tablodan işini bul, **sadece** listelenen dosyaları aç.
 | **Yeni düşman ekle** | `assets/content/enemies.json`, (gerekirse) `lib/engine/simulation/behaviors/<ad>_behavior.dart`, `lib/content/registry/content_registry.dart` | `/rw-add-enemy` |
 | **Yeni savunma birliği ekle** | `assets/content/units.json`, (gerekirse) behavior, registry | `/rw-add-unit` |
 | **Yeni upgrade ekle** | `assets/content/upgrades.json`, (yeni davranış ise) `lib/domain/rules/behavior_flags.dart` | `/rw-add-upgrade` |
+| **Eşik kartı ekle / eşik değiştir** | `assets/content/upgrades.json`, ilgili `sector_NN.json` (`upgradeKillThresholds`), `lib/engine/simulation/systems/upgrade_system.dart`, `lib/domain/rules/upgrade_pool.dart`, `lib/features/battle/viewmodel/upgrade_text.dart` | `/rw-add-upgrade` |
 | **Yeni boss ekle** | `assets/content/bosses.json`, `lib/engine/simulation/systems/boss_system.dart` | `/rw-add-boss` |
 | **Yeni yetenek ekle** | `assets/content/abilities.json`, `lib/engine/simulation/systems/ability_system.dart` | — |
 | **Kale/harita objesi ekle veya değiştir** | `assets/content/castles.json`, `assets/content/environments.json` | `/rw-add-level` |

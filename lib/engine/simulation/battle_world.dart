@@ -18,6 +18,13 @@ import 'package:riftwarden/engine/simulation/spatial/spatial_hash_grid.dart';
 /// CAKISMAMASINI garanti eder.
 const int _kScreenShakeSeedOffset = 104729;
 
+/// Esik karti RNG'sinin sabit tohum kaymasi. [_kScreenShakeSeedOffset] ile
+/// AYNI gerekce: kart teklifi rastgeleligi (`UpgradePool.roll`) savas
+/// mantigi RNG akisindan (`BattleWorld.rng`) YALITILIR, boylece ayni tohumla
+/// oynanan iki savasta kart teklifleri dusman/spawn rastgeleligini
+/// KAYDIRMAZ. Ikinci farkli bir asal sayi secildi ki iki kayma CAKISMASIN.
+const int _kCardSeedOffset = 15485863;
+
 /// `terrainType` degerleri. Int kullanilir cunku Int32List allocation'siz
 /// (savas ici) taranacak (bkz. `TerrainSystem`); enum yerine int, tipli
 /// listeyle dogrudan uyumlu olsun diye secildi.
@@ -68,6 +75,9 @@ class BattleWorld {
     required this.terrainRadius,
     required this.terrainValue,
     required this.terrainType,
+    required this.upgradePool,
+    required this.cardRng,
+    required this.rerollsLeft,
   });
 
   /// Level'i, icerigi ve baslangic upgrade'lerini kullanarak yeni bir
@@ -137,6 +147,18 @@ class BattleWorld {
       }
     }
 
+    // Esik karti havuzu: TUM upgrade'lerle kurulur (source==shop olanlar
+    // `UpgradePool._eligibleCandidates` icinde zaten elenir, bkz. o dosya
+    // basi yorumu). Baslangic upgrade'lerinden `card` kaynakli olanlar
+    // `pool.take` ile ISLENIR ki maxStacks/requires ve family synergy
+    // agirligi ilk teklifden itibaren dogru hesaplansin.
+    final upgradePool = UpgradePool(content.upgrades.values.toList());
+    for (final upgrade in initialUpgrades) {
+      if (upgrade.source == UpgradeSource.card) {
+        upgradePool.take(upgrade);
+      }
+    }
+
     return BattleWorld._(
       enemies: EntityPool<EnemyEntity>(level.maxEnemies, EnemyEntity.new),
       units: EntityPool<UnitEntity>(kUnitPoolCapacity, UnitEntity.new),
@@ -189,6 +211,9 @@ class BattleWorld {
       terrainRadius: terrainRadius,
       terrainValue: terrainValue,
       terrainType: terrainType,
+      upgradePool: upgradePool,
+      cardRng: RngSource(seed + _kCardSeedOffset),
+      rerollsLeft: kFreeRerollsPerBattle,
     );
   }
 
@@ -277,6 +302,41 @@ class BattleWorld {
   final Int32List terrainType;
 
   int aether;
+
+  // --- Esik kartlari (bkz. `UpgradeSystem`) ---
+
+  /// Bu adimin `killsThisStep`'i eklendikce buyuyen, savas boyu toplam
+  /// oldurme sayaci. [UpgradeSystem] her adim `killsThisStep`i buraya
+  /// ekler; sayac hicbir zaman sifirlanmaz (savas basina tektir).
+  int totalKills = 0;
+
+  /// Esik karti teklif havuzu. `content.upgrades` ile kurulur (`shop`
+  /// kaynaklilar havuz icinde otomatik elenir, bkz. `UpgradePool` dosya
+  /// basi yorumu); [UpgradeSystem] ve [chooseUpgrade]/reroll akisi
+  /// tarafindan kullanilir.
+  final UpgradePool upgradePool;
+
+  /// Kart teklifi rastgeleligi icin AYRI RNG akisi (bkz. dosya basi
+  /// `_kCardSeedOffset` yorumu) — [rng] ile KARISTIRILMAZ.
+  final RngSource cardRng;
+
+  /// `level.upgradeKillThresholds` icinde bir sonraki islenecek esigin
+  /// dizini. [UpgradeSystem] gectikce artirir.
+  int nextThresholdIndex = 0;
+
+  /// Acilmayi bekleyen teklif sayisi (esik ust uste gecilirse SIRAYA
+  /// girer, bkz. brief). [UpgradeSystem] teklif her actiginda/atladiginda
+  /// azaltir.
+  int pendingOfferCount = 0;
+
+  /// Su an ekranda gosterilen teklifin upgrade id'leri. `null` = teklif
+  /// kapali. Doluysa savas duraklamis/yavaslamis durumdadir (bkz.
+  /// `BattleSimulation.beginSlowMotionPause`).
+  List<String>? activeOfferIds;
+
+  /// Bu savasta kalan ucretsiz reroll hakki (`kFreeRerollsPerBattle` ile
+  /// baslar, bkz. `BattleController.rerollUpgrades`).
+  int rerollsLeft;
 
   final RngSource rng;
 

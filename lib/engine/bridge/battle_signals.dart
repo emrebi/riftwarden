@@ -131,6 +131,35 @@ class ShopOffer {
   int get hashCode => Object.hash(upgradeId, unitId, cost, canBuy, owned);
 }
 
+/// Acik bir esik karti teklifinin HUD'a yansiyan durumu.
+@immutable
+class UpgradeOffer {
+  const UpgradeOffer({required this.upgradeIds, required this.rerollsLeft});
+
+  /// Teklif edilen upgrade id'leri (1-3 arasi; havuz bosaldiysa daha az).
+  final List<String> upgradeIds;
+
+  /// Bu savasta kalan ucretsiz reroll hakki.
+  final int rerollsLeft;
+
+  @override
+  bool operator ==(Object other) =>
+      other is UpgradeOffer &&
+      other.rerollsLeft == rerollsLeft &&
+      _listEquals(other.upgradeIds, upgradeIds);
+
+  @override
+  int get hashCode => Object.hash(Object.hashAll(upgradeIds), rerollsLeft);
+
+  static bool _listEquals(List<String> a, List<String> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+}
+
 /// Savasin nasil bittigi.
 enum BattleOutcome { running, victory, defeat }
 
@@ -226,8 +255,8 @@ class BattleSignals {
   /// Doluysa oyun pause'dadir ve upgrade karti gosterilir.
   /// Oyuncu sectiginde UI `BattleCommands.chooseUpgrade` cagirir ve
   /// motor bunu tekrar null yapar.
-  final ValueNotifier<List<String>?> upgradeOffer =
-      ValueNotifier<List<String>?>(null);
+  final ValueNotifier<UpgradeOffer?> upgradeOffer =
+      ValueNotifier<UpgradeOffer?>(null);
 
   /// Boss girisi tetiklendiginde boss id'si; bittiginde null.
   final ValueNotifier<String?> bossIntro = ValueNotifier<String?>(null);

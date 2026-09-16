@@ -10,4 +10,5 @@ export 'spatial_index_system.dart';
 export 'spawn_system.dart';
 export 'targeting_system.dart';
 export 'terrain_system.dart';
+export 'upgrade_system.dart';
 export 'wave_system.dart';

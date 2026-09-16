@@ -83,3 +83,9 @@ const int kEffectPoolCapacity = 256;
 /// rampa sonundaki zaman olcegi. Rampa bitince oyun tam pause olur.
 const double kUpgradeSlowMoRamp = 0.15;
 const double kUpgradeSlowMoScale = 0.15;
+
+/// Savas basina ucretsiz esik karti reroll hakki.
+///
+/// Odullu reklamla artacak (adim 18, bkz. `UpgradeSystem`/`BattleController`
+/// yorumlari); simdilik sabit 1.
+const int kFreeRerollsPerBattle = 1;

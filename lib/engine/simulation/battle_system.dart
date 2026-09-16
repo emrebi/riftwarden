@@ -66,6 +66,12 @@ enum SystemPhase {
   /// Combat'tan SONRA: bu adimda olenlerin odulu ayni adimda islensin.
   economy,
 
+  /// Oldurme esigi teklif tetikleyicisi (esik karti secimi/reroll).
+  /// Economy'den SONRA: o adimda islenen `killsThisStep` ayni adimda esige
+  /// sayilsin. Effects'ten ONCE: teklif acilirken baslayan slow-mo,
+  /// gorsel/haptic sistemlerinden once tetiklenmis olmali.
+  upgrade,
+
   /// Parcacik, hasar sayisi, ekran sarsintisi, haptic tetikleri.
   /// Gorsel; simulasyon sonucunu DEGISTIRMEMELI.
   effects,

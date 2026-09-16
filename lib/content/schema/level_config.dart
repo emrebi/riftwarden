@@ -251,6 +251,7 @@ class LevelConfig {
     required this.terrain,
     required this.modifiers,
     required this.waves,
+    required this.upgradeKillThresholds,
     required this.boss,
     required this.rewards,
   });
@@ -278,6 +279,7 @@ class LevelConfig {
     final terrainJson = (json['terrain'] as List<Object?>?) ?? const <Object?>[];
     final wavesJson = require('waves') as List<Object?>;
     final rewardsJson = require('rewards') as Map<String, Object?>;
+    final thresholdsJson = require('upgradeKillThresholds') as List<Object?>;
 
     return LevelConfig(
       levelId: levelId,
@@ -297,6 +299,8 @@ class LevelConfig {
       waves: wavesJson
           .map((e) => WaveConfig.fromJson(levelIdStr, e! as Map<String, Object?>))
           .toList(growable: false),
+      upgradeKillThresholds:
+          thresholdsJson.map((e) => (e! as num).toInt()).toList(growable: false),
       // boss adim 15'e kadar hep null; sema hazir tutulur.
       boss: json['boss'] as String?,
       rewards: LevelRewards.fromJson(levelIdStr, rewardsJson),
@@ -315,6 +319,13 @@ class LevelConfig {
   final List<TerrainZoneConfig> terrain;
   final List<String> modifiers;
   final List<WaveConfig> waves;
+
+  /// Toplam oldurme sayisi bu degerlerden birine ulasinca esik karti teklifi
+  /// acilir (bkz. `UpgradeSystem`). Kesin artan olmali; son deger toplam
+  /// dusman sayisinin (dalga gruplari `count` toplami) %75'ini gecmemeli
+  /// (bkz. `docs/CONTENT_SCHEMA.md` > "levels" kurallari).
+  final List<int> upgradeKillThresholds;
+
   final String? boss;
   final LevelRewards rewards;
 

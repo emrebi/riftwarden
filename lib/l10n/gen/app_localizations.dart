@@ -202,6 +202,180 @@ abstract class AppLocalizations {
   /// **'Reroll'**
   String get upgradeReroll;
 
+  /// Remaining free reroll count shown under the reroll button
+  ///
+  /// In en, this message translates to:
+  /// **'{count} left'**
+  String upgradeRerollsLeft(int count);
+
+  /// Upgrade rarity label: common
+  ///
+  /// In en, this message translates to:
+  /// **'Common'**
+  String get rarityCommon;
+
+  /// Upgrade rarity label: rare
+  ///
+  /// In en, this message translates to:
+  /// **'Rare'**
+  String get rarityRare;
+
+  /// Upgrade rarity label: epic
+  ///
+  /// In en, this message translates to:
+  /// **'Epic'**
+  String get rarityEpic;
+
+  /// Upgrade rarity label: legendary
+  ///
+  /// In en, this message translates to:
+  /// **'Legendary'**
+  String get rarityLegendary;
+
+  /// Card upgrade: Chain Lightning
+  ///
+  /// In en, this message translates to:
+  /// **'Chain Lightning'**
+  String get upgradeArcChain1;
+
+  /// Card upgrade description: Chain Lightning
+  ///
+  /// In en, this message translates to:
+  /// **'+1 chain target'**
+  String get upgradeArcChain1Desc;
+
+  /// Card upgrade: Chain Overload
+  ///
+  /// In en, this message translates to:
+  /// **'Chain Overload'**
+  String get upgradeArcChain2;
+
+  /// Card upgrade description: Chain Overload
+  ///
+  /// In en, this message translates to:
+  /// **'+1 chain target'**
+  String get upgradeArcChain2Desc;
+
+  /// Card upgrade: Piercing Rounds
+  ///
+  /// In en, this message translates to:
+  /// **'Piercing Rounds'**
+  String get upgradePulsePierce1;
+
+  /// Card upgrade description: Piercing Rounds
+  ///
+  /// In en, this message translates to:
+  /// **'+2 damage. Shots pierce 1 enemy'**
+  String get upgradePulsePierce1Desc;
+
+  /// Card upgrade: Deep Pierce
+  ///
+  /// In en, this message translates to:
+  /// **'Deep Pierce'**
+  String get upgradePulsePierce2;
+
+  /// Card upgrade description: Deep Pierce
+  ///
+  /// In en, this message translates to:
+  /// **'+1 pierce count'**
+  String get upgradePulsePierce2Desc;
+
+  /// Card upgrade: Critical Focus
+  ///
+  /// In en, this message translates to:
+  /// **'Critical Focus'**
+  String get upgradeArcCrit1;
+
+  /// Card upgrade description: Critical Focus
+  ///
+  /// In en, this message translates to:
+  /// **'+10% critical chance'**
+  String get upgradeArcCrit1Desc;
+
+  /// Card upgrade: Critical Surge
+  ///
+  /// In en, this message translates to:
+  /// **'Critical Surge'**
+  String get upgradeArcCrit2;
+
+  /// Card upgrade description: Critical Surge
+  ///
+  /// In en, this message translates to:
+  /// **'+50% critical damage'**
+  String get upgradeArcCrit2Desc;
+
+  /// Card upgrade: Blast Radius
+  ///
+  /// In en, this message translates to:
+  /// **'Blast Radius'**
+  String get upgradeTitanExplosion1;
+
+  /// Card upgrade description: Blast Radius
+  ///
+  /// In en, this message translates to:
+  /// **'Larger explosion radius'**
+  String get upgradeTitanExplosion1Desc;
+
+  /// Card upgrade: Overpressure
+  ///
+  /// In en, this message translates to:
+  /// **'Overpressure'**
+  String get upgradeTitanExplosion2;
+
+  /// Card upgrade description: Overpressure
+  ///
+  /// In en, this message translates to:
+  /// **'+15% damage'**
+  String get upgradeTitanExplosion2Desc;
+
+  /// Card upgrade: Rapid Rounds
+  ///
+  /// In en, this message translates to:
+  /// **'Rapid Rounds'**
+  String get upgradePulseSwarm1;
+
+  /// Card upgrade description: Rapid Rounds
+  ///
+  /// In en, this message translates to:
+  /// **'+1 damage'**
+  String get upgradePulseSwarm1Desc;
+
+  /// Card upgrade: Swarm Frenzy
+  ///
+  /// In en, this message translates to:
+  /// **'Swarm Frenzy'**
+  String get upgradePulseSwarm2;
+
+  /// Card upgrade description: Swarm Frenzy
+  ///
+  /// In en, this message translates to:
+  /// **'+10% attack speed'**
+  String get upgradePulseSwarm2Desc;
+
+  /// Card upgrade: Overflow Storage
+  ///
+  /// In en, this message translates to:
+  /// **'Overflow Storage'**
+  String get upgradeAetherEconomy1;
+
+  /// Card upgrade description: Overflow Storage
+  ///
+  /// In en, this message translates to:
+  /// **'+5 Aether income'**
+  String get upgradeAetherEconomy1Desc;
+
+  /// Card upgrade: Regenerating Shield
+  ///
+  /// In en, this message translates to:
+  /// **'Regenerating Shield'**
+  String get upgradeCoreShield1;
+
+  /// Card upgrade description: Regenerating Shield
+  ///
+  /// In en, this message translates to:
+  /// **'+100 max HP'**
+  String get upgradeCoreShield1Desc;
+
   /// Shown when the player clears a level
   ///
   /// In en, this message translates to:
