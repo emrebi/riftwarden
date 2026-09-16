@@ -26,6 +26,11 @@ Aşağıdaki tablodan işini bul, **sadece** listelenen dosyaları aç.
 | **UI geçiş görevi / ilerleme** | `docs/UI_MIGRATION_PLAN.md` (§0 ilerleme, §4 görev tanımı) | — |
 | **Ortak UI bileşeni kullan/değiştir** | `lib/shared/widgets/*` (yeni bileşen eklenince buraya satır eklenir) | — |
 | **Malzeme yuzeyi (parchment/wood/stone/hud) kullan** | `lib/shared/widgets/rw_material_surface.dart` | — |
+| **Buton kullan/değiştir (RwButton)** | `lib/shared/widgets/rw_button.dart` (`RwMaterialSurface` uzerine kurulu) | — |
+| **Ikon buton kullan/değiştir (RwIconButton)** | `lib/shared/widgets/rw_icon_button.dart` (`RwMaterialSurface(shape: circle)` uzerine kurulu) | — |
+| **Panel kullan/değiştir (RwPanel)** | `lib/shared/widgets/rw_panel.dart` (`RwMaterialSurface` uzerine kurulu; `RwPanelVariant`: standard/large/modal/smallInfo) | — |
+| **Modal iletisim penceresi kullan/değiştir (RwDialog)** | `lib/shared/widgets/rw_dialog.dart` (`RwPanel(variant: modal)` + `RwVeil` uzerine kurulu) | — |
+| **Sahne ustu karartma/veil kullan (RwVeil)** | `lib/shared/widgets/rw_veil.dart` (upgrade overlay BATTLE-01, pause BATTLE-08 kullanir) | — |
 | **Ikon kullan/ekle (RwIcon)** | `lib/shared/widgets/rw_icon.dart`, `assets/images/ui_art/icons/` (gelecek, ARTINT-02) | — |
 | **UI gorseli goster (RwArt)** | `lib/shared/widgets/rw_art.dart`, `assets/images/ui_art/<grup>/<id>.webp` | — |
 | **Sayı/para/süre biçimlendir (locale)** | `lib/shared/format/rw_number_format.dart` | — |

@@ -3,6 +3,7 @@ import 'package:riftwarden/app/theme/app_colors.dart';
 import 'package:riftwarden/app/theme/app_decorations.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
+import 'package:riftwarden/shared/widgets/rw_material_surface.dart';
 
 /// Buton gorsel turleri.
 enum RwButtonVariant {
@@ -14,8 +15,10 @@ enum RwButtonVariant {
 
 /// Standart oyun butonu.
 ///
-/// Dokunma hedefi en az [AppSpacing.minTouchTarget] (48 dp) yuksekligindedir.
-/// Basildiginda kuculme animasyonu uygular; veri veya saglayici baglantisi yoktur.
+/// Gorsel govde `RwMaterialSurface` uzerine kurulur (DESIGN.md §7): dolgu +
+/// kalin dis hat + derinlik durumu. Dokunma hedefi en az
+/// [AppSpacing.minTouchTarget] (48 dp) yuksekligindedir. Basildiginda yuzey
+/// `pressed` derinligine gecer; veri veya saglayici baglantisi yoktur.
 class RwButton extends StatefulWidget {
   const RwButton({
     required this.label,
@@ -25,6 +28,7 @@ class RwButton extends StatefulWidget {
     this.icon,
     this.isExpanded = false,
     this.height = AppSpacing.minTouchTarget,
+    this.isSelected = false,
   });
 
   final String label;
@@ -34,100 +38,73 @@ class RwButton extends StatefulWidget {
   final bool isExpanded;
   final double height;
 
+  /// Secili durum (DESIGN §7 "selected/emphasized"): `RwMaterialSurface`e
+  /// amber kenar + marker olarak iletilir.
+  final bool isSelected;
+
   @override
   State<RwButton> createState() => _RwButtonState();
 }
 
 class _RwButtonState extends State<RwButton> {
+  /// Ikon glif olcusu. `AppSpacing`'te ayri bir ikon token'i yok; tek
+  /// kullanim yeri burasi oldugundan tek noktada tanimlanir.
+  static const double _iconSize = 20.0;
+
   bool _isPressed = false;
 
   bool get _isEnabled => widget.onPressed != null;
 
-  void _handleTapDown(TapDownDetails details) {
-    if (_isEnabled) {
-      setState(() => _isPressed = true);
-    }
-  }
-
-  void _handleTapUp(TapUpDetails details) {
-    if (_isEnabled) {
-      setState(() => _isPressed = false);
-    }
-  }
-
-  void _handleTapCancel() {
-    if (_isEnabled) {
-      setState(() => _isPressed = false);
+  void _setPressed(bool value) {
+    if (_isEnabled && _isPressed != value) {
+      setState(() => _isPressed = value);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final effectiveHeight = widget.height < AppSpacing.minTouchTarget
+    final double effectiveHeight = widget.height < AppSpacing.minTouchTarget
         ? AppSpacing.minTouchTarget
         : widget.height;
 
-    // Renk ve dekorasyon secimi
+    // Malzeme + renk secimi (DESIGN §7).
+    final AppMaterial material;
+    final Color? faceColor;
     final Color textColor;
-    final Gradient? gradient;
-    final Color? solidColor;
-    final BoxBorder border;
-    final List<BoxShadow>? shadows;
+    final RwSurfaceDepth restingDepth;
 
-    if (!_isEnabled) {
-      textColor = AppColors.textDisabled;
-      gradient = null;
-      solidColor = AppColors.surface;
-      border = Border.all(
-        color: AppColors.surfaceRaised,
-        width: 1.0,
-      );
-      shadows = null;
-    } else {
-      switch (widget.variant) {
-        case RwButtonVariant.primary:
-          textColor = AppColors.voidDeep;
-          gradient = AppGradients.primaryButton;
-          solidColor = null;
-          border = Border.all(
-            color: AppColors.aetherCyan,
-            width: 1.0,
-          );
-          shadows = AppShadows.glow(
-            AppColors.aetherCyan,
-            blurRadius: 12.0,
-          );
-        case RwButtonVariant.secondary:
-          textColor = AppColors.textPrimary;
-          gradient = null;
-          solidColor = AppColors.surfaceRaised;
-          border = AppBorders.subtle;
-          shadows = null;
-        case RwButtonVariant.ghost:
-          textColor = AppColors.aetherCyan;
-          gradient = null;
-          solidColor = Colors.transparent;
-          border = AppBorders.subtle;
-          shadows = null;
-        case RwButtonVariant.danger:
-          textColor = AppColors.textPrimary;
-          gradient = AppGradients.dangerButton;
-          solidColor = null;
-          border = Border.all(
-            color: AppColors.danger,
-            width: 1.0,
-          );
-          shadows = AppShadows.glow(
-            AppColors.danger,
-            blurRadius: 12.0,
-          );
-      }
+    switch (widget.variant) {
+      case RwButtonVariant.primary:
+        // Kehribar CTA tahta: dominant tek eylem.
+        material = AppMaterial.wood;
+        faceColor = AppColors.cta;
+        textColor = AppColors.textOnLight;
+        restingDepth = RwSurfaceDepth.raised;
+      case RwButtonVariant.secondary:
+        // Parchment yuz: navigasyon/destekleyici eylemler.
+        material = AppMaterial.parchment;
+        faceColor = null;
+        textColor = AppMaterials.text(material);
+        restingDepth = RwSurfaceDepth.raised;
+      case RwButtonVariant.ghost:
+        // Sessiz timber: dolgu yok, sadece kenar/derz + metin gorunur.
+        material = AppMaterial.wood;
+        faceColor = Colors.transparent;
+        textColor = AppMaterials.text(material);
+        restingDepth = RwSurfaceDepth.flat;
+      case RwButtonVariant.danger:
+        // Kirmizi kil: sadece yikici onay.
+        material = AppMaterial.stone;
+        faceColor = AppColors.danger;
+        textColor = AppColors.textOnDark;
+        restingDepth = RwSurfaceDepth.raised;
     }
 
-    final TextStyle textStyle = AppTypography.titleMedium.copyWith(
-      color: textColor,
-      fontWeight: FontWeight.w700,
-    );
+    final RwSurfaceDepth depth =
+        _isEnabled && _isPressed ? RwSurfaceDepth.pressed : restingDepth;
+
+    final TextStyle textStyle =
+        AppTypography.button.copyWith(color: textColor);
 
     final Widget content = Row(
       mainAxisSize: widget.isExpanded ? MainAxisSize.max : MainAxisSize.min,
@@ -136,49 +113,58 @@ class _RwButtonState extends State<RwButton> {
         if (widget.icon != null) ...<Widget>[
           Icon(
             widget.icon,
-            size: 20.0,
+            size: _iconSize,
             color: textColor,
           ),
           const SizedBox(width: AppSpacing.sm),
         ],
-        Text(
-          widget.label,
-          style: textStyle,
-          textAlign: TextAlign.center,
+        Flexible(
+          child: Text(
+            widget.label,
+            style: textStyle,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ],
     );
 
-    final Widget button = AnimatedScale(
-      scale: _isPressed ? 0.96 : 1.0,
-      duration: AppDuration.instant,
-      curve: Curves.easeOutCubic,
-      child: Container(
-        height: effectiveHeight,
-        width: widget.isExpanded ? double.infinity : null,
+    final Widget surface = SizedBox(
+      height: effectiveHeight,
+      width: widget.isExpanded ? double.infinity : null,
+      child: RwMaterialSurface(
+        material: material,
+        faceColor: faceColor,
+        depth: depth,
+        isSelected: widget.isSelected,
+        isDisabled: !_isEnabled,
+        // Etiketten deterministik tohum: ayni etiket her build'de ayni
+        // duzensiz siluete sahip olur (RwMaterialSurface sozlesmesi).
+        seed: widget.label.hashCode,
         padding: const EdgeInsetsDirectional.symmetric(
           horizontal: AppSpacing.xl,
-          vertical: AppSpacing.sm,
         ),
-        alignment: AlignmentDirectional.center,
-        decoration: BoxDecoration(
-          color: solidColor,
-          gradient: gradient,
-          borderRadius: AppBorderRadii.md,
-          border: border,
-          boxShadow: shadows,
-        ),
-        child: content,
+        child: Center(child: content),
       ),
     );
 
-    return GestureDetector(
-      onTapDown: _handleTapDown,
-      onTapUp: _handleTapUp,
-      onTapCancel: _handleTapCancel,
-      onTap: widget.onPressed,
-      behavior: HitTestBehavior.opaque,
-      child: button,
+    // Basili/serbest gecisi aninda olur (DESIGN §7 "begins immediately"):
+    // RwMaterialSurface derinligi dogrudan degisir, ekstra capraz gecis
+    // katmani (cift golge/gereksiz rebuild) eklenmez.
+    return Semantics(
+      button: true,
+      enabled: _isEnabled,
+      label: widget.label,
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTapDown: (_) => _setPressed(true),
+        onTapUp: (_) => _setPressed(false),
+        onTapCancel: () => _setPressed(false),
+        onTap: widget.onPressed,
+        behavior: HitTestBehavior.opaque,
+        child: surface,
+      ),
     );
   }
 }

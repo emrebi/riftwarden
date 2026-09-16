@@ -40,6 +40,7 @@ class RwMaterialSurface extends StatelessWidget {
     this.padding,
     this.seed = 0,
     this.decoration,
+    this.faceColor,
     super.key,
   });
 
@@ -76,6 +77,12 @@ class RwMaterialSurface extends StatelessWidget {
   /// ust katman. Bugun bos birakilabilir.
   final Widget? decoration;
 
+  /// Dolgu rengini `AppMaterials.face(material)` yerine gecersiz kilar
+  /// (ornegin RwButton'un kehribar CTA yuzu). `null` = malzemenin varsayilan
+  /// yuzu. `isDisabled` lerp'i de bu deger baz alinarak hesaplanir, boylece
+  /// override'li yuzeyler de pasif durumda tutarli soner.
+  final Color? faceColor;
+
   @override
   Widget build(BuildContext context) {
     final TextDirection direction = Directionality.of(context);
@@ -89,9 +96,10 @@ class RwMaterialSurface extends StatelessWidget {
       RwSurfaceDepth.pressed => AppShadows.pressed,
     };
 
-    final Color faceColor = isDisabled
-        ? Color.lerp(AppMaterials.face(material), AppColors.stoneFace, 0.4)!
-        : AppMaterials.face(material);
+    final Color baseFaceColor = faceColor ?? AppMaterials.face(material);
+    final Color resolvedFaceColor = isDisabled
+        ? Color.lerp(baseFaceColor, AppColors.stoneFace, 0.4)!
+        : baseFaceColor;
 
     final RwMaterialBorder border = RwMaterialBorder(
       material: material,
@@ -122,7 +130,7 @@ class RwMaterialSurface extends StatelessWidget {
 
     return DecoratedBox(
       decoration: ShapeDecoration(
-        color: faceColor,
+        color: resolvedFaceColor,
         shape: border,
         shadows: shadows,
       ),

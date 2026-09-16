@@ -17,6 +17,7 @@ import 'package:riftwarden/shared/widgets/rw_panel.dart';
 import 'package:riftwarden/shared/widgets/rw_progress_bar.dart';
 import 'package:riftwarden/shared/widgets/rw_screen_scaffold.dart';
 import 'package:riftwarden/shared/widgets/rw_section_header.dart';
+import 'package:riftwarden/shared/widgets/rw_veil.dart';
 
 /// Tasarim sistemi bilesenlerini gorsel olarak test etmek icin galeri ekrani.
 class WidgetGallery extends StatefulWidget {
@@ -91,42 +92,40 @@ class _WidgetGalleryState extends State<WidgetGallery> {
             // --- SECTION: BUTTONS ---
             const RwSectionHeader(
               title: 'Buttons (RwButton)',
-              subtitle: '4 varyant, pasif durum ve simgeli kullanim',
+              subtitle: '4 varyant x (normal/pasif/secili), uzun etiket ve simge',
             ),
             const SizedBox(height: AppSpacing.sm),
             Wrap(
               spacing: AppSpacing.md,
               runSpacing: AppSpacing.md,
               children: <Widget>[
+                for (final RwButtonVariant variant in RwButtonVariant.values) ...<Widget>[
+                  RwButton(
+                    label: '${variant.name} Action',
+                    variant: variant,
+                    onPressed: () {},
+                  ),
+                  RwButton(
+                    label: '${variant.name} Disabled',
+                    variant: variant,
+                    onPressed: null,
+                  ),
+                  RwButton(
+                    label: '${variant.name} Selected',
+                    variant: variant,
+                    isSelected: true,
+                    onPressed: () {},
+                  ),
+                ],
                 RwButton(
-                  label: 'Primary Action',
-                  variant: RwButtonVariant.primary,
-                  onPressed: () {},
-                ),
-                RwButton(
-                  label: 'Secondary Action',
-                  variant: RwButtonVariant.secondary,
-                  onPressed: () {},
-                ),
-                RwButton(
-                  label: 'Ghost Action',
-                  variant: RwButtonVariant.ghost,
-                  onPressed: () {},
-                ),
-                RwButton(
-                  label: 'Danger Action',
-                  variant: RwButtonVariant.danger,
-                  onPressed: () {},
-                ),
-                const RwButton(
-                  label: 'Disabled Action',
-                  variant: RwButtonVariant.primary,
-                  onPressed: null,
-                ),
-                RwButton(
-                  label: 'With Icon',
+                  label: 'With Icon Action',
                   icon: Icons.bolt_rounded,
                   variant: RwButtonVariant.primary,
+                  onPressed: () {},
+                ),
+                RwButton(
+                  label: 'A Very Long Button Label That Should Not Wrap Oddly',
+                  variant: RwButtonVariant.secondary,
                   onPressed: () {},
                 ),
               ],
@@ -136,33 +135,55 @@ class _WidgetGalleryState extends State<WidgetGallery> {
             // --- SECTION: ICON BUTTONS ---
             const RwSectionHeader(
               title: 'Icon Buttons (RwIconButton)',
-              subtitle: 'Pause, ayarlar, kapatma ve pasif durumu',
+              subtitle:
+                  'stone/wood/hud x (normal/pasif/secili/aktif), semantik ikon ve RTL',
             ),
             const SizedBox(height: AppSpacing.sm),
-            Row(
+            Wrap(
+              spacing: AppSpacing.md,
+              runSpacing: AppSpacing.md,
               children: <Widget>[
+                for (final AppMaterial material in <AppMaterial>[
+                  AppMaterial.stone,
+                  AppMaterial.wood,
+                  AppMaterial.hud,
+                ]) ...<Widget>[
+                  RwIconButton(
+                    icon: Icons.pause_rounded,
+                    tooltip: '${material.name} normal',
+                    material: material,
+                    onPressed: () {},
+                  ),
+                  RwIconButton(
+                    icon: Icons.pause_rounded,
+                    tooltip: '${material.name} disabled',
+                    material: material,
+                    onPressed: null,
+                  ),
+                  RwIconButton(
+                    icon: Icons.pause_rounded,
+                    tooltip: '${material.name} selected',
+                    material: material,
+                    isSelected: true,
+                    onPressed: () {},
+                  ),
+                  RwIconButton(
+                    icon: Icons.pause_rounded,
+                    tooltip: '${material.name} active',
+                    material: material,
+                    isActive: true,
+                    onPressed: () {},
+                  ),
+                ],
                 RwIconButton(
-                  icon: Icons.pause_rounded,
-                  tooltip: 'Pause',
+                  rwIcon: RwIconId.settings,
+                  tooltip: 'rwIcon settings',
                   onPressed: () {},
                 ),
-                const SizedBox(width: AppSpacing.md),
                 RwIconButton(
-                  icon: Icons.settings_rounded,
-                  tooltip: 'Settings',
+                  rwIcon: RwIconId.back,
+                  tooltip: 'rwIcon back (RTL aynalanir)',
                   onPressed: () {},
-                ),
-                const SizedBox(width: AppSpacing.md),
-                RwIconButton(
-                  icon: Icons.close_rounded,
-                  tooltip: 'Close',
-                  onPressed: () {},
-                ),
-                const SizedBox(width: AppSpacing.md),
-                const RwIconButton(
-                  icon: Icons.lock_rounded,
-                  tooltip: 'Locked',
-                  onPressed: null,
                 ),
               ],
             ),
@@ -402,29 +423,95 @@ class _WidgetGalleryState extends State<WidgetGallery> {
             // --- SECTION: PANELS ---
             const RwSectionHeader(
               title: 'Panels (RwPanel)',
-              subtitle: 'Baslikli ve seritsiz yukseltilmis yuzeyler',
+              subtitle: '4 varyant x parchment, hud/wood ornekleri ve tiklanabilir panel',
             ),
             const SizedBox(height: AppSpacing.sm),
-            RwPanel(
-              title: 'TACTICAL RADAR',
-              trailing: const Icon(
-                Icons.radar_rounded,
-                color: AppColors.aetherCyan,
-                size: 20.0,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  _buildGalleryText(
-                    'Panel iceriginde bilesenler ve istatistikler yer alabilir.',
+            Wrap(
+              spacing: AppSpacing.md,
+              runSpacing: AppSpacing.md,
+              children: <Widget>[
+                SizedBox(
+                  width: 220.0,
+                  child: RwPanel(
+                    title: 'STANDARD PANEL',
+                    trailing: const Icon(
+                      Icons.radar_rounded,
+                      size: 20.0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        _buildGalleryText(
+                          'Panel iceriginde bilesenler ve istatistikler yer alabilir.',
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        const RwProgressBar(
+                          value: 0.75,
+                          color: AppColors.riftViolet,
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
-                  const RwProgressBar(
-                    value: 0.75,
-                    color: AppColors.riftViolet,
+                ),
+                SizedBox(
+                  width: 220.0,
+                  child: RwPanel(
+                    variant: RwPanelVariant.large,
+                    title: 'LARGE PANEL',
+                    child: _buildGalleryText(
+                      'Ekran seviyesi icerik bolgesi, daha genis dolgu.',
+                    ),
                   ),
-                ],
-              ),
+                ),
+                SizedBox(
+                  width: 220.0,
+                  child: RwPanel(
+                    variant: RwPanelVariant.modal,
+                    title: 'MODAL PANEL',
+                    child: _buildGalleryText(
+                      'Belirgin baslik ayirici cizgisi ile en guclu derinlik.',
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 220.0,
+                  child: RwPanel(
+                    variant: RwPanelVariant.smallInfo,
+                    title: 'SMALL INFO',
+                    child: _buildGalleryText('Kompakt ipucu/etiket plaketi.'),
+                  ),
+                ),
+                SizedBox(
+                  width: 220.0,
+                  child: RwPanel(
+                    material: AppMaterial.hud,
+                    title: 'HUD PANEL',
+                    child: _buildGalleryText(
+                      'Savas sanati uzerinde kontrast koruyan koyu-notr yuzey.',
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 220.0,
+                  child: RwPanel(
+                    material: AppMaterial.wood,
+                    title: 'WOOD PANEL',
+                    child: _buildGalleryText(
+                      'Yapisal/navigasyon vurgulu tahta cerceve.',
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 220.0,
+                  child: RwPanel(
+                    title: 'TIKLANABILIR PANEL',
+                    onTap: () {},
+                    child: _buildGalleryText(
+                      'onTap ile basili derinlik geri bildirimi verir.',
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: AppSpacing.xl),
 
@@ -489,6 +576,58 @@ class _WidgetGalleryState extends State<WidgetGallery> {
                   secondaryActionOnPressed: () => Navigator.of(context).pop(),
                 );
               },
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            RwButton(
+              label: 'Open Long Text Dialog',
+              variant: RwButtonVariant.secondary,
+              onPressed: () {
+                RwDialog.show<void>(
+                  context: context,
+                  title:
+                      'A VERY LONG DIALOG TITLE THAT MAY WRAP ACROSS MULTIPLE LINES ON NARROW SCREENS',
+                  message:
+                      'This is a deliberately long body message meant to exercise the '
+                      'scrollable modal body at the 640x360 landscape baseline. It '
+                      'should never overflow the render tree, and the action row '
+                      'should wrap to a new line when the localized labels are long '
+                      'enough to no longer fit side by side within the panel width. '
+                      'Rift energy destabilizes the fortress perimeter, and reserves '
+                      'must be committed carefully before the next wave arrives.',
+                  primaryActionLabel: 'Acknowledge And Proceed',
+                  primaryActionOnPressed: () => Navigator.of(context).pop(),
+                  secondaryActionLabel: 'Cancel For Now',
+                  secondaryActionOnPressed: () => Navigator.of(context).pop(),
+                );
+              },
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // --- SECTION: VEIL (RwVeil) ---
+            const RwSectionHeader(
+              title: 'Veil (RwVeil)',
+              subtitle: 'Sahne ustu karartma + doygunluk dusurme katmani',
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            const SizedBox(
+              width: 220.0,
+              height: 120.0,
+              child: ClipRRect(
+                borderRadius: AppBorderRadii.md,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Expanded(child: ColoredBox(color: AppColors.aether)),
+                        Expanded(child: ColoredBox(color: AppColors.riftViolet)),
+                        Expanded(child: ColoredBox(color: AppColors.cta)),
+                      ],
+                    ),
+                    RwVeil(),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: AppSpacing.xl),
           ],
