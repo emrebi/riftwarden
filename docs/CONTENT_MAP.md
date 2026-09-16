@@ -25,6 +25,7 @@ Aşağıdaki tablodan işini bul, **sadece** listelenen dosyaları aç.
 | **Görsel kural / renk-tipografi-dekorasyon token'ı** | `docs/DESIGN.md` (kural), `lib/app/theme/*` (uygulama) | — |
 | **UI geçiş görevi / ilerleme** | `docs/UI_MIGRATION_PLAN.md` (§0 ilerleme, §4 görev tanımı) | — |
 | **Ortak UI bileşeni kullan/değiştir** | `lib/shared/widgets/*` (yeni bileşen eklenince buraya satır eklenir) | — |
+| **Malzeme yuzeyi (parchment/wood/stone/hud) kullan** | `lib/shared/widgets/rw_material_surface.dart` | — |
 | **Ikon kullan/ekle (RwIcon)** | `lib/shared/widgets/rw_icon.dart`, `assets/images/ui_art/icons/` (gelecek, ARTINT-02) | — |
 | **UI gorseli goster (RwArt)** | `lib/shared/widgets/rw_art.dart`, `assets/images/ui_art/<grup>/<id>.webp` | — |
 | **Sayı/para/süre biçimlendir (locale)** | `lib/shared/format/rw_number_format.dart` | — |

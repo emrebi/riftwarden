@@ -57,11 +57,13 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | UI-07 | DONE | batch C1 |
 | UI-08 | DONE (1 fix: RTL double mirror) | batch C2 |
 | UI-09 | DONE | batch C2 |
-| UI-04 | READY (run by planner as Sonnet subagent) | — |
+| UI-04 | DONE (1 fix: bounded path cache) | batch C3 |
+| UI-06 | READY | — |
 | ART-03 (asset) | APPROVED (intake sheet, 19 icons) | not committed (intake) |
 | ART-02 (asset) | APPROVED (intake sheet 4x2, 7 pieces) | not committed (intake) |
 | ART-10 (asset) | APPROVED after 1 revision (watch on device: arc_overcharge horned dummy, titan_juggernaut enemy-like golem) | intake: ART-10_1.png (4x2, 8), ART-10_2.png (4x2, 5) |
-| ART-09 (asset) | READY | — |
+| ART-09 (asset) | APPROVED (transparent sheet 4x1: portal, icon, illustration, reticle) | intake: ART-09.png |
+| ART-01, 04, 05, 06, 07, 08, 11, 12, 13 (asset) | IN PROGRESS (user, parallel) | — |
 | all others | PENDING (see §6 order) | — |
 
 The planner updates this table in the commit of each approved task. This file is the single source of truth for task status; the planner's private plan file (P1–P17 era) is archive only.

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:riftwarden/app/theme/app_colors.dart';
+import 'package:riftwarden/app/theme/app_decorations.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
 import 'package:riftwarden/shared/widgets/rw_art.dart';
@@ -11,6 +12,7 @@ import 'package:riftwarden/shared/widgets/rw_currency_chip.dart';
 import 'package:riftwarden/shared/widgets/rw_dialog.dart';
 import 'package:riftwarden/shared/widgets/rw_icon.dart';
 import 'package:riftwarden/shared/widgets/rw_icon_button.dart';
+import 'package:riftwarden/shared/widgets/rw_material_surface.dart';
 import 'package:riftwarden/shared/widgets/rw_panel.dart';
 import 'package:riftwarden/shared/widgets/rw_progress_bar.dart';
 import 'package:riftwarden/shared/widgets/rw_screen_scaffold.dart';
@@ -42,6 +44,34 @@ class _WidgetGalleryState extends State<WidgetGallery> {
       text,
       style: style ?? AppTypography.bodyMedium,
       textAlign: align,
+    );
+  }
+
+  Widget _materialSurfaceDemo(
+    AppMaterial material,
+    String label, {
+    RwSurfaceDepth depth = RwSurfaceDepth.raised,
+    bool isSelected = false,
+    bool isDisabled = false,
+    int seed = 0,
+  }) {
+    return RwMaterialSurface(
+      material: material,
+      depth: depth,
+      isSelected: isSelected,
+      isDisabled: isDisabled,
+      seed: seed,
+      child: SizedBox(
+        width: 120.0,
+        height: 56.0,
+        child: Center(
+          child: Text(
+            label,
+            style: AppTypography.onMaterial(AppTypography.smallLabel, material),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
     );
   }
 
@@ -135,6 +165,88 @@ class _WidgetGalleryState extends State<WidgetGallery> {
                   onPressed: null,
                 ),
               ],
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // --- SECTION: MATERIAL SURFACES ---
+            const RwSectionHeader(
+              title: 'Material Surfaces (RwMaterialSurface)',
+              subtitle: '4 malzeme x 5 durum, pill/circle ve RTL ornegi',
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Wrap(
+              spacing: AppSpacing.md,
+              runSpacing: AppSpacing.md,
+              children: <Widget>[
+                for (final AppMaterial material in AppMaterial.values) ...<Widget>[
+                  _materialSurfaceDemo(
+                    material,
+                    '${material.name}\nflat',
+                    depth: RwSurfaceDepth.flat,
+                    seed: 1,
+                  ),
+                  _materialSurfaceDemo(
+                    material,
+                    '${material.name}\nraised',
+                    seed: 2,
+                  ),
+                  _materialSurfaceDemo(
+                    material,
+                    '${material.name}\npressed',
+                    depth: RwSurfaceDepth.pressed,
+                    seed: 3,
+                  ),
+                  _materialSurfaceDemo(
+                    material,
+                    '${material.name}\nselected',
+                    isSelected: true,
+                    seed: 4,
+                  ),
+                  _materialSurfaceDemo(
+                    material,
+                    '${material.name}\ndisabled',
+                    isDisabled: true,
+                    seed: 5,
+                  ),
+                ],
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Wrap(
+              spacing: AppSpacing.lg,
+              runSpacing: AppSpacing.lg,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: <Widget>[
+                RwMaterialSurface(
+                  material: AppMaterial.hud,
+                  shape: RwSurfaceShape.pill,
+                  seed: 6,
+                  padding: const EdgeInsetsDirectional.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.xs,
+                  ),
+                  child: Text(
+                    '12 / 20',
+                    style: AppTypography.onMaterial(
+                      AppTypography.numeric,
+                      AppMaterial.hud,
+                    ),
+                  ),
+                ),
+                const RwMaterialSurface(
+                  material: AppMaterial.stone,
+                  shape: RwSurfaceShape.circle,
+                  seed: 7,
+                  child: SizedBox(width: 40.0, height: 40.0),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            _buildGalleryText('RTL ornegi (asimetrik detaylar aynalanir):'),
+            const SizedBox(height: AppSpacing.xs),
+            Directionality(
+              textDirection: TextDirection.rtl,
+              child: _materialSurfaceDemo(AppMaterial.wood, 'RTL', seed: 8),
             ),
             const SizedBox(height: AppSpacing.xl),
 
