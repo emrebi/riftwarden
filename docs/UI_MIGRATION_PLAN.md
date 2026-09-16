@@ -14,11 +14,23 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 - Model routing: default Sonnet 5 Medium; Sonnet 5 High only for UI-04 and ARTINT-07 (any other escalation must be justified first).
 - Asset stream: starts after DOC-02; follows §5 order. Coding never waits for art unless a task is ART-BLOCKED.
   Generator (2026-09-17): web ChatGPT image generation (Codex drafts failed flat-fill/consistency). Per ART task:
-  user uploads the reference pack (`design/references/05_UI_DESIGN_SYSTEM.png` + the surface-specific reference) and pastes
-  the STYLE BIBLE + ART section from `docs/ASSET_PROMPTS.md`; ChatGPT returns ONE zip; user saves it as
+  user uploads `design/references/05_UI_DESIGN_SYSTEM.png` + the surface-specific reference named in the ART section and pastes
+  that section's SINGLE self-contained English prompt from `docs/ASSET_PROMPTS.md` (style rules embedded; nothing else to copy);
+  ChatGPT returns ONE zip; user saves it as
   `design/art_intake/<ART-ID>.zip` (gitignored, never repo root) and extracts to `design/art_intake/<ART-ID>/`; planner reviews.
   Icon/ornament families are requested as ONE grid sheet on flat #FF00FF (one generation = consistent style), sliced by assetkit;
   ART-PREP recipes must accept both magenta sheets and alpha PNGs for ui_art groups.
+  Earlier Codex drafts (aether, shard, cell, rift, attack; outside the repo) are not discarded: they may be uploaded to ChatGPT as
+  silhouette references for ART-03, but final icons come from one consistent sheet.
+
+**DOC-03 — Single-paste asset prompts (inserted 2026-09-17)**
+- Goal: every ART section in `docs/ASSET_PROMPTS.md` is ONE self-contained English prompt the user pastes as-is (style bible,
+  forbidden motifs and output format embedded), plus a short line "Upload: 05_UI_DESIGN_SYSTEM.png + <reference>" and the zip name.
+- Remove: separate "prepend STYLE BIBLE" instructions, Tip A–D rationale blocks, Codex-specific sections; replace with the web ChatGPT
+  zip workflow above. Families (ART-02 ornaments, ART-03 icons, ART-12 VFX) are requested as one magenta grid sheet with a fixed
+  row-major order; single-subject art (portraits, illustrations, logo, scenes, fortress, backgrounds) stays one image per subject.
+- Files: `docs/ASSET_PROMPTS.md`, `tools/assetkit/README.md` (intake wording), `.claude/skills/rw-assets/SKILL.md` (workflow wording).
+- Art: ART-INDEPENDENT · Validation: analyze 0; assetkit verify unchanged · Worker: Sonnet Medium.
 - Design/architecture decisions are not reopened; genuine blockers are raised as ARCHITECTURE QUESTION.
 
 ### Actual history (supersedes the originally planned commit split)
@@ -32,8 +44,10 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | DOC-01 | DONE | `970b904` |
 | DOC-02 | DONE | `2ea1ea4` |
 | UI-01 | DONE | `fd0acf1` |
-| UI-02 | DONE | pending user commit |
+| UI-02 | DONE | `1afb171` |
+| DOC-03 | DONE | pending user commit |
 | UI-03 | READY | — |
+| ART-03 (asset) | REVISION REQUESTED (cells 1,2,3,4,5,9) | not committed (intake) |
 | all others | PENDING (see §6 order) | — |
 
 The planner updates this table in the commit of each approved task. This file is the single source of truth for task status; the planner's private plan file (P1–P17 era) is archive only.

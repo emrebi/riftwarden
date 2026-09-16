@@ -1,13 +1,14 @@
 # assetkit
 
-Codex gorsel-uretim agent'inin urettigi contact sheet'leri oyunun kullandigi
-seffaf sprite'lara ve atlas dokularina cevirir. Python 3.12 + Pillow + numpy
+Web ChatGPT'den alinan contact sheet zip'lerini oyunun kullandigi seffaf
+sprite'lara ve atlas dokularina cevirir. Python 3.12 + Pillow + numpy
 (kurulu olmalari yeterli, ek paket yok).
 
 ## Akis
 
 ```
-Codex agent (design/art_intake/<ART-ID>/ altina PNG sheet)
+web ChatGPT (kullanici zip'i design/art_intake/<ART-ID>.zip olarak kaydeder,
+              design/art_intake/<ART-ID>/ altina cikartir)
    │
    ▼
 ingest  ── chroma key ─▶ dilimle ─▶ kirp ─▶ olcekle ─▶ assets/images/sprites/<grup>/*.webp
@@ -59,11 +60,13 @@ python tools/assetkit/assetkit.py verify
 alinir (chroma da genelde `false` olur) — arka plan gibi butun goruntunun
 kendisi tek obje oldugu durumlar icin.
 
-## Görsel üretim agent'ına ne sorulacagi
+## Web ChatGPT'ye ne yapistirilacagi
 
-Prompt sablonlari: `docs/ASSET_PROMPTS.md`. Görseller Codex gorsel-uretim
-agent'i tarafindan uretilir, ham ciktilar `design/art_intake/<ART-ID>/`
-altina PNG olarak kaydedilir (bu klasor commit edilmez).
+Tek-yapistirma prompt'lari: `docs/ASSET_PROMPTS.md`. Her ART bolumundeki tek
+kod blogu aynen ChatGPT'ye yapistirilir (referans gorseller ayrica yuklenir).
+ChatGPT'nin dondurdugu zip `design/art_intake/<ART-ID>.zip` olarak kaydedilir
+(repo kokune degil), sonra `design/art_intake/<ART-ID>/` altina cikartilir
+(bu klasor commit edilmez).
 
 En onemli kural (chroma tarifleri icin — `units`, `enemies`, `fx`): **duz saf
 magenta (#FF00FF) arka plan, objeler arasinda en az 40 px bosluk.** Bu sayede
@@ -73,19 +76,19 @@ gerekir, magenta zemin degil.
 
 ## Hedef boyutlar ve teslim
 
-| Grup | Teslim tipi (bkz. ASSET_PROMPTS.md) | Intake klasoru | Hedef en uzun kenar | Cikis |
+| Grup | Teslim sekli | Intake klasoru | Hedef en uzun kenar | Cikis |
 |---|---|---|---|---|
-| `enemies` | Tip A — chroma sheet | `design/art_intake/ART-05/` | 192 px/obje | atlas: `assets/images/atlas/enemies.webp` |
-| `units` | Tip A — chroma sheet | `design/art_intake/ART-04/` | 192 px/obje | atlas: `assets/images/atlas/units.webp` |
-| `fx` | Tip A — chroma sheet | `design/art_intake/ART-12/` | 128 px/obje | atlas: `assets/images/atlas/fx.webp` |
-| `world` | Tip B — seffaf sheet/tekil | `design/art_intake/ART-06/`, `ART-07/`, `ART-09/`, `ART-11/` | 256 px/obje | atlas: `assets/images/atlas/world.webp` |
-| `background` | Tip D — tam sahne, tek parca | `design/art_intake/ART-07/`, `ART-08/` | 2048 px (genis kenar) | `assets/images/backgrounds/<id>.webp` (lossy q85) |
-| `portraits` | Tip C — tek dosya, seffaf | `design/art_intake/ART-04/` | ~512 px | `assets/images/ui_art/portraits/<unitId>.webp` |
-| `illustrations` | Tip C — tek dosya, seffaf | `design/art_intake/ART-09/`, `ART-10/`, `ART-13/` | ~512 px | `assets/images/ui_art/illustrations/<id>.webp` |
-| `icons` | Tip C — tek dosya, seffaf | `design/art_intake/ART-03/`, `ART-09/` | ~128 px | `assets/images/ui_art/icons/<id>.webp` |
-| `ornaments` | Tip C — tek dosya, seffaf | `design/art_intake/ART-02/` | ~256 px | `assets/images/ui_art/ornaments/<id>.webp` |
-| `logo` | Tip C — tek dosya, seffaf | `design/art_intake/ART-01/` | ~1024 px | `assets/images/ui_art/logo/<id>.webp` |
-| `scenes` | Tip D — tam sahne, tek parca | `design/art_intake/ART-08/`, `ART-13/` | 2048 px (genis kenar) | `assets/images/ui_art/scenes/<id>.webp` |
+| `enemies` | magenta chroma sheet | `design/art_intake/ART-05/` | 192 px/obje | atlas: `assets/images/atlas/enemies.webp` |
+| `units` | magenta chroma sheet | `design/art_intake/ART-04/` | 192 px/obje | atlas: `assets/images/atlas/units.webp` |
+| `fx` | magenta chroma sheet | `design/art_intake/ART-12/` | 128 px/obje | atlas: `assets/images/atlas/fx.webp` |
+| `world` | seffaf sheet/tekil | `design/art_intake/ART-06/`, `ART-07/`, `ART-09/`, `ART-11/` | 256 px/obje | atlas: `assets/images/atlas/world.webp` |
+| `background` | tam sahne, tek parca, opak | `design/art_intake/ART-07/`, `ART-08/` | 2048 px (genis kenar) | `assets/images/backgrounds/<id>.webp` (lossy q85) |
+| `portraits` | tek dosya, seffaf | `design/art_intake/ART-04/` | ~512 px | `assets/images/ui_art/portraits/<unitId>.webp` |
+| `illustrations` | tek dosya, seffaf | `design/art_intake/ART-09/`, `ART-10/`, `ART-13/` | ~512 px | `assets/images/ui_art/illustrations/<id>.webp` |
+| `icons` | magenta chroma sheet | `design/art_intake/ART-03/`, `ART-09/` | ~128 px | `assets/images/ui_art/icons/<id>.webp` |
+| `ornaments` | magenta chroma sheet | `design/art_intake/ART-02/` | ~256 px | `assets/images/ui_art/ornaments/<id>.webp` |
+| `logo` | tek dosya, seffaf | `design/art_intake/ART-01/` | ~1024 px | `assets/images/ui_art/logo/<id>.webp` |
+| `scenes` | tam sahne, tek parca, opak | `design/art_intake/ART-08/`, `ART-13/` | 2048 px (genis kenar) | `assets/images/ui_art/scenes/<id>.webp` |
 
 `portraits`/`illustrations`/`icons`/`ornaments`/`logo`/`scenes` gruplarinin
 `assetkit` tarifleri (`recipes/portraits.json`, `recipes/ui_art.json`,
