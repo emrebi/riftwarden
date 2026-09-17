@@ -118,8 +118,8 @@ class _ResultScreenState extends State<ResultScreen>
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
-            // Zemin rengi SafeArea disinda tam ekrana yayilir; savas
-            // sonucuna gore ileride RwArt(group: scenes, ...) buraya eklenir.
+            // Zemin rengi SafeArea disinda tam ekrana yayilir; arka plan
+            // sade renk; sonuc vurgusu illustrations/result.* ile.
             const ColoredBox(color: AppColors.background),
             SafeArea(
               left: false,
@@ -203,9 +203,9 @@ class _ResultScreenState extends State<ResultScreen>
     );
   }
 
-  /// Rozet alani: onceligi ART-13 sanat varligindadir; dosya gelene kadar
-  /// zafer/yenilgiyi hem renk hem sekil/ikonla ayiran kod tabanli rozete
-  /// duser (DESIGN §10 "durum sadece renkle anlatilmaz").
+  /// Rozet alani: ART-13 vurgu sanati (illustrations/result.*); dosya
+  /// yuklenemezse zafer/yenilgiyi hem renk hem sekil/ikonla ayiran kod tabanli
+  /// rozet fallback olarak kalir (DESIGN §10 "durum sadece renkle anlatilmaz").
   Widget _buildOutcomeBadge(bool isVictory) {
     final material = isVictory ? AppMaterial.wood : AppMaterial.stone;
     final faceColor = isVictory ? AppColors.cta : AppColors.danger;
@@ -217,6 +217,7 @@ class _ResultScreenState extends State<ResultScreen>
       id: isVictory ? 'result.victory' : 'result.defeat',
       width: _badgeSize,
       height: _badgeSize,
+      fit: BoxFit.contain,
       fallback: SizedBox(
         width: _badgeSize,
         height: _badgeSize,

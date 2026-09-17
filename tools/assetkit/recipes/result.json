@@ -1,0 +1,15 @@
+{
+  "_comment": "ART-13 sonuc ekrani vurgu sanati, seffaf tekil dosyalar",
+  "target": "ui_art",
+  "ui_group": "illustrations",
+  "chroma": false,
+  "slice": "none",
+  "naming": "list",
+  "names": [
+    "result.defeat",
+    "result.victory"
+  ],
+  "max_size": 512,
+  "padding": 2,
+  "format": "webp_lossless"
+}

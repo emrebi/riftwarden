@@ -95,6 +95,7 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | ARTINT-05 | DONE (Gemini Flash Medium, 0 fix; RwDisplay=Lilita One, body Nunito (Latin/Cyrillic), NotoSansArabic, NotoSansThai; CJK null = system font (user decision, 47 MB); variable fonts -> watch bold weights on device; next doc task: CLAUDE.md/AGENTS.md "Fonts henuz bundle degil" trap is stale) | ARTINT-05 commit |
 | ARTINT-08 | DONE (Gemini Flash Medium, 0 fix; 8 props via `props.json` cells into world atlas; environments.json decor ids remapped, positions unchanged; old world sprites left for UI-CLEAN; watch on device: decor over painted ART-07 background may clutter or cover lane) | ARTINT-08 commit |
 | ARTINT-09 | DONE (Gemini Flash Medium, 0 fix; logo/main_menu + logo/emblem + scenes/main_menu (lossy q85); menu background = RwArt scene cover with color fallback; scrim skipped (no veil token, RwVeil full-screen) -> if buttons/logo unreadable on device, add `AppColors.background.withValues(alpha)` gradient) | ARTINT-09 commit |
+| ARTINT-10 | DONE (Gemini Flash Medium, 0 fix; result.victory/defeat illustrations via result.json, badge art contain with code-badge fallback; all ARTINT tasks done -> next UI-CLEAN) | ARTINT-10 commit |
 | ART-03 (asset) | APPROVED (intake sheet, 19 icons) | not committed (intake) |
 | ART-02 (asset) | APPROVED (intake sheet 4x2, 7 pieces) | not committed (intake) |
 | ART-10 (asset) | APPROVED after 1 revision (watch on device: arc_overcharge horned dummy, titan_juggernaut enemy-like golem) | intake: ART-10_1.png (4x2, 8), ART-10_2.png (4x2, 5) |

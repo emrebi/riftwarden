@@ -44,6 +44,7 @@ Aşağıdaki tablodan işini bul, **sadece** listelenen dosyaları aç.
 | **UI gorseli goster (RwArt)** | `lib/shared/widgets/rw_art.dart`, `assets/images/ui_art/<grup>/<id>.webp` | — |
 | **Ekran iskeleti kullan/değiştir (RwScreenScaffold)** | `lib/shared/widgets/rw_screen_scaffold.dart` (baslik seridi `RwMaterialSurface(material: wood)` uzerine kurulu; `background` katmani ileride `RwArt(group: scenes)`) | — |
 | **Ana menü ekranı kullan/değiştir** | `lib/features/main_menu/**` (sanat: ui_art/logo/main_menu, ui_art/scenes/main_menu (tarifler logo.json, scenes.json)) | — |
+| **Sonuç ekranı kullan/değiştir** | `lib/features/result/**` (sanat: ui_art/illustrations/result.victory\|result.defeat (tarif result.json)) | — |
 | **Bolum basligi kullan/değiştir (RwSectionHeader)** | `lib/shared/widgets/rw_section_header.dart` (`onDark` ile HUD/koyu zemin varyanti) | — |
 | **Sayı/para/süre biçimlendir (locale)** | `lib/shared/format/rw_number_format.dart` | — |
 | **Yeni dil metni ekle** | `lib/l10n/arb/app_en.arb` (şablon) + diğer 15 ARB, sonra `flutter gen-l10n` | — |
