@@ -94,7 +94,7 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | ART-04 (asset) | APPROVED by user (Codex gpt-5.6-luna; watch: mask-like faces originality, titan vs bulwark, titan crosses sheet cell -> bbox slicing) | intake: ART-04/ (3 alpha portraits + magenta sheet) |
 | ART-06 (asset) | APPROVED (Codex; alpha; 5 clear platforms + wall walk as 6th -> verify slot placement in ARTINT; tight margins, pad in assetkit) | intake: ART-06/citadel_basic.png |
 | ART-07 (asset) | APPROVED after 1 revision (Codex; keylined cartoon, mid-brown lane ~25-75% h; bottom corner rocks from ~70% h and top-edge cliffs cut -> check field y-bounds and wide extension in ARTINT) | intake: ART-07/fractured_edge.png |
-| ART-12 (asset) | IN PROGRESS (Codex) | intake: codex/ART-12/ |
+| ART-12 (asset) | APPROVED (Codex; 5x3 magenta sheet 1672x941, 15 FX in order, outlined cel style, no halos; shield/rings need runtime opacity) | intake: ART-12/vfx_sheet.png |
 | ART-01, 08, 11, 13 (asset) | IN PROGRESS (user, parallel) | — |
 | all others | PENDING (see §6 order) | — |
 
