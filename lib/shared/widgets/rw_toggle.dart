@@ -9,7 +9,7 @@ import 'package:riftwarden/shared/widgets/rw_material_surface.dart';
 ///
 /// API'si `value` + `onChanged` ile Material `Switch`'e birebir takilir;
 /// SEC-02'de `SettingsSwitchRow` icindeki `Switch` bu bilesenle
-/// degistirilecek (bkz. `lib/features/settings/widgets/settings_switch_row.dart`).
+/// degistirildi (bkz. `lib/features/settings/widgets/settings_switch_row.dart`).
 /// `onChanged == null` pasif durumu ifade eder.
 class RwToggle extends StatefulWidget {
   const RwToggle({

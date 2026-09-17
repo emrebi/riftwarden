@@ -165,7 +165,7 @@ Otomatik denetlenir: `python tools/ui_lint.py`
    provider okumaz. Yerel state sadece gorsel durum icin (basili, animasyon) kullanilir.
 9. **Tek bilesen kutuphanesi.** Yeni gorunum mevcut `Rw*` bilesenleri ve
    `RwMaterialSurface` uzerine kurulur; paralel tema/bilesen seti yazilmaz.
-   Neon/glow (`AppShadows.glow`, `AppGradients.*`) LEGACY'dir, yeni kodda kullanilmaz.
+   Neon/glow token'lari kaldirildi; `tools/ui_lint.py` yeniden eklenmesini engeller.
 10. **Durum sadece renkle anlatilmaz.** Secili/kilitli/pasif durumlar ikon, derinlik
     veya sekil ile de ayrisir (DESIGN §24).
 11. Bilesen ekleyen/degistiren gorev galeriyi (`widget_gallery.dart`) ve
@@ -232,8 +232,7 @@ python tools/assetkit/assetkit.py verify
   taban locale ister. Yeni bolgesel locale eklerken tabanini da ekle.
 - **Havuz dolunca `spawn()` null doner.** Bu hata degil, tasarim. Null kontrolu
   yap ve sessizce atla; exception firlatma.
-- **Fonts henuz bundle degil.** `AppFonts.bodyFamilyFor` null doner (sistem fontu).
-  CJK/Tayca/Arapca fontlari M5'te eklenecek.
+- **Fontlar:** RwDisplay (Lilita One, sadece Latin), govde Nunito; Arapca/Thai Noto bundle; CJK bilincli olarak sistem fontu (boyut). Kaynak/lisans: design/art_intake/FONT-01/SOURCES.md, assets/fonts/LICENSES/.
 - **Gorseller WebP.** Sprite/atlas lossless (lossy alfa kenarinda hale ve atlas
   sizmasi yapar); arka plan lossy q85. `ios/Runner/Assets.xcassets` PNG kalir.
 - **UI smoke testinde `pumpAndSettle` kullanma.** Sonsuz animasyonlar var; sabit sureli `pump` yeterli.

@@ -14,11 +14,6 @@ import 'package:riftwarden/app/theme/app_spacing.dart';
 /// Sonraki bilesenler (RwMaterialSurface, butonlar, paneller) bu API'yi
 /// kullanacak; bu dosyadaki degisiklik saf ekleme, mevcut cagrilar bozulmaz.
 ///
-/// ## LEGACY token'lar
-/// "LEGACY" notu tasiyan uyeler eski neon yonune aittir; UI-CLEAN
-/// gorevinde kaldirilir. `@Deprecated` isaretlenmezler (flutter analyze
-/// 0 issue kapisini bozmamak icin) ve degerleri/imzalari degismez.
-
 /// Riftwarden'daki dort yuzey malzemesi (DESIGN §3, §8).
 enum AppMaterial {
   /// Okuma agirlikli panel govdeleri, aciklamalar, upgrade metinleri.
@@ -34,90 +29,8 @@ enum AppMaterial {
   hud,
 }
 
-/// Tekrar eden gorsel dokular icin gradyan token'lari.
-///
-/// LEGACY (neon yon, UI-CLEAN'de kaldirilir)
-abstract final class AppGradients {
-  /// LEGACY (neon yon, UI-CLEAN'de kaldirilir)
-  ///
-  /// Sayfa arka plani: merkezden disari derin void tonlari.
-  static const RadialGradient screenBackground = RadialGradient(
-    center: Alignment(0.0, -0.35),
-    radius: 1.2,
-    colors: <Color>[
-      AppColors.surface,
-      AppColors.voidBase,
-      AppColors.voidDeep,
-    ],
-    stops: <double>[0.0, 0.55, 1.0],
-  );
-
-  /// LEGACY (neon yon, UI-CLEAN'de kaldirilir)
-  ///
-  /// Panel ve kart yuzeyleri icin ustten alta hafif ton gecisi.
-  static const LinearGradient panel = LinearGradient(
-    begin: AlignmentDirectional.topCenter,
-    end: AlignmentDirectional.bottomCenter,
-    colors: <Color>[
-      AppColors.surfaceRaised,
-      AppColors.surface,
-    ],
-  );
-
-  /// LEGACY (neon yon, UI-CLEAN'de kaldirilir)
-  ///
-  /// Ana eylem butonu: cyan enerji gradyani.
-  static const LinearGradient primaryButton = LinearGradient(
-    begin: AlignmentDirectional.topCenter,
-    end: AlignmentDirectional.bottomCenter,
-    colors: <Color>[
-      AppColors.aetherCyan,
-      AppColors.coreTeal,
-    ],
-  );
-
-  /// LEGACY (neon yon, UI-CLEAN'de kaldirilir)
-  ///
-  /// Tehlike ve iptal butonu: kirmizi ve macenta tonlari.
-  static const LinearGradient dangerButton = LinearGradient(
-    begin: AlignmentDirectional.topCenter,
-    end: AlignmentDirectional.bottomCenter,
-    colors: <Color>[
-      AppColors.danger,
-      AppColors.riftMagenta,
-    ],
-  );
-}
-
 /// Arayuz golge ve parlama token'lari.
 abstract final class AppShadows {
-  /// LEGACY (neon yon, UI-CLEAN'de kaldirilir)
-  ///
-  /// Enerji parlamasi: verilen renkte yumusak dis isik.
-  static List<BoxShadow> glow(
-    Color color, {
-    double blurRadius = 16.0,
-    double spreadRadius = 0.0,
-  }) =>
-      <BoxShadow>[
-        BoxShadow(
-          color: color.withValues(alpha: 0.4),
-          blurRadius: blurRadius,
-          spreadRadius: spreadRadius,
-        ),
-      ];
-
-  /// LEGACY (neon yon, UI-CLEAN'de kaldirilir)
-  ///
-  /// Yukseltilmis paneller icin derin zemin golgesi.
-  static const List<BoxShadow> panel = <BoxShadow>[
-    BoxShadow(
-      color: AppColors.voidDeep,
-      blurRadius: 16.0,
-      offset: Offset(0.0, 8.0),
-    ),
-  ];
-
   /// Normal durum: dar, sicak temas golgesi (DESIGN §21 "narrow dark
   /// contact shadow"). Deger baslangic noktasi, cihazda tune edilecek.
   static const List<BoxShadow> contact = <BoxShadow>[
@@ -165,16 +78,6 @@ abstract final class AppShadows {
 
 /// Kenarlik token'lari.
 abstract final class AppBorders {
-  /// LEGACY (neon yon, UI-CLEAN'de kaldirilir)
-  ///
-  /// Paneller ve kartlar icin ince ayirici kenarlik.
-  static const Border subtle = Border.fromBorderSide(
-    BorderSide(
-      color: AppColors.surfaceRaised,
-      width: 1.0,
-    ),
-  );
-
   /// Vurgu rengine sahip kenarlik.
   static Border accent(Color color, {double width = 1.0}) =>
       Border.fromBorderSide(

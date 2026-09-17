@@ -32,19 +32,9 @@ class BootScreen extends StatelessWidget {
     final notchEnd = isRtl ? viewPadding.left : viewPadding.right;
 
     return Scaffold(
-      body: DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment(0, -0.35),
-            radius: 1.1,
-            colors: <Color>[
-              AppColors.surface,
-              AppColors.voidBase,
-              AppColors.voidDeep,
-            ],
-            stops: <double>[0, 0.55, 1],
-          ),
-        ),
+      backgroundColor: AppColors.background,
+      body: ColoredBox(
+        color: AppColors.background,
         child: SafeArea(
           left: false,
           right: false,

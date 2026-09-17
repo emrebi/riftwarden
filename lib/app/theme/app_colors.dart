@@ -7,33 +7,20 @@ import 'package:flutter/material.dart';
 /// deger KULLANMAZ — her zaman buradan okur. Boylece tema tek dosyadan
 /// degisir ve tasarim revizyonu tum ekranlara tek seferde yayilir.
 ///
-/// ## LEGACY token'lar
-/// Asagida "LEGACY" notu tasiyan token'lar eski neon sanat yonune aittir;
-/// UI-CLEAN gorevinde kaldirilir. `@Deprecated` isaretlenmezler (flutter
-/// analyze 0 issue kapisini bozmamak icin).
 abstract final class AppColors {
   // --- Zemin katmanlari (arkadan one) ---
-  /// LEGACY (neon yon, UI-CLEAN'de kaldirilir)
-  static const Color voidDeep = Color(0xFF07060F);
-  /// LEGACY (neon yon, UI-CLEAN'de kaldirilir)
-  static const Color voidBase = Color(0xFF0E0C1C);
   static const Color surface = Color(0xFF16132A);
   static const Color surfaceRaised = Color(0xFF1F1B39);
-  /// LEGACY (neon yon, UI-CLEAN'de kaldirilir)
   static const Color surfaceOverlay = Color(0xE60E0C1C);
 
   // --- Oyuncu / enerji ---
   static const Color aetherCyan = Color(0xFF3FE0FF);
-  /// LEGACY (neon yon, UI-CLEAN'de kaldirilir)
   static const Color aetherCyanDim = Color(0xFF1B7F96);
-  /// LEGACY (neon yon, UI-CLEAN'de kaldirilir)
   static const Color coreTeal = Color(0xFF2BF5C8);
 
   // --- Riftborn / dusman ---
   static const Color riftViolet = Color(0xFF9B5CFF);
-  /// LEGACY (neon yon, UI-CLEAN'de kaldirilir)
   static const Color riftMagenta = Color(0xFFE84AC4);
-  /// LEGACY (neon yon, UI-CLEAN'de kaldirilir)
   static const Color riftGlow = Color(0xFFC77DFF);
 
   // --- Kaynak ---

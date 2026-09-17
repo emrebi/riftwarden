@@ -1214,7 +1214,7 @@ class _WidgetGalleryState extends State<WidgetGallery> {
                 child: Stack(
                   fit: StackFit.expand,
                   children: <Widget>[
-                    const ColoredBox(color: AppColors.voidDeep),
+                    const ColoredBox(color: AppColors.background),
                     UpgradeChoiceOverlay(
                       offer: _demoOfferThree,
                       upgrades: _sampleUpgrades,
@@ -1233,7 +1233,7 @@ class _WidgetGalleryState extends State<WidgetGallery> {
                 child: Stack(
                   fit: StackFit.expand,
                   children: <Widget>[
-                    const ColoredBox(color: AppColors.voidDeep),
+                    const ColoredBox(color: AppColors.background),
                     UpgradeChoiceOverlay(
                       offer: _demoOfferOne,
                       upgrades: _sampleUpgrades,

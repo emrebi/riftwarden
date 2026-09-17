@@ -115,7 +115,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.voidDeep,
+        backgroundColor: AppColors.background,
         body: Stack(
           // ZORUNLU: Stack kendini POZISYONLANMAMIS cocuklarina gore
           // boyutlandirir. Buradaki cocuklarin hepsi Positioned* ya da

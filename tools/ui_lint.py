@@ -87,6 +87,12 @@ RULES: tuple[Rule, ...] = (
         "kurar. Savas verisi icin BattleSignals + ValueListenableBuilder kullan.",
         path_contains="features/battle/",
     ),
+    Rule(
+        "legacy-token",
+        re.compile(r"AppGradients\.|AppShadows\.glow|AppColors\.void"),
+        "Neon/glow token'lari kaldirildi; malzeme dili kullan.",
+        theme_exempt=True,
+    ),
 )
 
 
