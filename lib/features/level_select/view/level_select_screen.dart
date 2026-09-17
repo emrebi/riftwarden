@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:riftwarden/app/theme/app_colors.dart';
-import 'package:riftwarden/app/theme/app_decorations.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/features/level_select/view/level_select_data.dart';
 import 'package:riftwarden/features/level_select/widgets/sector_card.dart';
 import 'package:riftwarden/shared/widgets/rw_currency_chip.dart';
+import 'package:riftwarden/shared/widgets/rw_icon.dart';
 import 'package:riftwarden/shared/widgets/rw_icon_button.dart';
 
 /// Level secim ve ilerleme haritasi sayfasi.
@@ -85,76 +85,77 @@ class _LevelSelectScreenState extends State<LevelSelectScreen> {
     final notchEnd = isRtl ? viewPadding.left : viewPadding.right;
 
     return Scaffold(
-      backgroundColor: AppColors.voidDeep,
-      body: DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: AppGradients.screenBackground,
-        ),
-        child: SafeArea(
-          left: false,
-          right: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              // Ust ince serit: Geri butonu ve Shard gostergesi
-              Padding(
-                padding: EdgeInsetsDirectional.only(
-                  start: AppSpacing.screenGutter + notchStart,
-                  end: AppSpacing.screenGutter + notchEnd,
-                  top: AppSpacing.xs,
-                  bottom: AppSpacing.xs,
-                ),
-                child: SizedBox(
-                  height: AppSpacing.minTouchTarget,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      RwIconButton(
-                        icon: isRtl
-                            ? Icons.arrow_forward_rounded
-                            : Icons.arrow_back_rounded,
-                        onPressed: widget.onBack,
-                      ),
-                      RwCurrencyChip(
-                        currency: RwCurrency.shard,
-                        amount: widget.shards,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Sektor kartlari yatay harita seridi
-              Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
+      backgroundColor: AppColors.background,
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          // Zemin rengi SafeArea disinda tam ekrana yayilir (DESIGN §8),
+          // dunya sahnesi ileride RwArt(group: scenes, ...) ile eklenir.
+          const ColoredBox(color: AppColors.background),
+          SafeArea(
+            left: false,
+            right: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                // Ust ince serit: Geri butonu ve Shard gostergesi
+                Padding(
                   padding: EdgeInsetsDirectional.only(
                     start: AppSpacing.screenGutter + notchStart,
                     end: AppSpacing.screenGutter + notchEnd,
                     top: AppSpacing.xs,
-                    bottom: AppSpacing.md,
+                    bottom: AppSpacing.xs,
                   ),
-                  itemCount: widget.sectors.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final sector = widget.sectors[index];
-                    final isLast = index == widget.sectors.length - 1;
-                    return Padding(
-                      padding: EdgeInsetsDirectional.only(
-                        end: isLast ? 0.0 : AppSpacing.md,
-                      ),
-                      child: SectorCard(
-                        sector: sector,
-                        onLevelTap: widget.onLevelTap,
-                      ),
-                    );
-                  },
+                  child: SizedBox(
+                    height: AppSpacing.minTouchTarget,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        RwIconButton(
+                          rwIcon: RwIconId.back,
+                          onPressed: widget.onBack,
+                        ),
+                        RwCurrencyChip(
+                          currency: RwCurrency.shard,
+                          amount: widget.shards,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ],
+
+                // Sektor kartlari yatay harita seridi
+                Expanded(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsetsDirectional.only(
+                      start: AppSpacing.screenGutter + notchStart,
+                      end: AppSpacing.screenGutter + notchEnd,
+                      top: AppSpacing.xs,
+                      bottom: AppSpacing.md,
+                    ),
+                    itemCount: widget.sectors.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final sector = widget.sectors[index];
+                      final isLast = index == widget.sectors.length - 1;
+                      return Padding(
+                        padding: EdgeInsetsDirectional.only(
+                          end: isLast ? 0.0 : AppSpacing.md,
+                        ),
+                        child: SectorCard(
+                          sector: sector,
+                          onLevelTap: widget.onLevelTap,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

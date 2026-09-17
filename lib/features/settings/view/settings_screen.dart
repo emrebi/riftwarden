@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:riftwarden/app/theme/app_colors.dart';
+import 'package:riftwarden/app/theme/app_decorations.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
 import 'package:riftwarden/features/settings/widgets/settings_action_row.dart';
@@ -44,6 +45,9 @@ class SettingsScreen extends StatelessWidget {
   final ValueChanged<bool> onMusicChanged;
   final ValueChanged<bool> onHapticsChanged;
   final VoidCallback onLanguageTap;
+
+  /// AQ-3: satin alma geri yukleme akisinin gercek bir backend baglantisi
+  /// yok; satir bu yuzden gizlenir. Parametre uyumluluk icin korunur.
   final VoidCallback onRestorePurchases;
   final VoidCallback onPrivacyTap;
   final VoidCallback onBack;
@@ -82,20 +86,20 @@ class SettingsScreen extends StatelessWidget {
                           value: soundEnabled,
                           onChanged: onSoundChanged,
                         ),
-                        const Divider(
+                        Divider(
                           height: 1.0,
                           thickness: 1.0,
-                          color: AppColors.surfaceRaised,
+                          color: AppMaterials.edge(AppMaterial.parchment),
                         ),
                         SettingsSwitchRow(
                           label: l10n.settingsMusic,
                           value: musicEnabled,
                           onChanged: onMusicChanged,
                         ),
-                        const Divider(
+                        Divider(
                           height: 1.0,
                           thickness: 1.0,
-                          color: AppColors.surfaceRaised,
+                          color: AppMaterials.edge(AppMaterial.parchment),
                         ),
                         SettingsSwitchRow(
                           label: l10n.settingsHaptics,
@@ -121,46 +125,30 @@ class SettingsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  // Dil secimi grubu
+                  // Dil secimi grubu. Aksiyon satiri kendi RwButton
+                  // ikincil yuzeyini tasidigi icin ayrica panele
+                  // sarilmaz (cift cerceve olusmasin diye).
                   RwSectionHeader(
                     title: l10n.settingsSectionLanguage,
                   ),
                   const SizedBox(height: AppSpacing.xs),
-                  RwPanel(
-                    padding: EdgeInsetsDirectional.zero,
-                    child: SettingsActionRow(
-                      label: l10n.settingsLanguage,
-                      value: currentLanguageLabel,
-                      onTap: onLanguageTap,
-                    ),
+                  SettingsActionRow(
+                    label: l10n.settingsLanguage,
+                    value: currentLanguageLabel,
+                    onTap: onLanguageTap,
                   ),
                   const SizedBox(height: AppSpacing.md),
 
-                  // Hesap ve yasal islemler grubu
+                  // Hesap ve yasal islemler grubu. Satin alma geri yukleme
+                  // satiri AQ-3 geregi gizlenir (bkz. onRestorePurchases
+                  // dokumantasyonu); yalnizca gizlilik baglantisi kalir.
                   RwSectionHeader(
                     title: l10n.settingsSectionAccount,
                   ),
                   const SizedBox(height: AppSpacing.xs),
-                  RwPanel(
-                    padding: EdgeInsetsDirectional.zero,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        SettingsActionRow(
-                          label: l10n.settingsRestorePurchases,
-                          onTap: onRestorePurchases,
-                        ),
-                        const Divider(
-                          height: 1.0,
-                          thickness: 1.0,
-                          color: AppColors.surfaceRaised,
-                        ),
-                        SettingsActionRow(
-                          label: l10n.settingsPrivacy,
-                          onTap: onPrivacyTap,
-                        ),
-                      ],
-                    ),
+                  SettingsActionRow(
+                    label: l10n.settingsPrivacy,
+                    onTap: onPrivacyTap,
                   ),
                   const SizedBox(height: AppSpacing.lg),
 

@@ -3,12 +3,14 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riftwarden/app/theme/app_colors.dart';
+import 'package:riftwarden/app/theme/app_decorations.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
 import 'package:riftwarden/core/services/service_providers.dart';
 import 'package:riftwarden/features/orientation_gate/viewmodel/orientation_gate_controller.dart';
 import 'package:riftwarden/features/orientation_gate/widgets/rotating_phone_indicator.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
+import 'package:riftwarden/shared/widgets/rw_material_surface.dart';
 
 /// Acilis yon kapisi: cihaz dikeyken gorunur, yatay olunca ya da dokununca
 /// oyun acilir.
@@ -106,16 +108,19 @@ class _OrientationGateScreenState
               child: CircularProgressIndicator(
                 value: progress,
                 strokeWidth: 2.5,
-                backgroundColor: AppColors.surfaceRaised,
+                backgroundColor: AppColors.stoneFace,
                 valueColor: const AlwaysStoppedAnimation<Color>(
-                  AppColors.aetherCyan,
+                  AppColors.cta,
                 ),
               ),
             ),
             const SizedBox(width: AppSpacing.md),
             Text(
               l10n.rotateAutoIn(seconds),
-              style: AppTypography.bodyMedium,
+              style: AppTypography.onMaterialSecondary(
+                AppTypography.bodyMedium,
+                AppMaterial.parchment,
+              ),
             ),
           ],
         );
@@ -126,8 +131,9 @@ class _OrientationGateScreenState
     final tapToContinueWidget = Text(
       l10n.rotateTapToContinue,
       textAlign: TextAlign.center,
-      style: AppTypography.label.copyWith(
-        color: AppColors.textDisabled,
+      style: AppTypography.onMaterialSecondary(
+        AppTypography.smallLabel,
+        AppMaterial.parchment,
       ),
     );
 
@@ -136,87 +142,88 @@ class _OrientationGateScreenState
       animation: _rotationAnimation,
     );
 
+    final titleWidget = Text(
+      l10n.rotateTitle,
+      textAlign: TextAlign.center,
+      style: AppTypography.onMaterial(
+        AppTypography.titleLarge,
+        AppMaterial.parchment,
+      ),
+    );
+
+    final hintWidget = Text(
+      l10n.rotateHint,
+      textAlign: TextAlign.center,
+      style: AppTypography.onMaterialSecondary(
+        AppTypography.bodyMedium,
+        AppMaterial.parchment,
+      ),
+    );
+
+    // Mesaj icerigi parsomen yuzey uzerinde tek panel olarak sunulur.
+    final messagePanel = RwMaterialSurface(
+      material: AppMaterial.parchment,
+      padding: const EdgeInsetsDirectional.all(AppSpacing.lg),
+      child: isLandscape
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                phoneIndicator,
+                const SizedBox(width: AppSpacing.xxl),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    titleWidget,
+                    const SizedBox(height: AppSpacing.xs),
+                    hintWidget,
+                    const SizedBox(height: AppSpacing.md),
+                    countdownWidget,
+                    const SizedBox(height: AppSpacing.md),
+                    tapToContinueWidget,
+                  ],
+                ),
+              ],
+            )
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                phoneIndicator,
+                const SizedBox(height: AppSpacing.lg),
+                titleWidget,
+                const SizedBox(height: AppSpacing.xs),
+                hintWidget,
+                const SizedBox(height: AppSpacing.lg),
+                countdownWidget,
+                const SizedBox(height: AppSpacing.lg),
+                tapToContinueWidget,
+              ],
+            ),
+    );
+
     return Scaffold(
+      backgroundColor: AppColors.background,
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: _controller.onTap,
-        child: DecoratedBox(
-          decoration: const BoxDecoration(
-            gradient: RadialGradient(
-              center: Alignment(0.0, -0.35),
-              radius: 1.1,
-              colors: <Color>[
-                AppColors.surface,
-                AppColors.voidBase,
-                AppColors.voidDeep,
-              ],
-              stops: <double>[0.0, 0.55, 1.0],
-            ),
-          ),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsetsDirectional.all(AppSpacing.screenGutter),
-              child: Center(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: isLandscape
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            phoneIndicator,
-                            const SizedBox(width: AppSpacing.xxl),
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Text(
-                                  l10n.rotateTitle,
-                                  textAlign: TextAlign.center,
-                                  style: AppTypography.titleLarge.copyWith(
-                                    color: AppColors.textPrimary,
-                                  ),
-                                ),
-                                const SizedBox(height: AppSpacing.xs),
-                                Text(
-                                  l10n.rotateHint,
-                                  textAlign: TextAlign.center,
-                                  style: AppTypography.bodyMedium,
-                                ),
-                                const SizedBox(height: AppSpacing.md),
-                                countdownWidget,
-                                const SizedBox(height: AppSpacing.md),
-                                tapToContinueWidget,
-                              ],
-                            ),
-                          ],
-                        )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            phoneIndicator,
-                            const SizedBox(height: AppSpacing.xl),
-                            Text(
-                              l10n.rotateTitle,
-                              textAlign: TextAlign.center,
-                              style: AppTypography.titleLarge.copyWith(
-                                color: AppColors.textPrimary,
-                              ),
-                            ),
-                            const SizedBox(height: AppSpacing.xs),
-                            Text(
-                              l10n.rotateHint,
-                              textAlign: TextAlign.center,
-                              style: AppTypography.bodyMedium,
-                            ),
-                            const SizedBox(height: AppSpacing.xl),
-                            countdownWidget,
-                            const SizedBox(height: AppSpacing.xl),
-                            tapToContinueWidget,
-                          ],
-                        ),
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            // Zemin rengi SafeArea disinda tam ekrana yayilir.
+            const ColoredBox(color: AppColors.background),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsetsDirectional.all(
+                  AppSpacing.screenGutter,
+                ),
+                child: Center(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: messagePanel,
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

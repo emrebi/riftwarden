@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:riftwarden/app/theme/app_colors.dart';
+import 'package:riftwarden/app/theme/app_decorations.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 
 /// Yataya cevirme animasyonlu telefon silueti ve yon oku.
@@ -76,21 +77,11 @@ class _PhoneIndicatorPainter extends CustomPainter {
       ..lineTo(endPoint.dx, endPoint.dy)
       ..lineTo(wing2.dx, wing2.dy);
 
-    // Ok parlama katmani
-    final arrowGlowPaint = Paint()
-      ..color = AppColors.aetherCyanDim.withValues(alpha: 0.45)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 4.5
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3.0);
-    canvas.drawPath(arrowPath, arrowGlowPaint);
-
-    // Ok keskin hat katmani
+    // Donus oku: CTA vurgu rengiyle tek keskin hat (neon parlama yok).
     final arrowPaint = Paint()
-      ..color = AppColors.aetherCyan
+      ..color = AppColors.cta
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0
+      ..strokeWidth = 2.5
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
     canvas.drawPath(arrowPath, arrowPaint);
@@ -110,25 +101,17 @@ class _PhoneIndicatorPainter extends CustomPainter {
       const Radius.circular(AppRadius.md),
     );
 
-    // Telefon arka plan yuzey dolgusu
+    // Telefon govde yuzu: tas malzeme dolgu tonu.
     final bodyFillPaint = Paint()
-      ..color = AppColors.surfaceRaised.withValues(alpha: 0.85)
+      ..color = AppMaterials.face(AppMaterial.stone)
       ..style = PaintingStyle.fill;
     canvas.drawRRect(phoneRRect, bodyFillPaint);
 
-    // Telefon kenar parlamasi
-    final bodyGlowPaint = Paint()
-      ..color = AppColors.aetherCyanDim.withValues(alpha: 0.4)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 4.0
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0);
-    canvas.drawRRect(phoneRRect, bodyGlowPaint);
-
-    // Telefon cerceve hatti
+    // Telefon kalin murekkep kenar hatti (keyline).
     final bodyOutlinePaint = Paint()
-      ..color = AppColors.aetherCyan
+      ..color = AppColors.outlineInk
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
+      ..strokeWidth = AppMaterials.keylineWidth;
     canvas.drawRRect(phoneRRect, bodyOutlinePaint);
 
     // Holografik ic ekran alani
@@ -142,12 +125,12 @@ class _PhoneIndicatorPainter extends CustomPainter {
       const Radius.circular(AppRadius.sm),
     );
     final screenFillPaint = Paint()
-      ..color = AppColors.aetherCyan.withValues(alpha: 0.1)
+      ..color = AppColors.cta.withValues(alpha: 0.16)
       ..style = PaintingStyle.fill;
     canvas.drawRRect(screenRRect, screenFillPaint);
 
     final screenBorderPaint = Paint()
-      ..color = AppColors.aetherCyanDim.withValues(alpha: 0.5)
+      ..color = AppColors.outlineInk.withValues(alpha: 0.5)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
     canvas.drawRRect(screenRRect, screenBorderPaint);
@@ -162,7 +145,7 @@ class _PhoneIndicatorPainter extends CustomPainter {
       const Radius.circular(AppRadius.pill),
     );
     final speakerPaint = Paint()
-      ..color = AppColors.aetherCyanDim
+      ..color = AppColors.outlineInk.withValues(alpha: 0.6)
       ..style = PaintingStyle.fill;
     canvas.drawRRect(speakerRRect, speakerPaint);
 
@@ -176,7 +159,7 @@ class _PhoneIndicatorPainter extends CustomPainter {
       const Radius.circular(AppRadius.pill),
     );
     final homePaint = Paint()
-      ..color = AppColors.aetherCyanDim
+      ..color = AppColors.outlineInk.withValues(alpha: 0.6)
       ..style = PaintingStyle.fill;
     canvas.drawRRect(homeRRect, homePaint);
 

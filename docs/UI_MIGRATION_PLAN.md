@@ -81,7 +81,11 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | BATTLE-08 | DONE | batch C11 |
 | BATTLE-09 | DONE | batch C11 |
 | MENU-01 | DONE (MenuActionsRow internal ctor lost onStore/onUpgrades; screen ctor intact) | batch C12 |
-| SEC-01 | READY | — |
+| SEC-01 | DONE | batch C13 |
+| SEC-02 | DONE (planner fix: semantics onTap lost by excludeSemantics; restore purchases hidden per AQ-3; rw_toggle.dart header comment still future tense -> next doc task) | batch C13 |
+| SEC-03 | DONE (RwArt ids result.victory/result.defeat -> ART-13 naming) | batch C13 |
+| SEC-04 | DONE | batch C13 |
+| ART-PREP | READY (Phase 6: planner stops here for user, see Workflow) | — |
 | ART-03 (asset) | APPROVED (intake sheet, 19 icons) | not committed (intake) |
 | ART-02 (asset) | APPROVED (intake sheet 4x2, 7 pieces) | not committed (intake) |
 | ART-10 (asset) | APPROVED after 1 revision (watch on device: arc_overcharge horned dummy, titan_juggernaut enemy-like golem) | intake: ART-10_1.png (4x2, 8), ART-10_2.png (4x2, 5) |
@@ -89,8 +93,9 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | ART-05 (asset) | APPROVED (Codex gpt-5.6-luna revision replaced intake; ART-PREP notes: bulwark crosses cell edge ~8px -> bbox/component slicing, tight key tolerance for thin violet lines) | intake: ART-05.png |
 | ART-04 (asset) | APPROVED by user (Codex gpt-5.6-luna; watch: mask-like faces originality, titan vs bulwark, titan crosses sheet cell -> bbox slicing) | intake: ART-04/ (3 alpha portraits + magenta sheet) |
 | ART-06 (asset) | APPROVED (Codex; alpha; 5 clear platforms + wall walk as 6th -> verify slot placement in ARTINT; tight margins, pad in assetkit) | intake: ART-06/citadel_basic.png |
-| ART-07 (asset) | REVISION (v1 painterly/no keylines, pale sand ground hides cream defenders, edges not extendable) — Codex retry running | intake: codex/ART-07/ |
-| ART-01, 08, 11, 12, 13 (asset) | IN PROGRESS (user, parallel) | — |
+| ART-07 (asset) | APPROVED after 1 revision (Codex; keylined cartoon, mid-brown lane ~25-75% h; bottom corner rocks from ~70% h and top-edge cliffs cut -> check field y-bounds and wide extension in ARTINT) | intake: ART-07/fractured_edge.png |
+| ART-12 (asset) | IN PROGRESS (Codex) | intake: codex/ART-12/ |
+| ART-01, 08, 11, 13 (asset) | IN PROGRESS (user, parallel) | — |
 | all others | PENDING (see §6 order) | — |
 
 The planner updates this table in the commit of each approved task. This file is the single source of truth for task status; the planner's private plan file (P1–P17 era) is archive only.

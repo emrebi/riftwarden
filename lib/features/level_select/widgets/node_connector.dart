@@ -3,7 +3,10 @@ import 'package:riftwarden/app/theme/app_colors.dart';
 import 'package:riftwarden/app/theme/app_decorations.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 
-/// Iki ardil level dugumu arasindaki enerji baglanti hatti.
+/// Iki ardil level dugumu arasindaki ip/murekkep izi baglanti hatti.
+///
+/// Parsomen malzemesi uzerinde okunmasi icin sicak murekkep tonu (acik) ve
+/// soluk parsomen kenar tonu (kapali) kullanilir; parlama (glow) yoktur.
 class NodeConnector extends StatelessWidget {
   const NodeConnector({
     required this.isActive,
@@ -15,19 +18,16 @@ class NodeConnector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isActive ? AppColors.coreTeal : AppColors.surfaceRaised;
+    final color = isActive ? AppColors.outlineInk : AppColors.parchmentEdge;
 
     return SizedBox(
       height: AppSpacing.minTouchTarget,
       child: Center(
         child: Container(
-          height: 2.0,
+          height: 3.0,
           decoration: BoxDecoration(
             color: color,
             borderRadius: AppBorderRadii.pill,
-            boxShadow: isActive
-                ? AppShadows.glow(AppColors.coreTeal, blurRadius: 4.0)
-                : null,
           ),
         ),
       ),
