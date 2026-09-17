@@ -38,8 +38,8 @@ enum RwDefenderSlotState {
 ///
 /// ## Neden ayri bir primitive
 /// `UnitSpawnBar` (savas HUD'unun kendi cizimi) ile roster/loadout gibi
-/// gelecekteki savas-disi yuzeyler ayni yuva gorselini paylasmali. Bu widget
-/// tamamen parametre gudumludur: veri kaynagi, Riverpod, `BattleSignals`
+/// savas-disi yuzeyler ayni yuva gorselini paylasir. Bu widget tamamen
+/// parametre gudumludur: veri kaynagi, Riverpod, `BattleSignals`
 /// baglantisi YOKTUR — cagiran taraf hangi durumu gosterecegini kendi
 /// karar verir.
 ///
@@ -141,20 +141,22 @@ class _RwDefenderSlotState extends State<RwDefenderSlot> {
   Widget _buildFallbackShape() {
     final Color accent = widget.accentColor ?? AppColors.aether;
     final String? initial = _initial;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: accent.withValues(alpha: 0.22),
-        shape: BoxShape.circle,
-        border: Border.all(color: accent, width: 2.0),
-      ),
-      child: initial == null
-          ? null
-          : Center(
-              child: Text(
-                initial,
-                style: AppTypography.sectionTitle.copyWith(color: accent),
+    return SizedBox.expand(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: accent.withValues(alpha: 0.22),
+          shape: BoxShape.circle,
+          border: Border.all(color: accent, width: 2.0),
+        ),
+        child: initial == null
+            ? null
+            : Center(
+                child: Text(
+                  initial,
+                  style: AppTypography.sectionTitle.copyWith(color: accent),
+                ),
               ),
-            ),
+      ),
     );
   }
 
@@ -167,11 +169,13 @@ class _RwDefenderSlotState extends State<RwDefenderSlot> {
     if (unitId == null || unitId.isEmpty) {
       return fallback;
     }
-    return RwArt(
-      group: RwArtGroup.portraits,
-      id: unitId,
-      fit: BoxFit.cover,
-      fallback: fallback,
+    return Center(
+      child: RwArt(
+        group: RwArtGroup.portraits,
+        id: unitId,
+        fit: BoxFit.contain,
+        fallback: fallback,
+      ),
     );
   }
 

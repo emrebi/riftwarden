@@ -921,6 +921,7 @@ class _WidgetGalleryState extends State<WidgetGallery> {
                 ),
                 const RwDefenderSlot(
                   state: RwDefenderSlotState.locked,
+                  unitId: 'titan_frame',
                   name: 'Titan Frame',
                 ),
                 RwDefenderSlot(
