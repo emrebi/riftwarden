@@ -62,10 +62,18 @@ flutter:
     - assets/images/ui_art/scenes/
     - assets/audio/
 
-  # TODO(m5): Fontlar eklendiginde burasi doldurulacak.
-  # Latin display fontu + locale basina Noto alt kumesi (bkz. AppFonts.forLocale).
-  # fonts:
-  #   - family: RwDisplay
-  #     fonts:
-  #       - asset: assets/fonts/RwDisplay-Bold.ttf
-  #         weight: 700
+  # Fontlar: Latin display + Latin/Kiril govde + Arapca + Thai; CJK sistem fontu (boyut karari, FONT-01)
+  fonts:
+    - family: RwDisplay
+      fonts:
+        - asset: assets/fonts/RwDisplay-Regular.ttf
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-Variable.ttf
+    - family: NotoSansArabic
+      fonts:
+        - asset: assets/fonts/NotoSansArabic-Variable.ttf
+    - family: NotoSansThai
+      fonts:
+        - asset: assets/fonts/NotoSansThai-Variable.ttf
+

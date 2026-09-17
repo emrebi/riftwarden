@@ -23,27 +23,24 @@ import 'package:riftwarden/app/theme/app_decorations.dart' show AppMaterial, App
 abstract final class AppFonts {
   /// Gosterim fontu: logo, buyuk rakamlar, ekran basliklari.
   /// Sadece Latin karakter gerektiren yerlerde kullanilir.
-  /// TODO(m5): Font bundle'landiginda 'RwDisplay' yapilacak (ARTINT-05).
   ///
-  /// `null` kalmasi bilincli: dekoratif gosterim fontu hicbir zaman
-  /// lokalize metnin TEK okunabilir yolu olamaz (DESIGN §5). Bu alan
-  /// dolsa bile kritik/govde metni bu fonta bagimli kalmamalidir.
-  static const String? display = null;
+  /// Dekoratif gosterim fontu hicbir zaman lokalize metnin TEK okunabilir
+  /// yolu olamaz (DESIGN §5). Bu alan dolsa bile kritik/govde metni bu fonta
+  /// bagimli kalmamalidir.
+  /// Lilita One sadece Latin kapsar, eksik glifler platform fontuna duser.
+  static const String display = 'RwDisplay';
 
   /// Locale'in yazi sistemine uygun govde fontu.
   /// null = sistem fontu (gecerli ve guvenli varsayilan).
-  static String? bodyFamilyFor(Locale locale) {
-    // TODO(m5): Noto alt kumeleri bundle'landiginda doldurulacak.
-    // Ornek hedef esleme:
-    //   ja            -> 'NotoSansJP'
-    //   ko            -> 'NotoSansKR'
-    //   zh (Hans)     -> 'NotoSansSC'
-    //   zh_Hant       -> 'NotoSansTC'
-    //   th            -> 'NotoSansThai'
-    //   ar            -> 'NotoSansArabic'
-    //   digerleri     -> 'NotoSans'
-    return null;
-  }
+  /// CJK fontlari boyut karari (47 MB) nedeniyle bundle edilmedi,
+  /// sistem fontuna duser (FONT-01).
+  static String? bodyFamilyFor(Locale locale) => switch (locale.languageCode) {
+        'ar' => 'NotoSansArabic',
+        'th' => 'NotoSansThai',
+        // CJK dosyalari 47 MB oldugu icin bundle edilmedi; sistem fontuna duser.
+        'ja' || 'ko' || 'zh' => null,
+        _ => 'Nunito',
+      };
 
   /// Bu locale saga-sola (RTL) mi akiyor.
   /// Flutter bunu kendisi de belirler; burasi UI mantiginda acik kontrol
