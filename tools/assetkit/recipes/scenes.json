@@ -1,0 +1,14 @@
+{
+  "_comment": "ART-08 ana menu sahnesi, opak tek parca",
+  "target": "ui_art",
+  "ui_group": "scenes",
+  "chroma": false,
+  "slice": "none",
+  "names": [
+    "main_menu"
+  ],
+  "max_size": 2048,
+  "padding": 0,
+  "format": "webp_lossy",
+  "quality": 85
+}

@@ -10,12 +10,11 @@ import 'package:riftwarden/shared/widgets/rw_material_surface.dart';
 ///
 /// Kaleye monte edilmis ahsap bir tabela gibi okunsun diye
 /// `RwMaterialSurface` (wood) uzerine kurulur (DESIGN §15 "mounted to
-/// architecture... boards, signs, banners"). Uretim logosu geldiginde
-/// `RwArt(group: logo, id: 'main_menu')` dogrudan onu gosterir; sanat
-/// eksikken (bugun) `fallback` tabela metnini cizer (ARTINT-09'da
-/// degistirilecek). Baslik metni sabit `AppTypography.screenTitle`
-/// kullanir, per-frame olcekleme (FittedBox) uygulanmaz.
-/// Ekran acilisinda yumusak belirme (fade + scale) animasyonu uygular.
+/// architecture... boards, signs, banners"). Uretim logosu
+/// `RwArt(group: logo, id: 'main_menu')` ile gosterilir; dosya
+/// eksikken `fallback` ahsap tabela metnini cizer. Baslik metni sabit
+/// `AppTypography.screenTitle` kullanir, per-frame olcekleme (FittedBox)
+/// uygulanmaz. Ekran acilisinda yumusak belirme (fade + scale) animasyonu uygular.
 class MenuLogo extends StatefulWidget {
   const MenuLogo({super.key});
 
@@ -72,6 +71,7 @@ class _MenuLogoState extends State<MenuLogo>
         child: RwArt(
           group: RwArtGroup.logo,
           id: 'main_menu',
+          fit: BoxFit.contain,
           semanticLabel: l10n.appTitle,
           fallback: RwMaterialSurface(
             material: AppMaterial.wood,

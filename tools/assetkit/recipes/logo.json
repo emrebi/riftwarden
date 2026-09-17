@@ -1,0 +1,15 @@
+{
+  "_comment": "ART-01 logo ve amblem, seffaf tekil dosyalar",
+  "target": "ui_art",
+  "ui_group": "logo",
+  "chroma": false,
+  "slice": "none",
+  "naming": "list",
+  "names": [
+    "emblem",
+    "main_menu"
+  ],
+  "max_size": 1024,
+  "padding": 2,
+  "format": "webp_lossless"
+}

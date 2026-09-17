@@ -6,6 +6,8 @@ import 'package:riftwarden/features/main_menu/widgets/menu_logo.dart';
 import 'package:riftwarden/features/main_menu/widgets/menu_play_button.dart';
 import 'package:riftwarden/features/main_menu/widgets/menu_progress_panel.dart';
 
+import 'package:riftwarden/shared/widgets/rw_art.dart';
+
 /// Ana menu sayfasi.
 ///
 /// Yatay duzende oyun acilisinda ilk izlenimi veren merkez ekran (DESIGN
@@ -63,10 +65,16 @@ class MainMenuScreen extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          // Zemin rengi SafeArea disinda tam ekrana yayilir; dunya sahnesi
-          // (fortress/rift illustrasyonu) ileride RwArt(group: scenes, ...)
-          // ile bu katmana eklenir (ARTINT-09).
-          const ColoredBox(color: AppColors.background),
+          // Zemin rengi ve dunya sahnesi SafeArea disinda tam ekrana yayilir
+          // (ARTINT-09).
+          const Positioned.fill(
+            child: RwArt(
+              group: RwArtGroup.scenes,
+              id: 'main_menu',
+              fit: BoxFit.cover,
+              fallback: ColoredBox(color: AppColors.background),
+            ),
+          ),
           SafeArea(
             left: false,
             right: false,
