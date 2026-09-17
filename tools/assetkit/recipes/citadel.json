@@ -1,0 +1,10 @@
+{
+  "chroma": false,
+  "slice": "none",
+  "include": ["citadel_basic.png"],
+  "names": ["castle_citadel"],
+  "max_size": 768,
+  "padding": 2,
+  "atlas_max": 2048,
+  "format": "webp_lossless"
+}

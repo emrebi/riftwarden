@@ -52,6 +52,7 @@ flutter:
     - assets/content/
     - assets/content/levels/
     - assets/images/
+    - assets/images/backgrounds/
     - assets/images/atlas/
     - assets/images/ui_art/portraits/
     - assets/images/ui_art/illustrations/

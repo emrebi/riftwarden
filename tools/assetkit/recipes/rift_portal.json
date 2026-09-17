@@ -1,0 +1,11 @@
+{
+  "chroma": false,
+  "slice": "cells",
+  "cols": 4,
+  "rows": 1,
+  "names": ["rift_portal", "_skip", "_skip", "_skip"],
+  "max_size": 512,
+  "padding": 2,
+  "atlas_max": 2048,
+  "format": "webp_lossless"
+}

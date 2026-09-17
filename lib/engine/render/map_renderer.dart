@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flame/components.dart' show Component, Vector2;
+import 'package:flame/flame.dart' show Flame;
 import 'package:flame/sprite.dart' show SpriteBatch;
 import 'package:riftwarden/core/constants/game_constants.dart';
 import 'package:riftwarden/engine/render/atlas_registry.dart';
@@ -75,6 +76,12 @@ class MapRenderer extends Component {
   static const double _defenseLineGapLength = 8;
   static const double _defenseLineStrokeWidth = 2;
 
+  Image? _bgImage;
+  final Paint _imagePaint = Paint();
+  final List<Rect> _bgSrcRects = <Rect>[];
+  final List<Rect> _bgDstRects = <Rect>[];
+  Rect _fallbackBgRect = Rect.zero;
+
   final Paint _bgPaint = Paint();
   final Paint _defenseLinePaint = Paint()
     ..style = PaintingStyle.stroke
@@ -111,20 +118,81 @@ class MapRenderer extends Component {
 
   @override
   Future<void> onLoad() async {
+    final environment = world.content.environment(world.level.environmentId);
+    final bgId = environment.background;
+    try {
+      _bgImage = await Flame.images.load('backgrounds/$bgId.webp');
+    } catch (_) {
+      _bgImage = null;
+    }
     _rebuildForSize(projection.size);
   }
 
-  /// Boyuta bagli TUM statik durumu (gradyan + iki batch) yeniden kurar.
-  /// [onLoad]'da bir kez, [render]'da boyut degistiginde cagrilir.
+  /// Boyuta bagli TUM statik durumu (gradyan + arka plan rect'leri + iki batch)
+  /// yeniden kurar. [onLoad]'da bir kez, [render]'da boyut degistiginde cagrilir.
   void _rebuildForSize(Vector2 size) {
     _layoutSize = size.clone();
-    _rebuildBackgroundGradient(size);
+    _rebuildBackground(size);
 
     _decorBatch.clear();
     _buildDecorBatch();
 
     _worldBatch.clear();
     _buildWorldBatch();
+  }
+
+  void _rebuildBackground(Vector2 size) {
+    _fallbackBgRect = Rect.fromLTWH(0, 0, size.x, size.y);
+    _rebuildBackgroundGradient(size);
+
+    _bgSrcRects.clear();
+    _bgDstRects.clear();
+
+    final img = _bgImage;
+    if (img == null) {
+      return;
+    }
+
+    final imgW = img.width.toDouble();
+    final imgH = img.height.toDouble();
+
+    final fieldLeft = projection.toScreenX(0);
+    final fieldTop = projection.toScreenY(0);
+    final fieldRight = projection.toScreenX(kFieldAspect);
+    final fieldBottom = projection.toScreenY(1.0);
+
+    // Saha dikdortgeni:
+    _bgSrcRects.add(Rect.fromLTWH(0, 0, imgW, imgH));
+    _bgDstRects.add(Rect.fromLTRB(fieldLeft, fieldTop, fieldRight, fieldBottom));
+
+    // Saha disinda kalan ekran alani (genis ekran/letterbox)
+    const stretchEdge = 8.0;
+    final edgeW = math.min(stretchEdge, imgW);
+    final edgeH = math.min(stretchEdge, imgH);
+
+    // Sol bosluk:
+    if (fieldLeft > 0) {
+      _bgSrcRects.add(Rect.fromLTWH(0, 0, edgeW, imgH));
+      _bgDstRects.add(Rect.fromLTRB(0, fieldTop, fieldLeft, fieldBottom));
+    }
+
+    // Sag bosluk:
+    if (fieldRight < size.x) {
+      _bgSrcRects.add(Rect.fromLTWH(imgW - edgeW, 0, edgeW, imgH));
+      _bgDstRects.add(Rect.fromLTRB(fieldRight, fieldTop, size.x, fieldBottom));
+    }
+
+    // Ust bosluk:
+    if (fieldTop > 0) {
+      _bgSrcRects.add(Rect.fromLTWH(0, 0, imgW, edgeH));
+      _bgDstRects.add(Rect.fromLTRB(0, 0, size.x, fieldTop));
+    }
+
+    // Alt bosluk:
+    if (fieldBottom < size.y) {
+      _bgSrcRects.add(Rect.fromLTWH(0, imgH - edgeH, imgW, edgeH));
+      _bgDstRects.add(Rect.fromLTRB(0, fieldBottom, size.x, size.y));
+    }
   }
 
   void _rebuildBackgroundGradient(Vector2 size) {
@@ -197,7 +265,7 @@ class MapRenderer extends Component {
     final index = atlas.indexOf('world', frameName);
     final source = atlas.rectOf('world', index);
     final visualSize = projection.toScreenSize(normalizedRadius * 2);
-    final scale = visualSize / _frameSize;
+    final scale = visualSize / source.height;
 
     _worldBatch.addTransform(
       source: source,
@@ -219,7 +287,7 @@ class MapRenderer extends Component {
       _rebuildForSize(size);
     }
 
-    _drawBackground(canvas, size);
+    _drawBackground(canvas);
     _decorBatch.render(canvas);
     _drawTerrainZones(canvas);
     _drawDefenseLine(canvas, size);
@@ -227,8 +295,15 @@ class MapRenderer extends Component {
     _drawCoreHpRing(canvas);
   }
 
-  void _drawBackground(Canvas canvas, Vector2 size) {
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.x, size.y), _bgPaint);
+  void _drawBackground(Canvas canvas) {
+    final img = _bgImage;
+    if (img != null) {
+      for (var i = 0; i < _bgSrcRects.length; i++) {
+        canvas.drawImageRect(img, _bgSrcRects[i], _bgDstRects[i], _imagePaint);
+      }
+    } else {
+      canvas.drawRect(_fallbackBgRect, _bgPaint);
+    }
   }
 
   /// Oynanisi etkileyen arazi alanlari (bkz. `TerrainSystem`): `slow` soluk
