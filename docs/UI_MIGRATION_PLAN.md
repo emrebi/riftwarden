@@ -85,7 +85,7 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | SEC-02 | DONE (planner fix: semantics onTap lost by excludeSemantics; restore purchases hidden per AQ-3; rw_toggle.dart header comment still future tense -> next doc task) | batch C13 |
 | SEC-03 | DONE (RwArt ids result.victory/result.defeat -> ART-13 naming) | batch C13 |
 | SEC-04 | DONE | batch C13 |
-| ART-PREP | READY (Phase 6: planner stops here for user, see Workflow) | — |
+| ART-PREP | DONE (Gemini Flash Medium worker, 0 fix; planner nits: UI_ART_DIR reuse. Recipes per delivery instead of `ui_art.json`: portraits, icons, ornaments, illustrations, rift_collapse; new `slice: cells` = declared grid by component bbox center. ARTINT-06 note: existing auto recipe merges 3 ART-05 enemies -> switch units/enemies/fx to `cells` there; ART-09 portal cell is `_skip` (engine, ARTINT-07); logo/scenes/result recipes added in their ARTINT) | ART-PREP commit |
 | ART-03 (asset) | APPROVED (intake sheet, 19 icons) | not committed (intake) |
 | ART-02 (asset) | APPROVED (intake sheet 4x2, 7 pieces) | not committed (intake) |
 | ART-10 (asset) | APPROVED after 1 revision (watch on device: arc_overcharge horned dummy, titan_juggernaut enemy-like golem) | intake: ART-10_1.png (4x2, 8), ART-10_2.png (4x2, 5) |
@@ -95,7 +95,8 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | ART-06 (asset) | APPROVED (Codex; alpha; 5 clear platforms + wall walk as 6th -> verify slot placement in ARTINT; tight margins, pad in assetkit) | intake: ART-06/citadel_basic.png |
 | ART-07 (asset) | APPROVED after 1 revision (Codex; keylined cartoon, mid-brown lane ~25-75% h; bottom corner rocks from ~70% h and top-edge cliffs cut -> check field y-bounds and wide extension in ARTINT) | intake: ART-07/fractured_edge.png |
 | ART-12 (asset) | APPROVED (Codex; 5x3 magenta sheet 1672x941, 15 FX in order, outlined cel style, no halos; shield/rings need runtime opacity) | intake: ART-12/vfx_sheet.png |
-| ART-01, 08, 11, 13 (asset) | IN PROGRESS (user, parallel) | — |
+| ART-01 (asset) | APPROVED (Codex gpt-5.6-luna; alpha; stone letters on wood plank, spelling checked; emblem = stone/wood ward with rift tear. ARTINT-09: wordmark -> `logo/main_menu` (MenuLogo id), emblem id to decide there) | intake: ART-01/logo_wordmark.png, ART-01/emblem.png |
+| ART-08, 11, 13 (asset) | IN PROGRESS (planner via Codex, sequential) | — |
 | all others | PENDING (see §6 order) | — |
 
 The planner updates this table in the commit of each approved task. This file is the single source of truth for task status; the planner's private plan file (P1–P17 era) is archive only.

@@ -11,12 +11,15 @@ web ChatGPT (kullanici zip'i design/art_intake/<ART-ID>.zip olarak kaydeder,
               design/art_intake/<ART-ID>/ altina cikartir)
    │
    ▼
-ingest  ── chroma key ─▶ dilimle ─▶ kirp ─▶ olcekle ─▶ assets/images/sprites/<grup>/*.webp
+ingest  ── chroma key ─▶ dilimle ─▶ kirp ─▶ olcekle ─▶ atlas: assets/images/sprites/<grup>/*.webp
+   │                                                   ui_art: assets/images/ui_art/<grup>/*.webp
    ▼
-pack    ── shelf paketleme ─▶ assets/images/atlas/<grup>.webp + .json
+pack    ── shelf paketleme ─▶ assets/images/atlas/<grup>.webp + .json (sadece atlas hedefi icin)
    ▼
-verify  ── icerik JSON'larindaki sprite atiflari atlas'ta var mi
+verify  ── icerik JSON'larindaki sprite atiflari atlas'ta ve ui_art'ta var mi
 ```
+
+UI sanati akisi: `ui_art` tarifleri `pack` gerektirmez, dogrudan `assets/images/ui_art/<grup>/` yazar.
 
 Pipeline'in son ciktisi her zaman **WebP**'dir (PNG degil). Kalite karari:
 
@@ -29,12 +32,19 @@ Pipeline'in son ciktisi her zaman **WebP**'dir (PNG degil). Kalite karari:
 ## Komutlar
 
 ```bash
+# Atlas akisi
 python tools/assetkit/assetkit.py ingest indirilenler/enemies.zip --recipe enemies
 python tools/assetkit/assetkit.py pack   --group enemies
 python tools/assetkit/assetkit.py verify
+
+# Coklu kaynak ve ozel cikti koku (--out)
+python tools/assetkit/assetkit.py ingest sheet_1.png sheet_2.png --recipe illustrations --out /tmp/cikis
+
+# UI sanati eksiklerini siki kontrol ile denetleme
+python tools/assetkit/assetkit.py verify --strict-ui-art
 ```
 
-`ingest` girdi olarak zip, klasor veya tek goruntu kabul eder.
+`ingest` girdi olarak bir veya birden fazla zip, klasor veya tek goruntu kabul eder (verilen sirayla islenir).
 
 ## Tarifler
 
@@ -46,13 +56,22 @@ python tools/assetkit/assetkit.py verify
 | `key` | `[255,0,255]` | Chroma rengi |
 | `tolerance` | `70` | Bu mesafenin altindaki pikseller tam seffaf |
 | `soft_edge` | `40` | Yumusak kenar bandi genisligi (anti-aliasing icin) |
-| `slice` | `"auto"` | `auto` = bosluga gore otomatik, `grid` = sabit `cols` x `rows` |
+| `slice` | `"auto"` | `auto` = bosluga gore otomatik, `grid` = sabit `cols` x `rows`, `cells` = bilesen merkezine gore bildirilen izgara (hucre kenarini asan govde ve kopuk parcalar konusuyla kalir, bos hucre isim tuketmez), `none` = tek parca |
+| `cols` | `0` | `grid` ve `cells` dilimleme icin sutun sayisi |
+| `rows` | `0` | `grid` ve `cells` dilimleme icin satir sayisi |
 | `min_gap` | `12` | Iki objeyi ayirmak icin gereken en az bos piksel |
-| `min_area` | `256` | Bundan kucuk parcalar gurultu sayilir, atilir |
+| `min_area` | `256` | Bundan kucuk parcalar gurultu sayilir, atilir (`auto` dilimlemede) |
+| `min_component` | `24` | `cells` dilimlemede gurultu sayilip atilacak en az bilesen piksel sayisi |
 | `max_size` | `256` | Sprite'in en uzun kenari (sadece kucultur) |
+| `max_size_by_group` | `{}` | `ui_art` hedefinde gruba ozel en uzun kenar (ornek `{"icons": 128}`), yoksa `max_size` gecerlidir |
 | `padding` | `2` | Sprite cevresine birakilan seffaf pay (texture bleeding onler) |
 | `atlas_max` | `2048` | Atlas doku ust siniri |
-| `names` | `[]` | Sirayla atanacak sprite adlari. Bos birakilirsa `grup_000` seklinde numaralanir. |
+| `target` | `"atlas"` | Cikti hedefi: `"atlas"` (`assets/images/sprites/<tarif>/`) veya `"ui_art"` (`assets/images/ui_art/<grup>/`) |
+| `ui_group` | `""` | `ui_art` hedefinde varsayilan grup (`portraits`, `illustrations`, `icons`, `ornaments`, `logo`, `scenes`) |
+| `include` | `[]` | Bos degilse sadece dosya adi bu `fnmatch` desenlerinden birine uyan girdiler islenir |
+| `naming` | `"list"` | Isimlendirme yontemi: `"list"` (`names` sirayla) veya `"file_stem"` (dosya adindan) |
+| `strip_suffix` | `""` | `file_stem` isimlendirmede dosya kokunden atilacak sonek |
+| `names` | `[]` | Sirayla atanacak sprite adlari. Bos birakilirsa `grup_000` seklinde numaralanir. `_skip` verilirse parca uretilmez/yazilmaz ama isim tuketilir. `ui_art` hedefinde `grup/id` biciminde ad verilerek oge baska bir UI grubuna yonlendirilebilir. |
 | `format` | `"webp_lossless"` | `webp_lossless` veya `webp_lossy`. Yukaridaki kalite kararina bak. |
 | `quality` | `85` | `webp_lossy` icin kalite (0-100). `webp_lossless` icin yok sayilir. |
 
@@ -91,7 +110,8 @@ gerekir, magenta zemin degil.
 | `scenes` | tam sahne, tek parca, opak | `design/art_intake/ART-08/`, `ART-13/` | 2048 px (genis kenar) | `assets/images/ui_art/scenes/<id>.webp` |
 
 `portraits`/`illustrations`/`icons`/`ornaments`/`logo`/`scenes` gruplarinin
-`assetkit` tarifleri (`recipes/portraits.json`, `recipes/ui_art.json`,
-`recipes/illustrations.json`) `ART-PREP` gorevinde olusturulur; bu tablo o
-gorevin hedef boyut/klasor sozlesmesidir. Var olan `enemies`/`units`/`fx`/
-`world`/`background` tarifleri degismez.
+`assetkit` tarifleri (`portraits`, `icons`, `ornaments`, `illustrations`,
+`rift_collapse`) `ART-PREP` gorevinde olusturulur (logo/scenes/result tarifleri
+ilgili ART onaylaninca ARTINT gorevinde eklenir); bu tablo o gorevlerin
+hedef boyut/klasor sozlesmesidir. Var olan `enemies`/`units`/`fx`/`world`/
+`background` tarifleri degismez.

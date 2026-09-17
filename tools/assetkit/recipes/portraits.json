@@ -1,0 +1,15 @@
+{
+  "_comment": "ART-04 portreleri, seffaf tekil dosyalar",
+  "target": "ui_art",
+  "ui_group": "portraits",
+  "chroma": true,
+  "slice": "none",
+  "include": [
+    "*_portrait.png"
+  ],
+  "naming": "file_stem",
+  "strip_suffix": "_portrait",
+  "max_size": 512,
+  "padding": 2,
+  "format": "webp_lossless"
+}

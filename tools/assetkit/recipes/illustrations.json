@@ -1,0 +1,27 @@
+{
+  "_comment": "ART-10 yetenek cizimleri, iki seffaf 4x2 sheet",
+  "target": "ui_art",
+  "ui_group": "illustrations",
+  "chroma": true,
+  "slice": "cells",
+  "cols": 4,
+  "rows": 2,
+  "max_size": 512,
+  "padding": 2,
+  "format": "webp_lossless",
+  "names": [
+    "upgrade_chain",
+    "upgrade_pierce",
+    "upgrade_crit",
+    "upgrade_explosion",
+    "upgrade_swarm",
+    "upgrade_economy",
+    "upgrade_core",
+    "upgrade_pulse_dualshot",
+    "upgrade_pulse_overcharge",
+    "upgrade_arc_overcharge",
+    "upgrade_arc_focus",
+    "upgrade_titan_shockwave",
+    "upgrade_titan_juggernaut"
+  ]
+}

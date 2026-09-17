@@ -1,0 +1,21 @@
+{
+  "_comment": "ART-02 UI suslemeleri, magenta 4x2 izgara",
+  "target": "ui_art",
+  "ui_group": "ornaments",
+  "chroma": true,
+  "slice": "cells",
+  "cols": 4,
+  "rows": 2,
+  "max_size": 256,
+  "padding": 2,
+  "format": "webp_lossless",
+  "names": [
+    "board_end_cap",
+    "peg",
+    "parchment_corner",
+    "parchment_edge",
+    "stone_corner",
+    "banner_tail",
+    "selection_marker"
+  ]
+}

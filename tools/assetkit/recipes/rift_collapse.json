@@ -1,0 +1,21 @@
+{
+  "_comment": "ART-09 yikim yetenegi ogeleri, seffaf 4x1 izgara",
+  "target": "ui_art",
+  "ui_group": "illustrations",
+  "chroma": true,
+  "slice": "cells",
+  "cols": 4,
+  "rows": 1,
+  "max_size": 512,
+  "max_size_by_group": {
+    "icons": 128
+  },
+  "padding": 2,
+  "format": "webp_lossless",
+  "names": [
+    "_skip",
+    "icons/ability_collapse",
+    "illustrations/ability_collapse",
+    "illustrations/ability_collapse_reticle"
+  ]
+}

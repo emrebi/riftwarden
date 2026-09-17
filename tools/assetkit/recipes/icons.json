@@ -1,0 +1,33 @@
+{
+  "_comment": "ART-03 UI ikonlari, magenta 5x4 izgara",
+  "target": "ui_art",
+  "ui_group": "icons",
+  "chroma": true,
+  "slice": "cells",
+  "cols": 5,
+  "rows": 4,
+  "max_size": 128,
+  "padding": 2,
+  "format": "webp_lossless",
+  "names": [
+    "aether",
+    "shard",
+    "cell",
+    "rift",
+    "attack",
+    "support",
+    "area",
+    "utility",
+    "magic",
+    "health",
+    "lock",
+    "level",
+    "settings",
+    "pause",
+    "back",
+    "info",
+    "plus",
+    "close",
+    "check"
+  ]
+}
