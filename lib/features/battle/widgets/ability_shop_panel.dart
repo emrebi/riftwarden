@@ -8,7 +8,12 @@ import 'package:riftwarden/content/schema/schema.dart';
 import 'package:riftwarden/engine/bridge/battle_signals.dart';
 import 'package:riftwarden/features/battle/viewmodel/upgrade_text.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
+import 'package:riftwarden/shared/widgets/rw_button.dart';
+import 'package:riftwarden/shared/widgets/rw_card.dart';
+import 'package:riftwarden/shared/widgets/rw_currency_chip.dart';
+import 'package:riftwarden/shared/widgets/rw_icon.dart';
 import 'package:riftwarden/shared/widgets/rw_icon_button.dart';
+import 'package:riftwarden/shared/widgets/rw_panel.dart';
 
 /// Savas ekraninda secilen savascinin yetenek dukkani tekliflerini gosteren
 /// kompakt panel.
@@ -46,58 +51,33 @@ class AbilityShopPanel extends StatelessWidget {
   /// Paneli kapatma eylemi.
   final VoidCallback onClose;
 
+  // 640x360 en dar ekranda alt seridin ustune sigmasi icin panel ve kart
+  // olculeri sabit tutulur; teklif sayisi artarsa yatay/dikey kaydirma
+  // devreye girer (bkz. build icindeki cift ScrollView).
+  static const double _panelWidth = 272.0;
+  static const double _panelMaxHeight = 176.0;
+  static const double _cardWidth = 140.0;
+  static const double _closeIconSize = 18.0;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Container(
-      width: 320.0,
-      padding: const EdgeInsetsDirectional.all(AppSpacing.sm),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceOverlay,
-        borderRadius: const BorderRadius.all(
-          Radius.circular(AppRadius.lg),
+    return SizedBox(
+      width: _panelWidth,
+      child: RwPanel(
+        variant: RwPanelVariant.smallInfo,
+        title: '$unitName — ${l10n.hudAbilities}',
+        trailing: RwIconButton(
+          icon: Icons.close_rounded,
+          tooltip: l10n.commonClose,
+          size: AppSpacing.minTouchTarget,
+          iconSize: _closeIconSize,
+          onPressed: onClose,
         ),
-        border: Border.all(
-          color: AppColors.aetherCyanDim,
-          width: 1.0,
-        ),
-        boxShadow: AppShadows.panel,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          // Baslik satiri: Savasci adi + yetenekler etiketi ve kapat butonu
-          Row(
-            children: <Widget>[
-              const Icon(
-                Icons.auto_awesome_rounded,
-                size: 16.0,
-                color: AppColors.aetherCyan,
-              ),
-              const SizedBox(width: AppSpacing.xs),
-              Expanded(
-                child: Text(
-                  '$unitName — ${l10n.hudAbilities}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTypography.titleMedium.copyWith(
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-              ),
-              RwIconButton(
-                icon: Icons.close_rounded,
-                size: AppSpacing.minTouchTarget,
-                iconSize: 18.0,
-                onPressed: onClose,
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          // Teklifler listesi (her savasci icin iki teklif yan yana)
-          ValueListenableBuilder<Map<String, ShopOffer>>(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: _panelMaxHeight),
+          child: ValueListenableBuilder<Map<String, ShopOffer>>(
             valueListenable: abilityShop,
             builder: (
               BuildContext context,
@@ -112,30 +92,39 @@ class AbilityShopPanel extends StatelessWidget {
                 return const SizedBox.shrink();
               }
 
-              return Row(
-                children: <Widget>[
-                  for (var i = 0; i < unitOffers.length; i++) ...<Widget>[
-                    if (i > 0) const SizedBox(width: AppSpacing.xs),
-                    Expanded(
-                      child: _OfferCard(
-                        offer: unitOffers[i],
-                        title: switch (upgrades[unitOffers[i].upgradeId]) {
-                          final UpgradeConfig u => upgradeTitle(l10n, u),
-                          null => unitOffers[i].upgradeId,
-                        },
-                        description: switch (upgrades[unitOffers[i].upgradeId]) {
-                          final UpgradeConfig u => upgradeDescription(l10n, u),
-                          null => '',
-                        },
-                        onBuy: onBuyAbility,
-                      ),
-                    ),
-                  ],
-                ],
+              return SingleChildScrollView(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: <Widget>[
+                      for (var i = 0; i < unitOffers.length; i++) ...<Widget>[
+                        if (i > 0) const SizedBox(width: AppSpacing.xs),
+                        SizedBox(
+                          width: _cardWidth,
+                          child: _OfferCard(
+                            offer: unitOffers[i],
+                            title: switch (upgrades[unitOffers[i].upgradeId]) {
+                              final UpgradeConfig u => upgradeTitle(l10n, u),
+                              null => unitOffers[i].upgradeId,
+                            },
+                            description: switch (
+                              upgrades[unitOffers[i].upgradeId]
+                            ) {
+                              final UpgradeConfig u =>
+                                upgradeDescription(l10n, u),
+                              null => '',
+                            },
+                            onBuy: onBuyAbility,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
               );
             },
           ),
-        ],
+        ),
       ),
     );
   }
@@ -155,137 +144,59 @@ class _OfferCard extends StatelessWidget {
   final String description;
   final void Function(String upgradeId) onBuy;
 
+  static const double _ownedIconSize = 14.0;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final isOwned = offer.owned;
     final canBuy = offer.canBuy && !isOwned;
 
-    return Container(
-      padding: const EdgeInsetsDirectional.all(AppSpacing.xs),
-      decoration: BoxDecoration(
-        color: isOwned
-            ? AppColors.surfaceRaised
-            : AppColors.surface.withValues(alpha: 0.7),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(AppRadius.md),
-        ),
-        border: Border.all(
-          color: isOwned
-              ? AppColors.coreTeal
-              : (canBuy ? AppColors.aetherCyanDim : AppColors.surfaceRaised),
-          width: 1.0,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Text(
-            title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: AppTypography.label.copyWith(
-              color: isOwned ? AppColors.coreTeal : AppColors.textPrimary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 2.0),
-          Text(
-            description,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: AppTypography.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          if (isOwned)
-            Container(
-              constraints: const BoxConstraints(
-                minHeight: AppSpacing.minTouchTarget,
-              ),
-              alignment: AlignmentDirectional.center,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const Icon(
-                    Icons.check_circle_rounded,
-                    size: 14.0,
-                    color: AppColors.coreTeal,
-                  ),
-                  const SizedBox(width: AppSpacing.xs),
-                  Text(
-                    l10n.hudOwned,
-                    style: AppTypography.label.copyWith(
-                      color: AppColors.coreTeal,
-                    ),
-                  ),
-                ],
-              ),
-            )
-          else
-            ConstrainedBox(
-              constraints: const BoxConstraints(
-                minHeight: AppSpacing.minTouchTarget,
-              ),
-              child: GestureDetector(
-                onTap: canBuy ? () => onBuy(offer.upgradeId) : null,
-                behavior: HitTestBehavior.opaque,
-                child: Container(
-                  alignment: AlignmentDirectional.center,
-                  padding: const EdgeInsetsDirectional.symmetric(
-                    horizontal: AppSpacing.xs,
-                    vertical: AppSpacing.xs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: canBuy
-                        ? AppColors.surfaceRaised
-                        : AppColors.surface.withValues(alpha: 0.4),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(AppRadius.sm),
-                    ),
-                    border: Border.all(
-                      color: canBuy ? AppColors.cta : AppColors.surfaceRaised,
-                      width: 1.0,
-                    ),
-                    boxShadow: canBuy
-                        ? AppShadows.glow(AppColors.cta, blurRadius: 4.0)
-                        : null,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(
-                        Icons.bolt_rounded,
-                        size: 14.0,
-                        color: canBuy
-                            ? AppColors.aether
-                            : AppColors.textDisabled,
-                      ),
-                      Text(
-                        offer.cost.toString(),
-                        style: AppTypography.numeric.copyWith(
-                          color: canBuy
-                              ? AppColors.aether
-                              : AppColors.textDisabled,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.xs),
-                      Text(
-                        l10n.hudBuy,
-                        style: AppTypography.label.copyWith(
-                          color: canBuy
-                              ? AppColors.textPrimary
-                              : AppColors.textDisabled,
-                        ),
-                      ),
-                    ],
+    return RwCard(
+      title: title,
+      description: description.isEmpty ? null : description,
+      // Yetenek tekliflerinde nadirlik ayrimi yok; kart durumu (sahip/
+      // alinabilir/pasif) tek anlamli sinyal oldugundan notr bir deger
+      // kullanilir.
+      rarity: 'common',
+      isSelected: isOwned,
+      state: (!canBuy && !isOwned) ? RwCardState.disabled : null,
+      action: isOwned
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const RwIcon(
+                  RwIconId.check,
+                  size: _ownedIconSize,
+                  color: AppColors.success,
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                Text(
+                  l10n.hudOwned,
+                  style: AppTypography.onMaterialSecondary(
+                    AppTypography.smallLabel,
+                    AppMaterial.parchment,
                   ),
                 ),
-              ),
+              ],
+            )
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                RwCurrencyChip(
+                  currency: RwCurrency.aether,
+                  amount: offer.cost,
+                  compact: true,
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                RwButton(
+                  label: l10n.hudBuy,
+                  onPressed: canBuy ? () => onBuy(offer.upgradeId) : null,
+                  isExpanded: true,
+                ),
+              ],
             ),
-        ],
-      ),
     );
   }
 }

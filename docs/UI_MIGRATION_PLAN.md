@@ -76,13 +76,18 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | BATTLE-03 | DONE (1 fix: legacy dark band, segment -1) | batch C9 |
 | BATTLE-04 | DONE (top offset overlapped top bar, fixed) | batch C9 |
 | BATTLE-05 | DONE (1 fix: shared x/6 capacity indicator restored) | batch C10 |
-| BATTLE-06 | READY | — |
+| BATTLE-06 | DONE (planner nit: raw icon sizes to consts) | batch C11 |
+| BATTLE-07 | DONE (gap: no dedicated a11y key for Rift Collapse, uses battleAimHint) | batch C11 |
+| BATTLE-08 | DONE | batch C11 |
+| BATTLE-09 | DONE | batch C11 |
+| MENU-01 | READY | — |
 | ART-03 (asset) | APPROVED (intake sheet, 19 icons) | not committed (intake) |
 | ART-02 (asset) | APPROVED (intake sheet 4x2, 7 pieces) | not committed (intake) |
 | ART-10 (asset) | APPROVED after 1 revision (watch on device: arc_overcharge horned dummy, titan_juggernaut enemy-like golem) | intake: ART-10_1.png (4x2, 8), ART-10_2.png (4x2, 5) |
 | ART-09 (asset) | APPROVED (transparent sheet 4x1: portal, icon, illustration, reticle) | intake: ART-09.png |
-| ART-05 (asset) | CANDIDATE (Codex gpt-5.6-luna revision: flat #FF00FF, no halos, phaseborn/splitter fixed; awaiting user pick. ART-PREP notes: bulwark crosses cell edge ~8px -> bbox/component slicing, tight key tolerance for thin violet lines) | intake: codex/ART-05.png |
-| ART-01, 04, 06, 07, 08, 11, 12, 13 (asset) | IN PROGRESS (user, parallel) | — |
+| ART-05 (asset) | APPROVED (Codex gpt-5.6-luna revision replaced intake; ART-PREP notes: bulwark crosses cell edge ~8px -> bbox/component slicing, tight key tolerance for thin violet lines) | intake: ART-05.png |
+| ART-04 (asset) | IN PROGRESS (Codex gpt-5.6-luna) | intake: codex/ART-04/ |
+| ART-01, 06, 07, 08, 11, 12, 13 (asset) | IN PROGRESS (user, parallel) | — |
 | all others | PENDING (see §6 order) | — |
 
 The planner updates this table in the commit of each approved task. This file is the single source of truth for task status; the planner's private plan file (P1–P17 era) is archive only.

@@ -16,6 +16,8 @@ import 'package:riftwarden/features/battle/widgets/core_health_bar.dart';
 import 'package:riftwarden/features/battle/widgets/unit_spawn_bar.dart';
 import 'package:riftwarden/features/battle/widgets/upgrade_choice_overlay.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
+import 'package:riftwarden/shared/widgets/rw_icon.dart';
+import 'package:riftwarden/shared/widgets/rw_material_surface.dart';
 
 /// Savas ekrani.
 ///
@@ -52,6 +54,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen> {
   /// Core HP bari bu seridin altina, aralarinda ek bosluk birakarak oturur.
   static const double _topBarHeight = AppSpacing.xs + 48.0 + AppSpacing.xs;
   static const double _coreHealthBarWidth = 180.0;
+  static const double _aimHintIconSize = 20.0;
 
   VoidCallback get _handleExit => widget.onExit ?? widget.onBack ?? () {};
 
@@ -173,41 +176,30 @@ class _BattleScreenState extends ConsumerState<BattleScreen> {
                           }
                         },
                         child: Container(
-                          color: AppColors.voidDeep.withValues(alpha: 0.35),
+                          color: AppColors.hudEdge.withValues(alpha: 0.35),
                           child: Center(
-                            child: Container(
+                            child: RwMaterialSurface(
+                              material: AppMaterial.hud,
+                              shape: RwSurfaceShape.pill,
+                              depth: RwSurfaceDepth.raised,
                               padding: const EdgeInsetsDirectional.symmetric(
                                 horizontal: AppSpacing.lg,
                                 vertical: AppSpacing.sm,
                               ),
-                              decoration: BoxDecoration(
-                                color: AppColors.surfaceOverlay,
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(AppRadius.pill),
-                                ),
-                                border: Border.all(
-                                  color: AppColors.aetherCyan,
-                                  width: 1.0,
-                                ),
-                                boxShadow: AppShadows.glow(
-                                  AppColors.aetherCyan,
-                                  blurRadius: 12.0,
-                                ),
-                              ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
-                                  const Icon(
-                                    Icons.crisis_alert_rounded,
-                                    size: 20.0,
-                                    color: AppColors.aetherCyan,
+                                  RwIcon(
+                                    RwIconId.rift,
+                                    size: _aimHintIconSize,
+                                    color: AppMaterials.text(AppMaterial.hud),
                                   ),
                                   const SizedBox(width: AppSpacing.sm),
                                   Text(
                                     l10n.battleAimHint,
-                                    style: AppTypography.label.copyWith(
-                                      color: AppColors.aetherCyan,
-                                      letterSpacing: 1.2,
+                                    style: AppTypography.onMaterial(
+                                      AppTypography.label,
+                                      AppMaterial.hud,
                                     ),
                                   ),
                                 ],

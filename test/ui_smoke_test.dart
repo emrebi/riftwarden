@@ -13,6 +13,7 @@ import 'package:riftwarden/core/services/service_providers.dart';
 import 'package:riftwarden/engine/bridge/battle_signals.dart';
 import 'package:riftwarden/features/battle/view/battle_screen.dart';
 import 'package:riftwarden/features/battle/widgets/ability_button.dart';
+import 'package:riftwarden/features/battle/widgets/battle_pause_overlay.dart';
 import 'package:riftwarden/features/battle/widgets/battle_top_bar.dart';
 import 'package:riftwarden/features/battle/widgets/core_health_bar.dart';
 import 'package:riftwarden/features/battle/widgets/unit_spawn_bar.dart';
@@ -27,9 +28,14 @@ import 'package:riftwarden/features/result/view/result_data.dart';
 import 'package:riftwarden/features/result/view/result_screen.dart';
 import 'package:riftwarden/features/settings/view/settings_screen.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
+import 'package:riftwarden/shared/widgets/rw_ability_frame.dart';
 import 'package:riftwarden/shared/widgets/rw_art.dart';
 import 'package:riftwarden/shared/widgets/rw_button.dart';
 import 'package:riftwarden/shared/widgets/rw_card.dart';
+import 'package:riftwarden/shared/widgets/rw_currency_chip.dart';
+import 'package:riftwarden/shared/widgets/rw_defender_slot.dart';
+import 'package:riftwarden/shared/widgets/rw_icon_button.dart';
+import 'package:riftwarden/shared/widgets/rw_segmented_progress.dart';
 
 class _FakeOrientationService extends OrientationService {
   int lockLandscapeCallCount = 0;
@@ -300,7 +306,7 @@ void main() {
       addTearDown(view.resetDevicePixelRatio);
     }
 
-    Widget wrapBattle() {
+    Widget wrapBattle({Locale locale = const Locale('en')}) {
       return ProviderScope(
         overrides: [
           contentRegistryProvider.overrideWithValue(content),
@@ -308,8 +314,8 @@ void main() {
         child: MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          theme: AppTheme.build(const Locale('en')),
-          locale: const Locale('en'),
+          theme: AppTheme.build(locale),
+          locale: locale,
           home: BattleScreen(levelId: 1, onExit: noop),
         ),
       );
@@ -319,34 +325,86 @@ void main() {
       ('640x360', Size(1920, 1080)),
       ('800x360', Size(2400, 1080)),
     ];
+    const battleLocales = <Locale>[Locale('en'), Locale('ar')];
 
     for (final (label, physicalSize) in battleSurfaces) {
-      testWidgets('$label yuzeyinde tasmiyor', (WidgetTester tester) async {
-        await setSurface(tester, physicalSize);
-        await tester.pumpWidget(wrapBattle());
-        await tester.pump(const Duration(milliseconds: 200));
+      for (final locale in battleLocales) {
+        testWidgets(
+          '$label yuzeyinde (${locale.languageCode}) tasmiyor',
+          (WidgetTester tester) async {
+            await setSurface(tester, physicalSize);
+            await tester.pumpWidget(wrapBattle(locale: locale));
+            await tester.pump(const Duration(milliseconds: 200));
 
-        final stackSize = tester.getSize(find.byType(Stack).first);
-        expect(stackSize, physicalSize / 3.0);
+            final stackSize = tester.getSize(find.byType(Stack).first);
+            expect(stackSize, physicalSize / 3.0);
 
-        const hudTypes = <Type>[
-          AbilityButton,
-          BattleTopBar,
-          CoreHealthBar,
-          UnitSpawnBar,
-        ];
-        for (final hudType in hudTypes) {
-          final finder = find.byWidgetPredicate(
-            (Widget widget) => widget.runtimeType == hudType,
-          );
-          expect(finder, findsOneWidget, reason: '$hudType agacta bulunamadi');
-          final size = tester.getSize(finder);
-          expect(size.width, greaterThan(0.0), reason: '$hudType genisligi 0');
-        }
+            const hudTypes = <Type>[
+              AbilityButton,
+              BattleTopBar,
+              CoreHealthBar,
+              UnitSpawnBar,
+            ];
+            for (final hudType in hudTypes) {
+              final finder = find.byWidgetPredicate(
+                (Widget widget) => widget.runtimeType == hudType,
+              );
+              expect(
+                finder,
+                findsOneWidget,
+                reason: '$hudType agacta bulunamadi',
+              );
+              final size = tester.getSize(finder);
+              expect(size.width, greaterThan(0.0), reason: '$hudType genisligi 0');
+            }
 
-        expect(tester.takeException(), isNull);
-      });
+            expect(find.byType(RwAbilityFrame), findsOneWidget);
+            expect(find.byType(RwDefenderSlot), findsNWidgets(3));
+            expect(find.byType(RwCurrencyChip), findsWidgets);
+            expect(find.byType(RwSegmentedProgress), findsWidgets);
+
+            expect(tester.takeException(), isNull);
+
+            // Alt serit (yuva/yetenek butonlari) ekran yuksekliginin
+            // %20'sini gecmemeli (DESIGN §10 / HUD kisiti).
+            final stripRect = tester.getRect(
+              find
+                  .ancestor(
+                    of: find.byType(UnitSpawnBar),
+                    matching: find.byType(Container),
+                  )
+                  .first,
+            );
+            final surfaceHeight = physicalSize.height / 3.0;
+            expect(
+              stripRect.height,
+              lessThanOrEqualTo(surfaceHeight * 0.20),
+              reason: 'Alt serit yuksekligi %20 sinirini asiyor',
+            );
+          },
+        );
+      }
     }
+
+    testWidgets('duraklatma butonu BattlePauseOverlay acar', (
+      WidgetTester tester,
+    ) async {
+      await setSurface(tester, const Size(1920, 1080));
+      await tester.pumpWidget(wrapBattle());
+      await tester.pump(const Duration(milliseconds: 200));
+
+      final pauseButton = find.descendant(
+        of: find.byType(BattleTopBar),
+        matching: find.byType(RwIconButton),
+      );
+      expect(pauseButton, findsOneWidget);
+
+      await tester.tap(pauseButton);
+      await tester.pump(const Duration(milliseconds: 200));
+
+      expect(find.byType(BattlePauseOverlay), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
   });
 
   group('WidgetGallery', () {
