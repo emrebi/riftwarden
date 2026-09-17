@@ -39,6 +39,7 @@ Aşağıdaki tablodan işini bul, **sadece** listelenen dosyaları aç.
 | **Savunmaci yuvasi kullan/değiştir (RwDefenderSlot)** | `lib/shared/widgets/rw_defender_slot.dart` (`RwMaterialSurface(material: stone)` uzerine kurulu; `RwDefenderSlotState`: empty/available/selected/locked/purchaseable/unaffordable/occupied) | — |
 | **Yetenek cercevesi/cooldown ring kullan/değiştir (RwAbilityFrame)** | `lib/shared/widgets/rw_ability_frame.dart` (`RwMaterialSurface(shape: circle, material: stone)` uzerine kurulu; `RwAbilityState`: ready/cooldown/targeting/unavailable) | — |
 | **Acma/kapama anahtari kullan/değiştir (RwToggle)** | `lib/shared/widgets/rw_toggle.dart` (`RwMaterialSurface(shape: pill)` track + `circle` knob; SEC-02'de `SettingsSwitchRow` icindeki Material `Switch`'in yerine gecti) | — |
+| **Susleme parcasi kullan/ekle (RwOrnament)** | `lib/shared/widgets/rw_ornament.dart` (`RwOrnament` tek parca, `RwSurfaceOrnaments` malzeme on ayari; RwPanel/RwCard `showOrnaments` ile kapatilir), `assets/images/ui_art/ornaments/`, tarif `tools/assetkit/recipes/ornaments.json` | — |
 | **Ikon kullan/ekle (RwIcon)** | `lib/shared/widgets/rw_icon.dart`, `assets/images/ui_art/icons/` (gelecek, ARTINT-02) | — |
 | **UI gorseli goster (RwArt)** | `lib/shared/widgets/rw_art.dart`, `assets/images/ui_art/<grup>/<id>.webp` | — |
 | **Ekran iskeleti kullan/değiştir (RwScreenScaffold)** | `lib/shared/widgets/rw_screen_scaffold.dart` (baslik seridi `RwMaterialSurface(material: wood)` uzerine kurulu; `background` katmani ileride `RwArt(group: scenes)`) | — |

@@ -18,6 +18,7 @@ import 'package:riftwarden/shared/widgets/rw_dialog.dart';
 import 'package:riftwarden/shared/widgets/rw_icon.dart';
 import 'package:riftwarden/shared/widgets/rw_icon_button.dart';
 import 'package:riftwarden/shared/widgets/rw_material_surface.dart';
+import 'package:riftwarden/shared/widgets/rw_ornament.dart';
 import 'package:riftwarden/shared/widgets/rw_panel.dart';
 import 'package:riftwarden/shared/widgets/rw_progress_bar.dart';
 import 'package:riftwarden/shared/widgets/rw_screen_scaffold.dart';
@@ -411,6 +412,97 @@ class _WidgetGalleryState extends State<WidgetGallery> {
             const Directionality(
               textDirection: TextDirection.rtl,
               child: RwIcon(RwIconId.back, size: 32.0),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // --- SECTION: ORNAMENTS ---
+            const RwSectionHeader(
+              title: 'Ornaments (RwOrnament)',
+              subtitle:
+                  '7 susleme parcasi + malzeme on ayarlari (RwSurfaceOrnaments)',
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Wrap(
+              spacing: AppSpacing.xl,
+              runSpacing: AppSpacing.xl,
+              children: RwOrnamentId.values
+                  .map(
+                    (id) => Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        RwOrnament(id: id, size: 48.0),
+                        const SizedBox(height: AppSpacing.xs),
+                        _buildGalleryText(
+                          id.name,
+                          style: AppTypography.smallLabel,
+                        ),
+                      ],
+                    ),
+                  )
+                  .toList(),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Wrap(
+              spacing: AppSpacing.xl,
+              runSpacing: AppSpacing.xl,
+              children: AppMaterial.values
+                  .map(
+                    (m) => SizedBox(
+                      width: 140.0,
+                      height: 72.0,
+                      child: RwMaterialSurface(
+                        material: m,
+                        decoration: RwSurfaceOrnaments(material: m),
+                        child: _buildGalleryText(
+                          m.name,
+                          style: AppTypography.smallLabel,
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Wrap(
+              spacing: AppSpacing.xl,
+              runSpacing: AppSpacing.xl,
+              children: <Widget>[
+                SizedBox(
+                  width: 140.0,
+                  height: 72.0,
+                  child: RwMaterialSurface(
+                    material: AppMaterial.parchment,
+                    isSelected: true,
+                    decoration: const RwSurfaceOrnaments(
+                      material: AppMaterial.parchment,
+                      isSelected: true,
+                    ),
+                    child: _buildGalleryText(
+                      'selected (LTR)',
+                      style: AppTypography.smallLabel,
+                    ),
+                  ),
+                ),
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: SizedBox(
+                    width: 140.0,
+                    height: 72.0,
+                    child: RwMaterialSurface(
+                      material: AppMaterial.parchment,
+                      isSelected: true,
+                      decoration: const RwSurfaceOrnaments(
+                        material: AppMaterial.parchment,
+                        isSelected: true,
+                      ),
+                      child: _buildGalleryText(
+                        'selected (RTL)',
+                        style: AppTypography.smallLabel,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: AppSpacing.xl),
 

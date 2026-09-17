@@ -5,6 +5,7 @@ import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
 import 'package:riftwarden/shared/widgets/rw_icon.dart';
 import 'package:riftwarden/shared/widgets/rw_material_surface.dart';
+import 'package:riftwarden/shared/widgets/rw_ornament.dart';
 
 /// Kart gorsel turu (DESIGN §9). Anatomi hepsinde aynidir (cerceve -> art
 /// zone -> baslik -> aciklama -> badge -> action); tur sadece art zone
@@ -50,6 +51,7 @@ class RwCard extends StatefulWidget {
     this.art,
     this.action,
     this.lockReason,
+    this.showOrnaments = true,
   });
 
   final String title;
@@ -60,6 +62,9 @@ class RwCard extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
   final bool isSelected;
+
+  /// Kompakt/yogun yerlesimde susleme kapatilabilir.
+  final bool showOrnaments;
 
   /// Kart gorsel turu (DESIGN §9). Varsayilan `standard`.
   final RwCardKind kind;
@@ -288,6 +293,13 @@ class _RwCardState extends State<RwCard> {
         isSelected: isSelected,
         isDisabled: isDisabled,
         padding: EdgeInsetsDirectional.zero,
+        decoration: widget.showOrnaments
+            ? RwSurfaceOrnaments(
+                material: AppMaterial.parchment,
+                isSelected: isSelected,
+                compact: widget.kind == RwCardKind.upgrade,
+              )
+            : null,
         child: body,
       ),
     );

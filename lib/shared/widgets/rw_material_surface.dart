@@ -73,8 +73,8 @@ class RwMaterialSurface extends StatelessWidget {
   /// zaman ayni Path'i uretir (bkz. sinif dokumantasyonu).
   final int seed;
 
-  /// Ileride raster susleme (ARTINT-01) icin ayrilan, dokunmayi engellemeyen
-  /// ust katman. Bugun bos birakilabilir.
+  /// Raster susleme katmani (ornek `RwSurfaceOrnaments`); dokunmayi
+  /// engellemez, siluet disina tasabilir.
   final Widget? decoration;
 
   /// Dolgu rengini `AppMaterials.face(material)` yerine gecersiz kilar
@@ -135,6 +135,7 @@ class RwMaterialSurface extends StatelessWidget {
         shadows: shadows,
       ),
       child: Stack(
+        clipBehavior: Clip.none,
         children: <Widget>[
           content,
           if (decoration != null)

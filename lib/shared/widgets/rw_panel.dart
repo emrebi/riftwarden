@@ -3,6 +3,7 @@ import 'package:riftwarden/app/theme/app_decorations.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
 import 'package:riftwarden/shared/widgets/rw_material_surface.dart';
+import 'package:riftwarden/shared/widgets/rw_ornament.dart';
 
 /// Panel gorsel turleri (DESIGN §8 "PANEL SYSTEM").
 enum RwPanelVariant {
@@ -35,6 +36,7 @@ class RwPanel extends StatefulWidget {
     this.onTap,
     this.variant = RwPanelVariant.standard,
     this.material = AppMaterial.parchment,
+    this.showOrnaments = true,
   });
 
   final Widget child;
@@ -49,6 +51,9 @@ class RwPanel extends StatefulWidget {
   /// Panel yuzeyinin malzemesi (parchment/wood/stone/hud). Varsayilan
   /// `parchment` (okuma agirlikli icerik).
   final AppMaterial material;
+
+  /// Kompakt/yogun yerlesimde susleme kapatilabilir.
+  final bool showOrnaments;
 
   @override
   State<RwPanel> createState() => _RwPanelState();
@@ -145,6 +150,10 @@ class _RwPanelState extends State<RwPanel> {
           material: widget.material,
           depth: depth,
           padding: EdgeInsetsDirectional.zero,
+          decoration: widget.showOrnaments &&
+                  widget.variant != RwPanelVariant.smallInfo
+              ? RwSurfaceOrnaments(material: widget.material)
+              : null,
           child: content,
         ),
       ),
