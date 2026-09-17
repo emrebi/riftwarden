@@ -73,12 +73,15 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | QA-01 | DONE | batch C7 |
 | BATTLE-01 | DONE (1 fix: reselect softlock, reveal >320 ms, icon contrast) | batch C8 |
 | BATTLE-02 | DONE | batch C8 |
-| BATTLE-03 | READY | — |
+| BATTLE-03 | DONE (1 fix: legacy dark band, segment -1) | batch C9 |
+| BATTLE-04 | DONE (top offset overlapped top bar, fixed) | batch C9 |
+| BATTLE-05 | READY | — |
 | ART-03 (asset) | APPROVED (intake sheet, 19 icons) | not committed (intake) |
 | ART-02 (asset) | APPROVED (intake sheet 4x2, 7 pieces) | not committed (intake) |
 | ART-10 (asset) | APPROVED after 1 revision (watch on device: arc_overcharge horned dummy, titan_juggernaut enemy-like golem) | intake: ART-10_1.png (4x2, 8), ART-10_2.png (4x2, 5) |
 | ART-09 (asset) | APPROVED (transparent sheet 4x1: portal, icon, illustration, reticle) | intake: ART-09.png |
-| ART-01, 04, 05, 06, 07, 08, 11, 12, 13 (asset) | IN PROGRESS (user, parallel) | — |
+| ART-05 (asset) | REVISION (designs approved; dark gradient bg + halos not extractable, phaseborn violet too strong, splitter skulls) — Codex gpt-5.6-luna retry in design/art_intake/codex/ | intake: ART-05.png |
+| ART-01, 04, 06, 07, 08, 11, 12, 13 (asset) | IN PROGRESS (user, parallel) | — |
 | all others | PENDING (see §6 order) | — |
 
 The planner updates this table in the commit of each approved task. This file is the single source of truth for task status; the planner's private plan file (P1–P17 era) is archive only.

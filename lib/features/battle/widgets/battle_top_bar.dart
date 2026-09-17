@@ -1,17 +1,21 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:riftwarden/app/theme/app_colors.dart';
 import 'package:riftwarden/app/theme/app_decorations.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
 import 'package:riftwarden/engine/bridge/battle_signals.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
+import 'package:riftwarden/shared/widgets/rw_currency_chip.dart';
 import 'package:riftwarden/shared/widgets/rw_icon_button.dart';
+import 'package:riftwarden/shared/widgets/rw_material_surface.dart';
+import 'package:riftwarden/shared/widgets/rw_segmented_progress.dart';
 
 /// Savas ekraninin ust bilgi seridi.
 ///
-/// Duraklatma butonu, dalga ilerlemesi ve Aether sayacini barindirir.
-/// Savas alanini kapatmamak icin ince ve yari seffaf tutulur.
+/// Duraklatma butonu, dalga plaketi ve Aether sayacini barindirir.
+/// Savas alanini kapatmamak icin ince tutulur (DESIGN §10 "Wave: compact
+/// top-center parchment/wood plaque with current/total and simple
+/// segmented progress").
 class BattleTopBar extends StatelessWidget {
   const BattleTopBar({
     required this.waveProgress,
@@ -41,23 +45,22 @@ class BattleTopBar extends StatelessWidget {
   /// Yatay guvenli alan bitis payi.
   final double endPadding;
 
+  /// Dalga plaketindeki segment gostergesinin sabit genisligi. Tek kullanim
+  /// yeri burasi oldugundan dosya icinde tek noktada tanimlanir.
+  static const double _progressWidth = 72.0;
+  static const double _progressHeight = 6.0;
+  static const double _bossIconSize = 16.0;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final AppLocalizations l10n = AppLocalizations.of(context);
+
+    return Padding(
       padding: EdgeInsetsDirectional.only(
         start: startPadding + AppSpacing.md,
         end: endPadding + AppSpacing.md,
         top: topPadding + AppSpacing.xs,
         bottom: AppSpacing.xs,
-      ),
-      decoration: const BoxDecoration(
-        color: AppColors.surfaceOverlay,
-        border: Border(
-          bottom: BorderSide(
-            color: AppColors.surfaceRaised,
-            width: 1.0,
-          ),
-        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -65,56 +68,50 @@ class BattleTopBar extends StatelessWidget {
           RwIconButton(
             icon: Icons.pause_rounded,
             onPressed: onPause,
+            tooltip: l10n.battlePauseTitle,
           ),
           ValueListenableBuilder<WaveProgress>(
             valueListenable: waveProgress,
             builder: (BuildContext context, WaveProgress wave, _) {
-              final l10n = AppLocalizations.of(context);
-              final isBoss = wave.isBossWave;
-              return Container(
+              final bool isBoss = wave.isBossWave;
+              final double ratio =
+                  wave.total > 0 ? wave.current / wave.total : 0.0;
+              return RwMaterialSurface(
+                material: AppMaterial.wood,
+                shape: RwSurfaceShape.pill,
+                depth: RwSurfaceDepth.flat,
                 padding: const EdgeInsetsDirectional.symmetric(
                   horizontal: AppSpacing.md,
                   vertical: AppSpacing.xs,
-                ),
-                decoration: BoxDecoration(
-                  color: isBoss
-                      ? AppColors.surfaceRaised
-                      : AppColors.surface.withValues(alpha: 0.6),
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(AppRadius.pill),
-                  ),
-                  border: Border.all(
-                    color: isBoss
-                        ? AppColors.riftMagenta
-                        : AppColors.surfaceRaised,
-                    width: 1.0,
-                  ),
-                  boxShadow: isBoss
-                      ? AppShadows.glow(
-                          AppColors.riftMagenta,
-                          blurRadius: 8.0,
-                        )
-                      : null,
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     if (isBoss) ...<Widget>[
-                      const Icon(
+                      Icon(
                         Icons.warning_amber_rounded,
-                        size: 16.0,
-                        color: AppColors.riftMagenta,
+                        size: _bossIconSize,
+                        color: AppMaterials.text(AppMaterial.wood),
                       ),
                       const SizedBox(width: AppSpacing.xs),
                     ],
                     Text(
                       l10n.hudWave(wave.current, wave.total),
-                      style: AppTypography.titleMedium.copyWith(
-                        color: isBoss
-                            ? AppColors.riftGlow
-                            : AppColors.textPrimary,
-                        fontWeight:
-                            isBoss ? FontWeight.bold : FontWeight.w600,
+                      style: AppTypography.onMaterial(
+                        AppTypography.titleMedium,
+                        AppMaterial.wood,
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    SizedBox(
+                      width: _progressWidth,
+                      child: RwSegmentedProgress(
+                        segments: wave.total,
+                        value: ratio,
+                        currentSegment:
+                            wave.current > 0 ? wave.current - 1 : null,
+                        trackMaterial: AppMaterial.wood,
+                        height: _progressHeight,
                       ),
                     ),
                   ],
@@ -125,38 +122,10 @@ class BattleTopBar extends StatelessWidget {
           ValueListenableBuilder<int>(
             valueListenable: aether,
             builder: (BuildContext context, int aetherValue, _) {
-              return Container(
-                padding: const EdgeInsetsDirectional.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.xs,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.surface.withValues(alpha: 0.6),
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(AppRadius.pill),
-                  ),
-                  border: Border.all(
-                    color: AppColors.surfaceRaised,
-                    width: 1.0,
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const Icon(
-                      Icons.bolt_rounded,
-                      size: 18.0,
-                      color: AppColors.aether,
-                    ),
-                    const SizedBox(width: AppSpacing.xs),
-                    Text(
-                      aetherValue.toString(),
-                      style: AppTypography.numeric.copyWith(
-                        color: AppColors.aether,
-                      ),
-                    ),
-                  ],
-                ),
+              return RwCurrencyChip(
+                currency: RwCurrency.aether,
+                amount: aetherValue,
+                material: AppMaterial.hud,
               );
             },
           ),

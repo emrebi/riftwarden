@@ -48,6 +48,11 @@ class _BattleScreenState extends ConsumerState<BattleScreen> {
   bool _isPaused = false;
   String? _selectedShopUnitId;
 
+  /// Ust seridin toplam yuksekligi (xs ust pay + 48 govde + xs alt pay);
+  /// Core HP bari bu seridin altina, aralarinda ek bosluk birakarak oturur.
+  static const double _topBarHeight = AppSpacing.xs + 48.0 + AppSpacing.xs;
+  static const double _coreHealthBarWidth = 180.0;
+
   VoidCallback get _handleExit => widget.onExit ?? widget.onBack ?? () {};
 
   @override
@@ -234,10 +239,10 @@ class _BattleScreenState extends ConsumerState<BattleScreen> {
 
             // Kale HP bari: Ust seridin altinda, sol tarafta (kalenin ustu)
             PositionedDirectional(
-              top: viewPadding.top + 48.0,
+              top: viewPadding.top + _topBarHeight + AppSpacing.xs,
               start: startPadding + AppSpacing.md,
               child: SizedBox(
-                width: 180.0,
+                width: _coreHealthBarWidth,
                 child: CoreHealthBar(
                   coreHpRatio: _game.signals.coreHpRatio,
                   coreHp: _game.signals.coreHp,

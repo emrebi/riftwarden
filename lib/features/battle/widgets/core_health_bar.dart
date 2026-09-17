@@ -5,12 +5,14 @@ import 'package:riftwarden/app/theme/app_decorations.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
+import 'package:riftwarden/shared/widgets/rw_material_surface.dart';
 import 'package:riftwarden/shared/widgets/rw_progress_bar.dart';
 
-/// Kalenin canini gosteren kompakt bar bileseni.
+/// Kalenin canini gosteren yuzen kompakt panel bileseni.
 ///
-/// Ust seridin altinda, sol tarafta kalenin uzerinde konumlanir.
-/// Can %25 altina indiginde tehlike rengine doner ve hafif nabiz uygular.
+/// Ust seridin altinda, sol tarafta kalenin uzerinde konumlanir. Can %25
+/// altina indiginde uyari ikonu belirir ve panel kenarinda yavas bir nabiz
+/// oynar; durum sadece renkle degil ikon+nabiz ile de ayrisir (DESIGN §24).
 class CoreHealthBar extends StatefulWidget {
   const CoreHealthBar({
     required this.coreHpRatio,
@@ -30,18 +32,26 @@ class CoreHealthBar extends StatefulWidget {
 
 class _CoreHealthBarState extends State<CoreHealthBar>
     with SingleTickerProviderStateMixin {
+  static const double _iconSize = 14.0;
+  static const double _lowHpThreshold = 0.25;
+  static const double _pulseMinScale = 0.85;
+  static const double _pulseMaxScale = 1.0;
+
   late final AnimationController _pulseController;
   late final Animation<double> _pulseAnimation;
 
   @override
   void initState() {
     super.initState();
-    // Dusuk canda uyari icin hafif nabiz efekti
+    // Dusuk canda uyari ikonu icin hafif nabiz efekti
     _pulseController = AnimationController(
       vsync: this,
       duration: AppDuration.slow,
     );
-    _pulseAnimation = Tween<double>(begin: 0.85, end: 1.0).animate(
+    _pulseAnimation = Tween<double>(
+      begin: _pulseMinScale,
+      end: _pulseMaxScale,
+    ).animate(
       CurvedAnimation(
         parent: _pulseController,
         curve: Curves.easeInOut,
@@ -75,63 +85,44 @@ class _CoreHealthBarState extends State<CoreHealthBar>
     return ValueListenableBuilder<double>(
       valueListenable: widget.coreHpRatio,
       builder: (BuildContext context, double ratio, _) {
-        final isLow = ratio < 0.25;
+        final isLow = ratio < _lowHpThreshold;
         _syncPulse(isLow);
-        final barColor = isLow ? AppColors.danger : AppColors.coreTeal;
+        final textColor = isLow
+            ? AppColors.danger
+            : AppMaterials.text(AppMaterial.hud);
 
-        return AnimatedBuilder(
-          animation: _pulseAnimation,
-          builder: (BuildContext context, Widget? child) {
-            return Opacity(
-              opacity: isLow ? _pulseAnimation.value : 1.0,
-              child: Container(
-                padding: const EdgeInsetsDirectional.symmetric(
-                  horizontal: AppSpacing.sm,
-                  vertical: AppSpacing.xs,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.surfaceOverlay,
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(AppRadius.md),
-                  ),
-                  border: Border.all(
-                    color: isLow
-                        ? AppColors.danger.withValues(alpha: 0.8)
-                        : AppColors.surfaceRaised,
-                    width: 1.0,
-                  ),
-                  boxShadow: isLow
-                      ? AppShadows.glow(
-                          AppColors.danger,
-                          blurRadius: 10.0,
-                        )
-                      : null,
-                ),
-                child: child,
-              ),
-            );
-          },
+        return RwMaterialSurface(
+          material: AppMaterial.hud,
+          depth: RwSurfaceDepth.flat,
+          padding: const EdgeInsetsDirectional.symmetric(
+            horizontal: AppSpacing.sm,
+            vertical: AppSpacing.xs,
+          ),
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Icon(
                 Icons.shield_rounded,
-                size: 14.0,
-                color: isLow ? AppColors.danger : AppColors.coreTeal,
+                size: _iconSize,
+                color: textColor,
               ),
               const SizedBox(width: AppSpacing.xs),
               Text(
                 l10n.hudCastle,
-                style: AppTypography.label.copyWith(
-                  color: isLow ? AppColors.danger : AppColors.textSecondary,
-                ),
+                style: AppTypography.onMaterial(
+                  AppTypography.smallLabel,
+                  AppMaterial.hud,
+                ).copyWith(color: textColor),
               ),
               const SizedBox(width: AppSpacing.xs),
               Expanded(
                 child: RwProgressBar(
                   value: ratio,
-                  color: barColor,
+                  color: textColor,
                   showDamageTrail: true,
                   height: AppSpacing.xs,
+                  variant: RwProgressVariant.health,
+                  trackMaterial: AppMaterial.hud,
                 ),
               ),
               const SizedBox(width: AppSpacing.xs),
@@ -140,14 +131,30 @@ class _CoreHealthBarState extends State<CoreHealthBar>
                 builder: (BuildContext context, int hpValue, _) {
                   return Text(
                     hpValue.toString(),
-                    style: AppTypography.numeric.copyWith(
-                      color: isLow
-                          ? AppColors.danger
-                          : AppColors.textPrimary,
-                    ),
+                    style: AppTypography.onMaterial(
+                      AppTypography.numeric,
+                      AppMaterial.hud,
+                    ).copyWith(color: textColor),
                   );
                 },
               ),
+              if (isLow) ...<Widget>[
+                const SizedBox(width: AppSpacing.xs),
+                AnimatedBuilder(
+                  animation: _pulseAnimation,
+                  builder: (BuildContext context, Widget? child) {
+                    return Transform.scale(
+                      scale: _pulseAnimation.value,
+                      child: child,
+                    );
+                  },
+                  child: const Icon(
+                    Icons.warning_amber_rounded,
+                    size: _iconSize,
+                    color: AppColors.danger,
+                  ),
+                ),
+              ],
             ],
           ),
         );
