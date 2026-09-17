@@ -89,6 +89,7 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | ARTINT-01 | DONE (Gemini Flash Medium, 0 fix; RwOrnament + RwSurfaceOrnaments; RwPanel/RwCard `showOrnaments` default on, smallInfo off, upgrade cards marker-only; watch on device: corner overhang clipping in scroll views) | ARTINT-01 commit |
 | ARTINT-02 | DONE (Gemini Flash Medium, 0 fix; raster primary, Material glyph fallback; `color` now only tints fallback -> watch disabled/onDark icon states on device) | ARTINT-02 commit |
 | ARTINT-03 | DONE (Gemini Flash Medium, 0 fix; 3 portraits ingested; slot portrait cover -> contain, centered; spawn bar already passed unit ids; watch on device: portrait size in bottom strip may look small with contain) | ARTINT-03 commit |
+| ARTINT-04 | DONE (Gemini Flash Medium; planner fix: battle HUD AbilityButton artId via `_content.ability(kPlayerAbilityId).icon`; upgrade cards + ability shop use illustrations/<upgrade.icon> with family-icon fallback; RwAbilityFrame optional artId; reticle raster left for ARTINT-07) | ARTINT-04 commit |
 | ART-03 (asset) | APPROVED (intake sheet, 19 icons) | not committed (intake) |
 | ART-02 (asset) | APPROVED (intake sheet 4x2, 7 pieces) | not committed (intake) |
 | ART-10 (asset) | APPROVED after 1 revision (watch on device: arc_overcharge horned dummy, titan_juggernaut enemy-like golem) | intake: ART-10_1.png (4x2, 8), ART-10_2.png (4x2, 5) |
@@ -99,7 +100,8 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | ART-07 (asset) | APPROVED after 1 revision (Codex; keylined cartoon, mid-brown lane ~25-75% h; bottom corner rocks from ~70% h and top-edge cliffs cut -> check field y-bounds and wide extension in ARTINT) | intake: ART-07/fractured_edge.png |
 | ART-12 (asset) | APPROVED (Codex; 5x3 magenta sheet 1672x941, 15 FX in order, outlined cel style, no halos; shield/rings need runtime opacity) | intake: ART-12/vfx_sheet.png |
 | ART-01 (asset) | APPROVED (Codex gpt-5.6-luna; alpha; stone letters on wood plank, spelling checked; emblem = stone/wood ward with rift tear. ARTINT-09: wordmark -> `logo/main_menu` (MenuLogo id), emblem id to decide there) | intake: ART-01/logo_wordmark.png, ART-01/emblem.png |
-| ART-08, 11, 13 (asset) | IN PROGRESS (planner via Codex, sequential) | — |
+| ART-08 (asset) | APPROVED after 1 revision (Codex; v1 painterly/no keylines + crystal-spire rift rejected; v2 keylined cel, fortress right half, small rift tear; left third still fairly detailed -> ARTINT-09 may need a soft scrim behind menu buttons) | intake: ART-08/main_menu_scene.png |
+| ART-11, 13 (asset) | IN PROGRESS (planner via Codex, sequential) | — |
 | all others | PENDING (see §6 order) | — |
 
 The planner updates this table in the commit of each approved task. This file is the single source of truth for task status; the planner's private plan file (P1–P17 era) is archive only.

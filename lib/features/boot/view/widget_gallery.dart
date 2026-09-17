@@ -33,12 +33,13 @@ UpgradeConfig _sampleUpgrade({
   required String id,
   required String family,
   required UpgradeRarity rarity,
+  String icon = 'upgrade_chain',
 }) {
   return UpgradeConfig(
     id: id,
     name: id,
     description: id,
-    icon: 'placeholder',
+    icon: icon,
     family: family,
     rarity: rarity,
     requires: const <String>[],
@@ -72,21 +73,25 @@ class _WidgetGalleryState extends State<WidgetGallery> {
       id: 'arc_chain_1',
       family: 'chain',
       rarity: UpgradeRarity.common,
+      icon: 'upgrade_chain',
     ),
     'pulse_pierce_1': _sampleUpgrade(
       id: 'pulse_pierce_1',
       family: 'pierce',
       rarity: UpgradeRarity.rare,
+      icon: 'upgrade_pierce',
     ),
     'arc_crit_1': _sampleUpgrade(
       id: 'arc_crit_1',
       family: 'crit',
       rarity: UpgradeRarity.epic,
+      icon: 'upgrade_crit',
     ),
     'aether_economy_1': _sampleUpgrade(
       id: 'aether_economy_1',
       family: 'economy',
       rarity: UpgradeRarity.legendary,
+      icon: 'upgrade_economy',
     ),
   };
 
@@ -797,7 +802,11 @@ class _WidgetGalleryState extends State<WidgetGallery> {
                     rarity: 'common',
                     badge: 'LVL 1',
                     description: 'Attacks pierce through 1 additional enemy.',
-                    icon: const RwIcon(RwIconId.attack, size: 32.0),
+                    art: const RwArt(
+                      group: RwArtGroup.illustrations,
+                      id: 'upgrade_chain',
+                      fallback: RwIcon(RwIconId.attack, size: 32.0),
+                    ),
                     onTap: () {},
                   ),
                 ),
@@ -975,6 +984,7 @@ class _WidgetGalleryState extends State<WidgetGallery> {
               children: <Widget>[
                 RwAbilityFrame(
                   state: RwAbilityState.ready,
+                  artId: 'ability_collapse',
                   semanticLabel: 'Rift Collapse hazir',
                   onTap: () {},
                 ),

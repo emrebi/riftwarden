@@ -6,6 +6,7 @@ import 'package:riftwarden/app/theme/app_decorations.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
 import 'package:riftwarden/shared/format/rw_number_format.dart';
+import 'package:riftwarden/shared/widgets/rw_art.dart';
 import 'package:riftwarden/shared/widgets/rw_icon.dart';
 import 'package:riftwarden/shared/widgets/rw_material_surface.dart';
 
@@ -62,6 +63,7 @@ class RwAbilityFrame extends StatefulWidget {
     required this.state,
     super.key,
     this.icon,
+    this.artId,
     this.cooldownProgress = 0.0,
     this.remainingSeconds,
     this.onTap,
@@ -74,6 +76,10 @@ class RwAbilityFrame extends StatefulWidget {
 
   /// Yetenek glifi. `null` ise `RwIcon(RwIconId.rift)`.
   final Widget? icon;
+
+  /// Yetenek raster sanat kimligi (AQ-2 `assets/images/ui_art/icons/<artId>.webp`).
+  /// `null` ise [icon] veya varsayilan glif kullanilir.
+  final String? artId;
 
   /// Bekleme ilerlemesi, 0..1. **1 = bekleme yeni basladi (tam dolu maske),
   /// 0 = hazir (maske bosalmis)** — `cooldown` disinda kullanilmaz.
@@ -141,8 +147,22 @@ class _RwAbilityFrameState extends State<RwAbilityFrame>
   }
 
   Widget _resolveGlyph(double effectiveSize) {
-    return widget.icon ??
-        RwIcon(RwIconId.rift, size: effectiveSize * _defaultIconSizeRatio);
+    final double glyphSize = effectiveSize * _defaultIconSizeRatio;
+    final Widget defaultGlyph = widget.icon ??
+        RwIcon(RwIconId.rift, size: glyphSize);
+
+    if (widget.artId != null) {
+      return RwArt(
+        group: RwArtGroup.icons,
+        id: widget.artId!,
+        width: glyphSize,
+        height: glyphSize,
+        fit: BoxFit.contain,
+        fallback: defaultGlyph,
+      );
+    }
+
+    return defaultGlyph;
   }
 
   Widget _buildReady(double effectiveSize) {

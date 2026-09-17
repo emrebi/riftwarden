@@ -7,6 +7,7 @@ import 'package:riftwarden/content/schema/schema.dart';
 import 'package:riftwarden/engine/bridge/battle_signals.dart';
 import 'package:riftwarden/features/battle/viewmodel/upgrade_text.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
+import 'package:riftwarden/shared/widgets/rw_art.dart';
 import 'package:riftwarden/shared/widgets/rw_button.dart';
 import 'package:riftwarden/shared/widgets/rw_card.dart';
 import 'package:riftwarden/shared/widgets/rw_veil.dart';
@@ -284,12 +285,18 @@ class _RevealCardState extends State<_RevealCard>
             description: upgradeDescription(l10n, config),
             rarity: config.rarity.name,
             badge: rarityLabel(l10n, config.rarity),
-            // Art zone acik parsomen zemin (bkz. RwCard._buildArtZone); ikon
-            // koyu murekkep tonunda olmali, aksi halde acik zeminde kaybolur.
-            icon: Icon(
-              _familyIcon(config.family),
-              size: widget.iconSize,
-              color: AppColors.outlineInk,
+            // Art zone acik parsomen zemin (bkz. RwCard._buildArtZone);
+            // dosya bulunamazsa veya yuklenene kadar koyu murekkep tonunda
+            // aile ikonu fallback olarak gosterilir (AQ-1).
+            art: RwArt(
+              group: RwArtGroup.illustrations,
+              id: config.icon,
+              fit: BoxFit.contain,
+              fallback: Icon(
+                _familyIcon(config.family),
+                size: widget.iconSize,
+                color: AppColors.outlineInk,
+              ),
             ),
             onTap: widget.onTap,
           ),

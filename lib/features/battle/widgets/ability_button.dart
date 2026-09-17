@@ -15,6 +15,7 @@ class AbilityButton extends StatelessWidget {
     required this.onToggleAiming,
     super.key,
     this.height = _defaultHeight,
+    this.artId,
   });
 
   /// Yetenek durumu sinyali (cooldown, hazirlik, nisan durumu).
@@ -25,6 +26,9 @@ class AbilityButton extends StatelessWidget {
 
   /// Buton yuksekligi (cerceve kenar uzunlugu).
   final double height;
+
+  /// Opsiyonel yetenek raster sanat kimligi (AQ-2 `assets/images/ui_art/icons/<artId>.webp`).
+  final String? artId;
 
   // Alt seridin %20 yukseklik sinirina (DESIGN §10) sigmasi icin varsayilan
   // kucultuldu; RwAbilityFrame kendi alt siniri olan 48 dp'nin altina inmez.
@@ -45,6 +49,7 @@ class AbilityButton extends StatelessWidget {
 
         return RwAbilityFrame(
           state: frameState,
+          artId: artId,
           cooldownProgress: state.cooldownRatio,
           remainingSeconds: state.cooldownRemaining.ceilToDouble(),
           onTap: frameState == RwAbilityState.cooldown ? null : onToggleAiming,

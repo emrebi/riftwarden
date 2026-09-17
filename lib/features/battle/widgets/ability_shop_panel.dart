@@ -8,6 +8,7 @@ import 'package:riftwarden/content/schema/schema.dart';
 import 'package:riftwarden/engine/bridge/battle_signals.dart';
 import 'package:riftwarden/features/battle/viewmodel/upgrade_text.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
+import 'package:riftwarden/shared/widgets/rw_art.dart';
 import 'package:riftwarden/shared/widgets/rw_button.dart';
 import 'package:riftwarden/shared/widgets/rw_card.dart';
 import 'package:riftwarden/shared/widgets/rw_currency_chip.dart';
@@ -103,6 +104,7 @@ class AbilityShopPanel extends StatelessWidget {
                           width: _cardWidth,
                           child: _OfferCard(
                             offer: unitOffers[i],
+                            artId: upgrades[unitOffers[i].upgradeId]?.icon,
                             title: switch (upgrades[unitOffers[i].upgradeId]) {
                               final UpgradeConfig u => upgradeTitle(l10n, u),
                               null => unitOffers[i].upgradeId,
@@ -137,12 +139,14 @@ class _OfferCard extends StatelessWidget {
     required this.title,
     required this.description,
     required this.onBuy,
+    this.artId,
   });
 
   final ShopOffer offer;
   final String title;
   final String description;
   final void Function(String upgradeId) onBuy;
+  final String? artId;
 
   static const double _ownedIconSize = 14.0;
 
@@ -151,10 +155,18 @@ class _OfferCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final isOwned = offer.owned;
     final canBuy = offer.canBuy && !isOwned;
+    final String? resolvedArtId = artId;
 
     return RwCard(
       title: title,
       description: description.isEmpty ? null : description,
+      art: resolvedArtId != null
+          ? RwArt(
+              group: RwArtGroup.illustrations,
+              id: resolvedArtId,
+              fit: BoxFit.contain,
+            )
+          : null,
       // Yetenek tekliflerinde nadirlik ayrimi yok; kart durumu (sahip/
       // alinabilir/pasif) tek anlamli sinyal oldugundan notr bir deger
       // kullanilir.

@@ -8,6 +8,7 @@ import 'package:riftwarden/app/theme/app_typography.dart';
 import 'package:riftwarden/content/registry/content_registry.dart';
 import 'package:riftwarden/engine/bridge/battle_signals.dart';
 import 'package:riftwarden/engine/riftwarden_game.dart';
+import 'package:riftwarden/engine/simulation/systems/ability_system.dart';
 import 'package:riftwarden/features/battle/widgets/ability_button.dart';
 import 'package:riftwarden/features/battle/widgets/ability_shop_panel.dart';
 import 'package:riftwarden/features/battle/widgets/battle_pause_overlay.dart';
@@ -307,6 +308,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen> {
                   abilityButton: AbilityButton(
                     ability: _game.signals.ability,
                     onToggleAiming: _game.commands.toggleAbilityAiming,
+                    artId: _content.ability(kPlayerAbilityId).icon,
                   ),
                 ),
               ),
