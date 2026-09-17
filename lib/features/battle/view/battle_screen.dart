@@ -14,6 +14,7 @@ import 'package:riftwarden/features/battle/widgets/battle_pause_overlay.dart';
 import 'package:riftwarden/features/battle/widgets/battle_top_bar.dart';
 import 'package:riftwarden/features/battle/widgets/core_health_bar.dart';
 import 'package:riftwarden/features/battle/widgets/unit_spawn_bar.dart';
+import 'package:riftwarden/features/battle/widgets/upgrade_choice_overlay.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
 
 /// Savas ekrani.
@@ -311,6 +312,17 @@ class _BattleScreenState extends ConsumerState<BattleScreen> {
                     onToggleAiming: _game.commands.toggleAbilityAiming,
                   ),
                 ),
+              ),
+            ),
+
+            // Esik karti (upgrade) secim katmani: teklif aciksa savas zaten
+            // motor tarafinda slow-mo/pause'da, katman bunu sadece gosterir
+            Positioned.fill(
+              child: UpgradeChoiceOverlay(
+                offer: _game.signals.upgradeOffer,
+                upgrades: _content.upgrades,
+                onChoose: _game.commands.chooseUpgrade,
+                onReroll: _game.commands.rerollUpgrades,
               ),
             ),
 

@@ -35,6 +35,7 @@ Aşağıdaki tablodan işini bul, **sadece** listelenen dosyaları aç.
 | **Segmentli (dalga) ilerleme kullan/değiştir (RwSegmentedProgress)** | `lib/shared/widgets/rw_segmented_progress.dart` | — |
 | **Para birimi gostergesi kullan/değiştir (RwCurrencyChip)** | `lib/shared/widgets/rw_currency_chip.dart` (`RwMaterialSurface(shape: pill)` uzerine kurulu; `RwCurrency`: aether/shard/cell) | — |
 | **Sahne ustu karartma/veil kullan (RwVeil)** | `lib/shared/widgets/rw_veil.dart` (upgrade overlay BATTLE-01, pause BATTLE-08 kullanir) | — |
+| **Esik karti (upgrade) secim katmani kullan/değiştir (UpgradeChoiceOverlay)** | `lib/features/battle/widgets/upgrade_choice_overlay.dart` (`RwVeil` + `RwCard(kind: upgrade)` uzerine kurulu; `lib/features/battle/view/battle_screen.dart` ve `lib/engine/simulation/systems/upgrade_system.dart` ile baglanir) | — |
 | **Savunmaci yuvasi kullan/değiştir (RwDefenderSlot)** | `lib/shared/widgets/rw_defender_slot.dart` (`RwMaterialSurface(material: stone)` uzerine kurulu; `RwDefenderSlotState`: empty/available/selected/locked/purchaseable/unaffordable/occupied) | — |
 | **Yetenek cercevesi/cooldown ring kullan/değiştir (RwAbilityFrame)** | `lib/shared/widgets/rw_ability_frame.dart` (`RwMaterialSurface(shape: circle, material: stone)` uzerine kurulu; `RwAbilityState`: ready/cooldown/targeting/unavailable) | — |
 | **Acma/kapama anahtari kullan/değiştir (RwToggle)** | `lib/shared/widgets/rw_toggle.dart` (`RwMaterialSurface(shape: pill)` track + `circle` knob; SEC-02'de `SettingsSwitchRow` icindeki Material `Switch`'in yerine gecer) | — |

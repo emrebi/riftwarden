@@ -71,7 +71,9 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | UI-19 | DONE | batch C7 |
 | UI-20 | DONE | batch C7 |
 | QA-01 | DONE | batch C7 |
-| BATTLE-01 | READY | — |
+| BATTLE-01 | DONE (1 fix: reselect softlock, reveal >320 ms, icon contrast) | batch C8 |
+| BATTLE-02 | DONE | batch C8 |
+| BATTLE-03 | READY | — |
 | ART-03 (asset) | APPROVED (intake sheet, 19 icons) | not committed (intake) |
 | ART-02 (asset) | APPROVED (intake sheet 4x2, 7 pieces) | not committed (intake) |
 | ART-10 (asset) | APPROVED after 1 revision (watch on device: arc_overcharge horned dummy, titan_juggernaut enemy-like golem) | intake: ART-10_1.png (4x2, 8), ART-10_2.png (4x2, 5) |

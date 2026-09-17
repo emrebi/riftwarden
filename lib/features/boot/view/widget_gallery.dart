@@ -5,6 +5,9 @@ import 'package:riftwarden/app/theme/app_colors.dart';
 import 'package:riftwarden/app/theme/app_decorations.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
+import 'package:riftwarden/content/schema/schema.dart';
+import 'package:riftwarden/engine/bridge/battle_signals.dart';
+import 'package:riftwarden/features/battle/widgets/upgrade_choice_overlay.dart';
 import 'package:riftwarden/shared/widgets/rw_ability_frame.dart';
 import 'package:riftwarden/shared/widgets/rw_art.dart';
 import 'package:riftwarden/shared/widgets/rw_button.dart';
@@ -23,6 +26,31 @@ import 'package:riftwarden/shared/widgets/rw_segmented_progress.dart';
 import 'package:riftwarden/shared/widgets/rw_toggle.dart';
 import 'package:riftwarden/shared/widgets/rw_veil.dart';
 
+/// Galeri icin ornek upgrade konfigurasyonu. Icerik registry'sine
+/// bagimli olmamak icin alanlar elle doldurulur (bkz. brief BATTLE-01).
+UpgradeConfig _sampleUpgrade({
+  required String id,
+  required String family,
+  required UpgradeRarity rarity,
+}) {
+  return UpgradeConfig(
+    id: id,
+    name: id,
+    description: id,
+    icon: 'placeholder',
+    family: family,
+    rarity: rarity,
+    requires: const <String>[],
+    maxStacks: 1,
+    weight: 1.0,
+    stats: const <StatModifier>[],
+    flags: const <String>[],
+    source: UpgradeSource.card,
+    cost: null,
+    unit: null,
+  );
+}
+
 /// Tasarim sistemi bilesenlerini gorsel olarak test etmek icin galeri ekrani.
 class WidgetGallery extends StatefulWidget {
   const WidgetGallery({super.key});
@@ -35,6 +63,54 @@ class _WidgetGalleryState extends State<WidgetGallery> {
   double _animatedHp = 0.85;
   bool _abilityReady = false;
   bool _toggleInteractive = true;
+
+  // UpgradeChoiceOverlay galeri ornegi: id'ler upgrade_text.dart'taki
+  // eslemeyle ayni ki basliklar l10n uzerinden dogru gorunsun.
+  static final Map<String, UpgradeConfig> _sampleUpgrades = <String, UpgradeConfig>{
+    'arc_chain_1': _sampleUpgrade(
+      id: 'arc_chain_1',
+      family: 'chain',
+      rarity: UpgradeRarity.common,
+    ),
+    'pulse_pierce_1': _sampleUpgrade(
+      id: 'pulse_pierce_1',
+      family: 'pierce',
+      rarity: UpgradeRarity.rare,
+    ),
+    'arc_crit_1': _sampleUpgrade(
+      id: 'arc_crit_1',
+      family: 'crit',
+      rarity: UpgradeRarity.epic,
+    ),
+    'aether_economy_1': _sampleUpgrade(
+      id: 'aether_economy_1',
+      family: 'economy',
+      rarity: UpgradeRarity.legendary,
+    ),
+  };
+
+  final ValueNotifier<UpgradeOffer?> _demoOfferThree =
+      ValueNotifier<UpgradeOffer?>(
+    const UpgradeOffer(
+      upgradeIds: <String>['arc_chain_1', 'pulse_pierce_1', 'arc_crit_1'],
+      rerollsLeft: 1,
+    ),
+  );
+
+  final ValueNotifier<UpgradeOffer?> _demoOfferOne =
+      ValueNotifier<UpgradeOffer?>(
+    const UpgradeOffer(
+      upgradeIds: <String>['aether_economy_1'],
+      rerollsLeft: 0,
+    ),
+  );
+
+  @override
+  void dispose() {
+    _demoOfferThree.dispose();
+    _demoOfferOne.dispose();
+    super.dispose();
+  }
 
   void _toggleAbilityReady() {
     setState(() {
@@ -1016,6 +1092,51 @@ class _WidgetGalleryState extends State<WidgetGallery> {
                       ],
                     ),
                     RwVeil(),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+
+            // --- SECTION: UPGRADE CHOICE OVERLAY ---
+            const RwSectionHeader(
+              title: 'Upgrade Choice Overlay (UpgradeChoiceOverlay)',
+              subtitle: 'Esik karti secim katmani (DESIGN §13), 3 kart ve 1 kart',
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            SizedBox(
+              width: 592.0,
+              height: 260.0,
+              child: ClipRect(
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: <Widget>[
+                    const ColoredBox(color: AppColors.voidDeep),
+                    UpgradeChoiceOverlay(
+                      offer: _demoOfferThree,
+                      upgrades: _sampleUpgrades,
+                      onChoose: (_) {},
+                      onReroll: () {},
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            SizedBox(
+              width: 592.0,
+              height: 260.0,
+              child: ClipRect(
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: <Widget>[
+                    const ColoredBox(color: AppColors.voidDeep),
+                    UpgradeChoiceOverlay(
+                      offer: _demoOfferOne,
+                      upgrades: _sampleUpgrades,
+                      onChoose: (_) {},
+                      onReroll: () {},
+                    ),
                   ],
                 ),
               ),

@@ -1,4 +1,3 @@
-import 'package:riftwarden/core/constants/game_constants.dart';
 import 'package:riftwarden/engine/bridge/battle_signals.dart';
 import 'package:riftwarden/engine/simulation/battle_simulation.dart';
 import 'package:riftwarden/engine/simulation/battle_system.dart';
@@ -33,10 +32,6 @@ class UpgradeSystem implements BattleSystem {
     // Bir onceki adimin compaction'inda biriken oldurme sayisi (bkz. sinif
     // dosya basi yorumu).
     world.totalKills += world.killsThisStep;
-
-    // UI hazir olana kadar teklif/pause mantigi gecici kapali (bkz.
-    // kUpgradeCardsEnabled yorumu); totalKills birikimi yine de surer.
-    if (!kUpgradeCardsEnabled) return;
 
     final thresholds = world.level.upgradeKillThresholds;
     while (world.nextThresholdIndex < thresholds.length &&

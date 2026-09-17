@@ -89,10 +89,3 @@ const double kUpgradeSlowMoScale = 0.15;
 /// Odullu reklamla artacak (adim 18, bkz. `UpgradeSystem`/`BattleController`
 /// yorumlari); simdilik sabit 1.
 const int kFreeRerollsPerBattle = 1;
-
-/// Upgrade-card teklif sisteminin gecici acma/kapama anahtari.
-///
-/// UI henuz hazir olmadigi icin false: esik karti teklifi acilmiyor, savas
-/// bu yuzden kalici pause'a girmiyor. BATTLE-01'de kaldirilacak veya tekrar
-/// acilacak.
-const bool kUpgradeCardsEnabled = false;
