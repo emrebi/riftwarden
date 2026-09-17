@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:riftwarden/app/theme/app_colors.dart';
-import 'package:riftwarden/app/theme/app_decorations.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/features/main_menu/widgets/menu_actions_row.dart';
 import 'package:riftwarden/features/main_menu/widgets/menu_logo.dart';
 import 'package:riftwarden/features/main_menu/widgets/menu_play_button.dart';
 import 'package:riftwarden/features/main_menu/widgets/menu_progress_panel.dart';
-import 'package:riftwarden/shared/widgets/rw_currency_chip.dart';
 
 /// Ana menu sayfasi.
 ///
-/// Yatay duzende oyun acilisinda ilk izlenimi veren merkez ekran.
-/// Sol yarimda boyut kimligi (logo, alt baslik) ve ilerleme paneli,
-/// sag yarimda ise para gostergeleri, baskin PLAY butonu ve ikincil eylemler
-/// yer alir.
+/// Yatay duzende oyun acilisinda ilk izlenimi veren merkez ekran (DESIGN
+/// §15). Sol yarimda boyut kimligi (tabela benzeri logo bandi) ve
+/// ilerleme paneli, sag yarimda ise en baskin oge olan PLAY tahtasi ve
+/// altinda bagli tek ikincil akis (Ayarlar) yer alir. Magaza, Kalici
+/// Gelistirmeler ve Shard/Cell cuzdan gostergeleri backend'i olmadigi
+/// icin gizlidir (AQ-3).
 ///
 /// Yonlendirme ve veri baglantisi disaridan verilir; ekran state tutmaz,
 /// yalnizca callback tetikler.
@@ -34,11 +34,21 @@ class MainMenuScreen extends StatelessWidget {
   final int sectorNumber;
   final int levelNumber;
   final double sectorProgress;
+
+  /// AQ-3: backend akisi yok, gizli; parametre uyumluluk icin korunur.
   final int shards;
+
+  /// AQ-3: backend akisi yok, gizli; parametre uyumluluk icin korunur.
   final int cells;
+
   final VoidCallback onPlay;
+
+  /// AQ-3: backend akisi yok, gizli; parametre uyumluluk icin korunur.
   final VoidCallback onStore;
+
+  /// AQ-3: backend akisi yok, gizli; parametre uyumluluk icin korunur.
   final VoidCallback onUpgrades;
+
   final VoidCallback onSettings;
 
   @override
@@ -49,86 +59,68 @@ class MainMenuScreen extends StatelessWidget {
     final notchEnd = isRtl ? viewPadding.left : viewPadding.right;
 
     return Scaffold(
-      backgroundColor: AppColors.voidDeep,
-      body: DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: AppGradients.screenBackground,
-        ),
-        child: SafeArea(
-          left: false,
-          right: false,
-          child: Padding(
-            padding: EdgeInsetsDirectional.only(
-              start: AppSpacing.screenGutter + notchStart,
-              end: AppSpacing.screenGutter + notchEnd,
-              top: AppSpacing.md,
-              bottom: AppSpacing.md,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                // Sol yarim: logo, alt baslik (menuSubtitle) ve sektor/level ilerleme paneli.
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      const Spacer(),
-                      const FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: MenuLogo(),
-                      ),
-                      const SizedBox(height: AppSpacing.lg),
-                      MenuProgressPanel(
-                        sectorNumber: sectorNumber,
-                        levelNumber: levelNumber,
-                        sectorProgress: sectorProgress,
-                      ),
-                      const Spacer(),
-                    ],
+      backgroundColor: AppColors.background,
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          // Zemin rengi SafeArea disinda tam ekrana yayilir; dunya sahnesi
+          // (fortress/rift illustrasyonu) ileride RwArt(group: scenes, ...)
+          // ile bu katmana eklenir (ARTINT-09).
+          const ColoredBox(color: AppColors.background),
+          SafeArea(
+            left: false,
+            right: false,
+            child: Padding(
+              padding: EdgeInsetsDirectional.only(
+                start: AppSpacing.screenGutter + notchStart,
+                end: AppSpacing.screenGutter + notchEnd,
+                top: AppSpacing.md,
+                bottom: AppSpacing.md,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  // Sol yarim: logo tabelasi ve sektor/level ilerleme paneli.
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        const Spacer(),
+                        const MenuLogo(),
+                        const SizedBox(height: AppSpacing.lg),
+                        MenuProgressPanel(
+                          sectorNumber: sectorNumber,
+                          levelNumber: levelNumber,
+                          sectorProgress: sectorProgress,
+                        ),
+                        const Spacer(),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(width: AppSpacing.lg),
-                // Sag yarim: en baskin oge PLAY butonu; altinda STORE, UPGRADES ve SETTINGS eylemleri.
-                // Sag ust: Shard ve Cell para gostergeleri.
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      // Sag ust: Shard ve Cell para gostergeleri
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          RwCurrencyChip(
-                            currency: RwCurrency.shard,
-                            amount: shards,
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          RwCurrencyChip(
-                            currency: RwCurrency.cell,
-                            amount: cells,
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                      // Ana eylem: PLAY butonu (baskin, nabiz animasyonlu)
-                      MenuPlayButton(
-                        onPressed: onPlay,
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      // Ikincil eylemler: STORE, UPGRADES, SETTINGS
-                      MenuActionsRow(
-                        onStore: onStore,
-                        onUpgrades: onUpgrades,
-                        onSettings: onSettings,
-                      ),
-                      const Spacer(),
-                    ],
+                  const SizedBox(width: AppSpacing.lg),
+                  // Sag yarim: en baskin oge PLAY tahtasi; altinda tek bagli
+                  // ikincil akis olan Ayarlar dugmesi.
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        const Spacer(),
+                        MenuPlayButton(
+                          onPressed: onPlay,
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        MenuActionsRow(
+                          onSettings: onSettings,
+                        ),
+                        const Spacer(),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

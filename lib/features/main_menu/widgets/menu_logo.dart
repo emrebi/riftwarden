@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:riftwarden/app/theme/app_colors.dart';
 import 'package:riftwarden/app/theme/app_decorations.dart';
 import 'package:riftwarden/app/theme/app_spacing.dart';
 import 'package:riftwarden/app/theme/app_typography.dart';
 import 'package:riftwarden/l10n/gen/app_localizations.dart';
+import 'package:riftwarden/shared/widgets/rw_art.dart';
+import 'package:riftwarden/shared/widgets/rw_material_surface.dart';
 
 /// Ana menu baslik ve logo alani.
 ///
+/// Kaleye monte edilmis ahsap bir tabela gibi okunsun diye
+/// `RwMaterialSurface` (wood) uzerine kurulur (DESIGN §15 "mounted to
+/// architecture... boards, signs, banners"). Uretim logosu geldiginde
+/// `RwArt(group: logo, id: 'main_menu')` dogrudan onu gosterir; sanat
+/// eksikken (bugun) `fallback` tabela metnini cizer (ARTINT-09'da
+/// degistirilecek). Baslik metni sabit `AppTypography.screenTitle`
+/// kullanir, per-frame olcekleme (FittedBox) uygulanmaz.
 /// Ekran acilisinda yumusak belirme (fade + scale) animasyonu uygular.
-/// Harf araligi ve katmanli golge ile boyut enerjisi hissi verir.
-/// 360 dp yukseklikteki ekranlarda tasmamasi icin icerik FittedBox ile olceklenir.
 class MenuLogo extends StatefulWidget {
   const MenuLogo({super.key});
 
@@ -63,74 +69,40 @@ class _MenuLogoState extends State<MenuLogo>
       opacity: _fadeAnimation,
       child: ScaleTransition(
         scale: _scaleAnimation,
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
+        child: RwArt(
+          group: RwArtGroup.logo,
+          id: 'main_menu',
+          semanticLabel: l10n.appTitle,
+          fallback: RwMaterialSurface(
+            material: AppMaterial.wood,
+            padding: const EdgeInsetsDirectional.symmetric(
+              horizontal: AppSpacing.xl,
+              vertical: AppSpacing.md,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
                   l10n.appTitle,
                   textAlign: TextAlign.center,
-                  style: AppTypography.displayLarge.copyWith(
-                    color: AppColors.aetherCyan,
-                    letterSpacing: 4.0,
-                    shadows: const <Shadow>[
-                      Shadow(
-                        color: AppColors.aetherCyanDim,
-                        blurRadius: 28.0,
-                      ),
-                      Shadow(
-                        color: AppColors.aetherCyan,
-                        blurRadius: 14.0,
-                      ),
-                      Shadow(
-                        color: AppColors.voidDeep,
-                        blurRadius: 4.0,
-                        offset: Offset(0.0, 2.0),
-                      ),
-                    ],
+                  style: AppTypography.onMaterial(
+                    AppTypography.screenTitle,
+                    AppMaterial.wood,
                   ),
                 ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Container(
-                width: AppSpacing.xxxl * 2,
-                height: AppSpacing.xs / 2,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: <Color>[
-                      Colors.transparent,
-                      AppColors.aetherCyan,
-                      AppColors.riftGlow,
-                      Colors.transparent,
-                    ],
-                    stops: <double>[0.0, 0.35, 0.65, 1.0],
-                  ),
-                  borderRadius: AppBorderRadii.pill,
-                  boxShadow: AppShadows.glow(
-                    AppColors.aetherCyan,
-                    blurRadius: 8.0,
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              // Alt baslik logoyla yarismamali: belirgin sekilde kucuk,
-              // sonuk renkte ve harf araligi acik -- logonun altinda bir
-              // tur etiketi gibi okunsun.
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
+                const SizedBox(height: AppSpacing.sm),
+                // Alt baslik logoyla yarismamali: belirgin sekilde kucuk,
+                // sonuk renkte -- logonun altinda bir tur etiketi gibi okunsun.
+                Text(
                   l10n.menuSubtitle.toUpperCase(),
                   textAlign: TextAlign.center,
-                  style: AppTypography.label.copyWith(
-                    color: AppColors.textSecondary,
-                    letterSpacing: 3.0,
-                  ),
+                  style: AppTypography.onMaterialSecondary(
+                    AppTypography.smallLabel,
+                    AppMaterial.wood,
+                  ).copyWith(letterSpacing: 1.2),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
