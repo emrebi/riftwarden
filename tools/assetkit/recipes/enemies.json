@@ -1,7 +1,11 @@
 {
-  "_comment": "Riftborn dusman sprite'lari. Gemini'den magenta zeminli grid olarak istenir.",
+  "_comment": "Riftborn dusman sprite'lari. ART-05 magenta zeminli 4x2 hucre grid.",
   "chroma": true,
-  "slice": "auto",
+  "slice": "cells",
+  "cols": 4,
+  "rows": 2,
+  "tolerance": 40,
+  "soft_edge": 30,
   "min_gap": 16,
   "max_size": 192,
   "padding": 2,

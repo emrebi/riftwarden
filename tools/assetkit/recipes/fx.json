@@ -1,11 +1,29 @@
 {
-  "_comment": "Mermi, patlama, parcacik. Genelde seffaf gelir, chroma atlanir.",
+  "_comment": "Mermi, patlama, parcacik efektleri. ART-12 5x3 hucre grid.",
   "chroma": true,
-  "slice": "auto",
+  "slice": "cells",
+  "cols": 5,
+  "rows": 3,
   "min_gap": 10,
   "max_size": 128,
   "padding": 2,
   "atlas_max": 1024,
-  "names": [],
+  "names": [
+    "pulse_bolt",
+    "arc_lance",
+    "proj_arc",
+    "proj_explosive",
+    "enemy_spit",
+    "hit_spark",
+    "ability_blast",
+    "hit_chain",
+    "death_puff",
+    "core_impact",
+    "field_shield",
+    "aether_mote",
+    "field_danger_ring",
+    "field_slow",
+    "field_heal"
+  ],
   "format": "webp_lossless"
 }

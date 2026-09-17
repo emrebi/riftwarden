@@ -90,6 +90,7 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | ARTINT-02 | DONE (Gemini Flash Medium, 0 fix; raster primary, Material glyph fallback; `color` now only tints fallback -> watch disabled/onDark icon states on device) | ARTINT-02 commit |
 | ARTINT-03 | DONE (Gemini Flash Medium, 0 fix; 3 portraits ingested; slot portrait cover -> contain, centered; spawn bar already passed unit ids; watch on device: portrait size in bottom strip may look small with contain) | ARTINT-03 commit |
 | ARTINT-04 | DONE (Gemini Flash Medium; planner fix: battle HUD AbilityButton artId via `_content.ability(kPlayerAbilityId).icon`; upgrade cards + ability shop use illustrations/<upgrade.icon> with family-icon fallback; RwAbilityFrame optional artId; reticle raster left for ARTINT-07) | ARTINT-04 commit |
+| ARTINT-06 | DONE (Gemini Flash Medium, 0 fix; units/enemies/fx recipes -> `cells`, enemies tolerance 40/soft 30; engine names kept, ART-12 extras added unused: proj_arc, proj_explosive, hit_chain, field_*; atlases units 512, enemies/fx 1024; no engine change -> watch on device: sprite scale, facing (enemies face left), FPS) | ARTINT-06 commit |
 | ART-03 (asset) | APPROVED (intake sheet, 19 icons) | not committed (intake) |
 | ART-02 (asset) | APPROVED (intake sheet 4x2, 7 pieces) | not committed (intake) |
 | ART-10 (asset) | APPROVED after 1 revision (watch on device: arc_overcharge horned dummy, titan_juggernaut enemy-like golem) | intake: ART-10_1.png (4x2, 8), ART-10_2.png (4x2, 5) |
@@ -101,7 +102,9 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | ART-12 (asset) | APPROVED (Codex; 5x3 magenta sheet 1672x941, 15 FX in order, outlined cel style, no halos; shield/rings need runtime opacity) | intake: ART-12/vfx_sheet.png |
 | ART-01 (asset) | APPROVED (Codex gpt-5.6-luna; alpha; stone letters on wood plank, spelling checked; emblem = stone/wood ward with rift tear. ARTINT-09: wordmark -> `logo/main_menu` (MenuLogo id), emblem id to decide there) | intake: ART-01/logo_wordmark.png, ART-01/emblem.png |
 | ART-08 (asset) | APPROVED after 1 revision (Codex; v1 painterly/no keylines + crystal-spire rift rejected; v2 keylined cel, fortress right half, small rift tear; left third still fairly detailed -> ARTINT-09 may need a soft scrim behind menu buttons) | intake: ART-08/main_menu_scene.png |
-| ART-11, 13 (asset) | IN PROGRESS (planner via Codex, sequential) | — |
+| ART-11 (asset) | APPROVED (Codex; 4x2 magenta sheet 1774x887, 8 props in prompt order, keylined; use `cells` recipe in ARTINT-08) | intake: ART-11/props_sheet.png |
+| ART-13 (asset) | APPROVED (Codex; alpha 1536 squares; victory = emblem + amber banner + flat rays, defeat = torn teal banner + lantern (still lit, acceptable); ARTINT-10 ids `result.victory`/`result.defeat` per SEC-03) | intake: ART-13/result_victory.png, result_defeat.png |
+| FONT-01 (asset) | SOURCED (Gemini; all OFL, see design/art_intake/FONT-01/SOURCES.md: Lilita One, Nunito, Noto Sans Arabic/Thai/JP/KR/SC/TC; CJK 47 MB -> ARTINT-05 decision needed: bundle Latin+Arabic+Thai (~1.3 MB), CJK via system fallback or subset) | intake: FONT-01/ |
 | all others | PENDING (see §6 order) | — |
 
 The planner updates this table in the commit of each approved task. This file is the single source of truth for task status; the planner's private plan file (P1–P17 era) is archive only.
