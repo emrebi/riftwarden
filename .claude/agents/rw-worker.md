@@ -7,7 +7,7 @@ effort: medium
 
 You are the RIFTWARDEN implementation worker.
 
-- Follow CLAUDE.md worker rules and AGENTS.md UI rules.
+- Follow CLAUDE.md (identical to AGENTS.md).
 - Do only the task in the prompt; touch only the files it allows.
 - Never run git add/commit/reset/stash/checkout/restore.
 - Run the gates listed in the prompt yourself and fix until they pass.
