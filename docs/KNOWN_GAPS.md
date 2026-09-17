@@ -107,3 +107,44 @@ RIFTWARDEN çalışma adı. App Store / Google Play'de çakışma ve marka taram
 yapılmadı. Bundle id (`com.riftwarden.game`) isme bağlı — isim değişirse
 Android `applicationId`/`namespace`, iOS bundle id ve Kotlin paket yolu birlikte
 değişmeli.
+
+---
+
+## UI geçişi sonrası (QA-FINAL)
+
+### 10. Kale sprite'ı ile savunucu slot hizası (ARTINT-07)
+**Durum:** Kale sprite'ı (`castle_ancient_bastion`) ile savunucu slotlarının yerleşim koordinatları simülasyon düzeyinde örtüşüyor; fiziksel ekranlarda slot ve kale görsel uyumu doğrulanmalıdır.
+**Neden ertelendi:** Gerçek cihazda görsel doğrulama gerektirir.
+**Ne zaman:** Cihaz içi ilk oynanış denetiminde.
+**Nerede:** `lib/engine/render/castle_renderer.dart`, `lib/features/battle/`
+
+### 11. Dekor yoğunluğu ART-07 arka planı üstünde (ARTINT-08)
+**Durum:** Sektör arka planı (`env_background_sector_01`) üzerine bindirilen dekoratif katmanların (`env_decor_rocks`, `env_decor_rift_spires`) yoğunluğu ve görsel kontrastı cihaz ekranında incelenmeli.
+**Neden ertelendi:** Ekran okunaklılığı ve görsel kalabalık seviyesi cihazda gözle değerlendirilmelidir.
+**Ne zaman:** İlk cihaz içi oynanış/cila turunda.
+**Nerede:** `lib/engine/render/map_renderer.dart`
+
+### 12. Ana menü okunurluk karartması yok (ARTINT-09)
+**Durum:** Ana menü arka planı üzerine metin ve kartların kontrastını artıracak hafif bir karartma/vinyet katmanı henüz eklenmedi.
+**Neden ertelendi:** UI duman testlerinde kontrast problemi tetiklenmedi; estetik cila cihazda kontrol edilecek.
+**Ne zaman:** Cihaz içi menü cila turunda.
+**Nerede:** `lib/features/main_menu/view/main_menu_screen.dart`
+
+### 13. CJK gövde fontu sistem fontu (ARTINT-05)
+**Durum:** CJK locale'leri (zh, ja, ko) için gövde fontu sistem fontuna bırakılmıştır (`AppFonts.bodyFamilyFor` null döner).
+**Neden ertelendi:** CJK font dosyalarının boyutu (onlarca MB) paket boyutunu şişireceği için bilinçli olarak sistem fontuna devredildi.
+**Ne zaman:** M5 cila / yayın öncesi font optimizasyonu aşamasında.
+**Nerede:** `lib/app/theme/app_typography.dart`, `pubspec.yaml`
+
+### 14. ART-12 ek efektleri atlasta ama motor kullanmıyor (ARTINT-06)
+**Durum:** `proj_arc`, `proj_explosive`, `hit_chain`, `field_*` gibi ek vfx sprite'ları atlasa dahil edildi ancak parçacık/vfx render motoru henüz bu kareleri tüketmiyor (temel mermi ve vfx kullanılıyor).
+**Neden ertelendi:** Motor mermi sistemi genişletmesi (bilinen açık #3) ile birlikte ele alınacak.
+**Ne zaman:** Mermi çeşitlendirme ve vfx yükseltme turunda.
+**Nerede:** `lib/engine/effects/effect_renderer.dart`, `lib/engine/simulation/systems/combat_system.dart`
+
+### 15. Rift collapse reticle raster'ı motor tarafında kullanılmıyor (ARTINT-04)
+**Durum:** `reticle_rift_collapse` hedefleme raster'ı atlasta mevcut ancak motor tarafında hedefleme göstergesi vektörel/prosedürel çiziliyor.
+**Neden ertelendi:** Oynanış hedefleme mekaniğinin sprite tabanlı render'a geçirilmesi motor entegrasyonu gerektirir.
+**Ne zaman:** Aktif yetenek hedefleme cila turunda.
+**Nerede:** `lib/engine/render/`, `lib/features/battle/`
+

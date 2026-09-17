@@ -53,16 +53,21 @@ void main() {
     ('640x360', Size(1920, 1080)),
     ('800x360', Size(2400, 1080)),
   ];
+  const smokeLocales = <Locale>[
+    Locale('en'),
+    Locale('ar'),
+    Locale('de'),
+  ];
 
   void noop() {}
 
-  Widget wrap(Widget child) {
+  Widget wrap(Widget child, [Locale locale = const Locale('en')]) {
     return ProviderScope(
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        theme: AppTheme.build(const Locale('en')),
-        locale: const Locale('en'),
+        theme: AppTheme.build(locale),
+        locale: locale,
         home: child,
       ),
     );
@@ -85,151 +90,156 @@ void main() {
   ];
 
   for (final (label, physicalSize) in surfaces) {
-    group('$label yuzeyinde', () {
-      setUp(() {});
+    for (final locale in smokeLocales) {
+      group('$label yuzeyinde (${locale.languageCode})', () {
+        Future<void> setSurface(WidgetTester tester) async {
+          final view = tester.view;
+          view.physicalSize = physicalSize;
+          view.devicePixelRatio = 3.0;
+          addTearDown(view.resetPhysicalSize);
+          addTearDown(view.resetDevicePixelRatio);
+        }
 
-      Future<void> setSurface(WidgetTester tester) async {
-        final view = tester.view;
-        view.physicalSize = physicalSize;
-        view.devicePixelRatio = 3.0;
-        addTearDown(view.resetPhysicalSize);
-        addTearDown(view.resetDevicePixelRatio);
-      }
+        testWidgets('BootScreen tasmiyor', (WidgetTester tester) async {
+          await setSurface(tester);
+          await tester.pumpWidget(wrap(const BootScreen(), locale));
+          await tester.pump(const Duration(milliseconds: 500));
 
-      testWidgets('BootScreen tasmiyor', (WidgetTester tester) async {
-        await setSurface(tester);
-        await tester.pumpWidget(wrap(const BootScreen()));
-        await tester.pump(const Duration(milliseconds: 500));
+          expect(tester.takeException(), isNull);
+          final scaffoldSize = tester.getSize(find.byType(Scaffold).first);
+          expect(scaffoldSize, physicalSize / 3.0);
+        });
 
-        expect(tester.takeException(), isNull);
-        final scaffoldSize = tester.getSize(find.byType(Scaffold).first);
-        expect(scaffoldSize, physicalSize / 3.0);
-      });
-
-      testWidgets('MainMenuScreen tasmiyor', (WidgetTester tester) async {
-        await setSurface(tester);
-        await tester.pumpWidget(
-          wrap(
-            MainMenuScreen(
-              sectorNumber: 1,
-              levelNumber: 3,
-              sectorProgress: 0.45,
-              shards: 120,
-              cells: 5,
-              onPlay: noop,
-              onStore: noop,
-              onUpgrades: noop,
-              onSettings: noop,
-            ),
-          ),
-        );
-        await tester.pump(const Duration(milliseconds: 500));
-
-        expect(tester.takeException(), isNull);
-        final scaffoldSize = tester.getSize(find.byType(Scaffold).first);
-        expect(scaffoldSize, physicalSize / 3.0);
-      });
-
-      testWidgets('SettingsScreen tasmiyor', (WidgetTester tester) async {
-        await setSurface(tester);
-        await tester.pumpWidget(
-          wrap(
-            SettingsScreen(
-              soundEnabled: true,
-              musicEnabled: true,
-              hapticsEnabled: false,
-              currentLanguageLabel: 'Turkce',
-              versionLabel: 'v1.0.0',
-              onSoundChanged: (bool value) {},
-              onMusicChanged: (bool value) {},
-              onHapticsChanged: (bool value) {},
-              onLanguageTap: noop,
-              onRestorePurchases: noop,
-              onPrivacyTap: noop,
-              onBack: noop,
-            ),
-          ),
-        );
-        await tester.pump(const Duration(milliseconds: 500));
-
-        expect(tester.takeException(), isNull);
-        final scaffoldSize = tester.getSize(find.byType(Scaffold).first);
-        expect(scaffoldSize, physicalSize / 3.0);
-      });
-
-      testWidgets('LevelSelectScreen tasmiyor', (WidgetTester tester) async {
-        await setSurface(tester);
-        await tester.pumpWidget(
-          wrap(
-            LevelSelectScreen(
-              sectors: sampleSectors,
-              shards: 120,
-              onLevelTap: (int levelId) {},
-              onBack: noop,
-            ),
-          ),
-        );
-        await tester.pump(const Duration(milliseconds: 500));
-
-        expect(tester.takeException(), isNull);
-        final scaffoldSize = tester.getSize(find.byType(Scaffold).first);
-        expect(scaffoldSize, physicalSize / 3.0);
-      });
-
-      testWidgets('ResultScreen (zafer) tasmiyor', (WidgetTester tester) async {
-        await setSurface(tester);
-        await tester.pumpWidget(
-          wrap(
-            ResultScreen(
-              data: const BattleResultData(
-                kind: BattleResultKind.victory,
+        testWidgets('MainMenuScreen tasmiyor', (WidgetTester tester) async {
+          await setSurface(tester);
+          await tester.pumpWidget(
+            wrap(
+              MainMenuScreen(
+                sectorNumber: 1,
                 levelNumber: 3,
-                shardsEarned: 25,
-                cellsEarned: 3,
-                wavesCleared: 8,
-                totalWaves: 8,
-                canWatchAd: true,
+                sectorProgress: 0.45,
+                shards: 120,
+                cells: 5,
+                onPlay: noop,
+                onStore: noop,
+                onUpgrades: noop,
+                onSettings: noop,
               ),
-              onPrimary: noop,
-              onWatchAd: noop,
-              onMainMenu: noop,
+              locale,
             ),
-          ),
-        );
-        await tester.pump(const Duration(milliseconds: 500));
+          );
+          await tester.pump(const Duration(milliseconds: 500));
 
-        expect(tester.takeException(), isNull);
-        final scaffoldSize = tester.getSize(find.byType(Scaffold).first);
-        expect(scaffoldSize, physicalSize / 3.0);
-      });
+          expect(tester.takeException(), isNull);
+          final scaffoldSize = tester.getSize(find.byType(Scaffold).first);
+          expect(scaffoldSize, physicalSize / 3.0);
+        });
 
-      testWidgets('ResultScreen (yenilgi) tasmiyor', (WidgetTester tester) async {
-        await setSurface(tester);
-        await tester.pumpWidget(
-          wrap(
-            ResultScreen(
-              data: const BattleResultData(
-                kind: BattleResultKind.defeat,
-                levelNumber: 3,
-                shardsEarned: 0,
-                cellsEarned: 0,
-                wavesCleared: 6,
-                totalWaves: 8,
-                canWatchAd: true,
+        testWidgets('SettingsScreen tasmiyor', (WidgetTester tester) async {
+          await setSurface(tester);
+          await tester.pumpWidget(
+            wrap(
+              SettingsScreen(
+                soundEnabled: true,
+                musicEnabled: true,
+                hapticsEnabled: false,
+                currentLanguageLabel: 'Turkce',
+                versionLabel: 'v1.0.0',
+                onSoundChanged: (bool value) {},
+                onMusicChanged: (bool value) {},
+                onHapticsChanged: (bool value) {},
+                onLanguageTap: noop,
+                onRestorePurchases: noop,
+                onPrivacyTap: noop,
+                onBack: noop,
               ),
-              onPrimary: noop,
-              onWatchAd: noop,
-              onMainMenu: noop,
+              locale,
             ),
-          ),
-        );
-        await tester.pump(const Duration(milliseconds: 500));
+          );
+          await tester.pump(const Duration(milliseconds: 500));
 
-        expect(tester.takeException(), isNull);
-        final scaffoldSize = tester.getSize(find.byType(Scaffold).first);
-        expect(scaffoldSize, physicalSize / 3.0);
+          expect(tester.takeException(), isNull);
+          final scaffoldSize = tester.getSize(find.byType(Scaffold).first);
+          expect(scaffoldSize, physicalSize / 3.0);
+        });
+
+        testWidgets('LevelSelectScreen tasmiyor', (WidgetTester tester) async {
+          await setSurface(tester);
+          await tester.pumpWidget(
+            wrap(
+              LevelSelectScreen(
+                sectors: sampleSectors,
+                shards: 120,
+                onLevelTap: (int levelId) {},
+                onBack: noop,
+              ),
+              locale,
+            ),
+          );
+          await tester.pump(const Duration(milliseconds: 500));
+
+          expect(tester.takeException(), isNull);
+          final scaffoldSize = tester.getSize(find.byType(Scaffold).first);
+          expect(scaffoldSize, physicalSize / 3.0);
+        });
+
+        testWidgets('ResultScreen (zafer) tasmiyor', (WidgetTester tester) async {
+          await setSurface(tester);
+          await tester.pumpWidget(
+            wrap(
+              ResultScreen(
+                data: const BattleResultData(
+                  kind: BattleResultKind.victory,
+                  levelNumber: 3,
+                  shardsEarned: 25,
+                  cellsEarned: 3,
+                  wavesCleared: 8,
+                  totalWaves: 8,
+                  canWatchAd: true,
+                ),
+                onPrimary: noop,
+                onWatchAd: noop,
+                onMainMenu: noop,
+              ),
+              locale,
+            ),
+          );
+          await tester.pump(const Duration(milliseconds: 500));
+
+          expect(tester.takeException(), isNull);
+          final scaffoldSize = tester.getSize(find.byType(Scaffold).first);
+          expect(scaffoldSize, physicalSize / 3.0);
+        });
+
+        testWidgets('ResultScreen (yenilgi) tasmiyor', (WidgetTester tester) async {
+          await setSurface(tester);
+          await tester.pumpWidget(
+            wrap(
+              ResultScreen(
+                data: const BattleResultData(
+                  kind: BattleResultKind.defeat,
+                  levelNumber: 3,
+                  shardsEarned: 0,
+                  cellsEarned: 0,
+                  wavesCleared: 6,
+                  totalWaves: 8,
+                  canWatchAd: true,
+                ),
+                onPrimary: noop,
+                onWatchAd: noop,
+                onMainMenu: noop,
+              ),
+              locale,
+            ),
+          );
+          await tester.pump(const Duration(milliseconds: 500));
+
+          expect(tester.takeException(), isNull);
+          final scaffoldSize = tester.getSize(find.byType(Scaffold).first);
+          expect(scaffoldSize, physicalSize / 3.0);
+        });
       });
-    });
+    }
   }
 
   group('OrientationGateScreen', () {
@@ -241,7 +251,11 @@ void main() {
       addTearDown(view.resetDevicePixelRatio);
     }
 
-    Widget wrapWithService(Widget child, OrientationService service) {
+    Widget wrapWithService(
+      Widget child,
+      OrientationService service, [
+      Locale locale = const Locale('en'),
+    ]) {
       return ProviderScope(
         overrides: [
           orientationServiceProvider.overrideWithValue(service),
@@ -249,27 +263,36 @@ void main() {
         child: MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          theme: AppTheme.build(const Locale('en')),
-          locale: const Locale('en'),
+          theme: AppTheme.build(locale),
+          locale: locale,
           home: child,
         ),
       );
     }
 
-    testWidgets('360x640 DIKEY yuzeyde tasma yok', (WidgetTester tester) async {
-      const physicalSize = Size(1080, 1920);
-      await setSurface(tester, physicalSize);
+    for (final locale in smokeLocales) {
+      testWidgets(
+        '360x640 DIKEY yuzeyde (${locale.languageCode}) tasma yok',
+        (WidgetTester tester) async {
+          const physicalSize = Size(1080, 1920);
+          await setSurface(tester, physicalSize);
 
-      final service = _FakeOrientationService();
-      await tester.pumpWidget(
-        wrapWithService(OrientationGateScreen(onReady: noop), service),
+          final service = _FakeOrientationService();
+          await tester.pumpWidget(
+            wrapWithService(
+              OrientationGateScreen(onReady: noop),
+              service,
+              locale,
+            ),
+          );
+          await tester.pump(const Duration(milliseconds: 500));
+
+          expect(tester.takeException(), isNull);
+          final scaffoldSize = tester.getSize(find.byType(Scaffold).first);
+          expect(scaffoldSize, physicalSize / 3.0);
+        },
       );
-      await tester.pump(const Duration(milliseconds: 500));
-
-      expect(tester.takeException(), isNull);
-      final scaffoldSize = tester.getSize(find.byType(Scaffold).first);
-      expect(scaffoldSize, physicalSize / 3.0);
-    });
+    }
 
     testWidgets('640x360 YATAY yuzeyde onReady cagrilir', (WidgetTester tester) async {
       const physicalSize = Size(1920, 1080);
@@ -325,7 +348,11 @@ void main() {
       ('640x360', Size(1920, 1080)),
       ('800x360', Size(2400, 1080)),
     ];
-    const battleLocales = <Locale>[Locale('en'), Locale('ar')];
+    const battleLocales = <Locale>[
+      Locale('en'),
+      Locale('ar'),
+      Locale('de'),
+    ];
 
     for (final (label, physicalSize) in battleSurfaces) {
       for (final locale in battleLocales) {
@@ -412,7 +439,11 @@ void main() {
       ('640x360', Size(1920, 1080)),
       ('800x360', Size(2400, 1080)),
     ];
-    const galleryLocales = <Locale>[Locale('en'), Locale('ar')];
+    const galleryLocales = <Locale>[
+      Locale('en'),
+      Locale('ar'),
+      Locale('de'),
+    ];
 
     Future<void> setSurface(WidgetTester tester, Size physicalSize) async {
       final view = tester.view;
@@ -539,7 +570,11 @@ void main() {
       ('640x360', Size(1920, 1080)),
       ('800x360', Size(2400, 1080)),
     ];
-    const overlayLocales = <Locale>[Locale('en'), Locale('ar')];
+    const overlayLocales = <Locale>[
+      Locale('en'),
+      Locale('ar'),
+      Locale('de'),
+    ];
 
     for (final (label, physicalSize) in overlaySurfaces) {
       for (final locale in overlayLocales) {
@@ -636,6 +671,7 @@ void main() {
       await tester.tap(firstCard);
       await tester.pump();
 
+      expect(tester.takeException(), isNull);
       expect(chosen, <String>[cardUpgradeIds[0]]);
     });
 
@@ -684,6 +720,7 @@ void main() {
         await tester.tap(find.byType(RwCard).first);
         await tester.pump();
 
+        expect(tester.takeException(), isNull);
         expect(chosen, <String>[cardUpgradeIds[0], cardUpgradeIds[0]]);
       },
     );
@@ -717,6 +754,7 @@ void main() {
       await tester.tap(find.byType(RwButton));
       await tester.pump();
 
+      expect(tester.takeException(), isNull);
       expect(rerollCount, 1);
     });
 
@@ -749,6 +787,7 @@ void main() {
       await tester.tap(find.byType(RwButton));
       await tester.pump();
 
+      expect(tester.takeException(), isNull);
       expect(rerollCount, 0);
     });
 
