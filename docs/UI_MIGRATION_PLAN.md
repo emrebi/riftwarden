@@ -87,6 +87,7 @@ Default worker: Sonnet 5 Medium · Planner/reviewer: Opus
 | SEC-04 | DONE | batch C13 |
 | ART-PREP | DONE (Gemini Flash Medium worker, 0 fix; planner nits: UI_ART_DIR reuse. Recipes per delivery instead of `ui_art.json`: portraits, icons, ornaments, illustrations, rift_collapse; new `slice: cells` = declared grid by component bbox center. ARTINT-06 note: existing auto recipe merges 3 ART-05 enemies -> switch units/enemies/fx to `cells` there; ART-09 portal cell is `_skip` (engine, ARTINT-07); logo/scenes/result recipes added in their ARTINT) | ART-PREP commit |
 | ARTINT-01 | DONE (Gemini Flash Medium, 0 fix; RwOrnament + RwSurfaceOrnaments; RwPanel/RwCard `showOrnaments` default on, smallInfo off, upgrade cards marker-only; watch on device: corner overhang clipping in scroll views) | ARTINT-01 commit |
+| ARTINT-02 | DONE (Gemini Flash Medium, 0 fix; raster primary, Material glyph fallback; `color` now only tints fallback -> watch disabled/onDark icon states on device) | ARTINT-02 commit |
 | ART-03 (asset) | APPROVED (intake sheet, 19 icons) | not committed (intake) |
 | ART-02 (asset) | APPROVED (intake sheet 4x2, 7 pieces) | not committed (intake) |
 | ART-10 (asset) | APPROVED after 1 revision (watch on device: arc_overcharge horned dummy, titan_juggernaut enemy-like golem) | intake: ART-10_1.png (4x2, 8), ART-10_2.png (4x2, 5) |

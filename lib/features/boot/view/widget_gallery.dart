@@ -382,7 +382,7 @@ class _WidgetGalleryState extends State<WidgetGallery> {
             // --- SECTION: SEMANTIC ICONS ---
             const RwSectionHeader(
               title: 'Icons (RwIcon)',
-              subtitle: '19 semantik id, 24/48 dp ve RTL back ornegi',
+              subtitle: '19 raster ikon (ART-03), 24/48 dp ve RTL back ornegi',
             ),
             const SizedBox(height: AppSpacing.sm),
             Wrap(

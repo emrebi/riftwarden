@@ -40,7 +40,7 @@ Aşağıdaki tablodan işini bul, **sadece** listelenen dosyaları aç.
 | **Yetenek cercevesi/cooldown ring kullan/değiştir (RwAbilityFrame)** | `lib/shared/widgets/rw_ability_frame.dart` (`RwMaterialSurface(shape: circle, material: stone)` uzerine kurulu; `RwAbilityState`: ready/cooldown/targeting/unavailable) | — |
 | **Acma/kapama anahtari kullan/değiştir (RwToggle)** | `lib/shared/widgets/rw_toggle.dart` (`RwMaterialSurface(shape: pill)` track + `circle` knob; SEC-02'de `SettingsSwitchRow` icindeki Material `Switch`'in yerine gecti) | — |
 | **Susleme parcasi kullan/ekle (RwOrnament)** | `lib/shared/widgets/rw_ornament.dart` (`RwOrnament` tek parca, `RwSurfaceOrnaments` malzeme on ayari; RwPanel/RwCard `showOrnaments` ile kapatilir), `assets/images/ui_art/ornaments/`, tarif `tools/assetkit/recipes/ornaments.json` | — |
-| **Ikon kullan/ekle (RwIcon)** | `lib/shared/widgets/rw_icon.dart`, `assets/images/ui_art/icons/` (gelecek, ARTINT-02) | — |
+| **Ikon kullan/ekle (RwIcon)** | `lib/shared/widgets/rw_icon.dart`, `assets/images/ui_art/icons/` (raster, tarif tools/assetkit/recipes/icons.json; dosya yoksa Material glyph fallback) | — |
 | **UI gorseli goster (RwArt)** | `lib/shared/widgets/rw_art.dart`, `assets/images/ui_art/<grup>/<id>.webp` | — |
 | **Ekran iskeleti kullan/değiştir (RwScreenScaffold)** | `lib/shared/widgets/rw_screen_scaffold.dart` (baslik seridi `RwMaterialSurface(material: wood)` uzerine kurulu; `background` katmani ileride `RwArt(group: scenes)`) | — |
 | **Bolum basligi kullan/değiştir (RwSectionHeader)** | `lib/shared/widgets/rw_section_header.dart` (`onDark` ile HUD/koyu zemin varyanti) | — |

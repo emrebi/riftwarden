@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:riftwarden/app/theme/app_colors.dart';
+import 'package:riftwarden/shared/widgets/rw_art.dart';
 
-/// Semantik ikon kimlikleri. Isimler onaylanan ikon sayfasi dosya id'leriyle
-/// birebir eslesir (`assets/images/ui_art/icons/<id>.webp`, ARTINT-02).
-/// Buradaki adlari degistirmek raster gecisini kirar.
+/// Semantik ikon kimlikleri. Isimler ikon sayfasi dosya id'leriyle
+/// birebir eslesir (`assets/images/ui_art/icons/<id>.webp`).
+/// Buradaki adlari degistirmek raster yuklemesini kirar.
 enum RwIconId {
   aether,
   shard,
@@ -28,10 +29,9 @@ enum RwIconId {
 
 /// Tek semantik ikon API'si.
 ///
-/// Bugun `RwIconId` -> Material `IconData` koduyla cizilir. ARTINT-02'de
-/// (AQ-1/AQ-2 onayli yol) ayni id'ler `RwArt` uzerinden
-/// `assets/images/ui_art/icons/<id>.webp` raster varligini yukleyecek;
-/// cagri yerleri (`RwIcon(RwIconId.x)`) degismeyecek.
+/// Raster varlik birincildir (`assets/images/ui_art/icons/<id>.webp`, RwArt).
+/// Dosya bulunamazsa Material IconData glifi fallback olarak sessizce cizilir;
+/// cagri yerleri (`RwIcon(RwIconId.x)`) degismez.
 ///
 /// Bu widget bir glif'tir, dokunma hedefi degildir; buton sarmalayicisi
 /// (`RwIconButton`) hit-target boyutunu saglar.
@@ -46,6 +46,10 @@ class RwIcon extends StatelessWidget {
 
   final RwIconId id;
   final double size;
+
+  /// Fallback Material glifine uygulanacak renk. Raster ikonlar kendi
+  /// renklerini tasidigi icin bu parametre sadece raster dosya bulunamadiginda
+  /// cizilen fallback glifine etki eder.
   final Color? color;
   final String? semanticLabel;
 
@@ -103,20 +107,34 @@ class RwIcon extends StatelessWidget {
     final glyph = _glyphs[id]!;
     final effectiveColor = color ?? _defaultColor(id);
 
-    final icon = Icon(
+    final fallbackIcon = Icon(
       glyph,
       size: size,
       color: effectiveColor,
+      semanticLabel: null,
+    );
+    final fallback = semanticLabel == null
+        ? fallbackIcon
+        : Semantics(
+            label: semanticLabel,
+            child: fallbackIcon,
+          );
+
+    final icon = RwArt(
+      group: RwArtGroup.icons,
+      id: id.name,
+      width: size,
+      height: size,
       semanticLabel: semanticLabel,
+      fallback: fallback,
     );
 
     if (id != RwIconId.back) {
       return icon;
     }
 
-    // `back` her zaman "basa dogru" gostermeli; RTL'de yatayda aynalanir.
-    // Aynalama IconData yerine gorsel donusum uzerinden yapilir ki
-    // ARTINT-02'de raster ok gorseli de aynen bu yoldan cevrilebilsin.
+    // `back` her zaman "basa dogru" gostermeli; sanat SOLA bakar; RTL'de
+    // yatayda aynalanir. Aynalama raster+fallback butunune uygulanir.
     final isRtl = Directionality.of(context) == TextDirection.rtl;
     if (!isRtl) {
       return icon;
